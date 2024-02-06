@@ -24,6 +24,9 @@ export default function Home() {
     maxHeight: 900,
   };
 
+  const [inputBorderPercent, setInputBorderPercent] = useState<string>("0");
+  const [inputBorderColor, setInputBorderColor] = useState<string>("#ffffff");
+
   const [originalFile, setOriginalFile] = useState<File | null>(null);
   const [originalImg, setOriginalImg] = useState<HTMLImageElement | null>(null);
   const [processList, setProcessList] = useState<ProcessFunction[]>([]);
@@ -156,14 +159,22 @@ export default function Home() {
     De esta manera, cuando transformarImagen llama a la función que le pasaste, esa función a su vez llama a imgAddBorder con el ImageData y el objeto de opciones.*/
     processImage(
       smallCanvasRef,
-      (imageData) => imgAddBorder(imageData, { BorderPercent: "10" }),
+      (imageData) =>
+        imgAddBorder(imageData, {
+          BorderPercent: inputBorderPercent,
+          BorderColor: inputBorderColor,
+        }),
       true
     );
     /* transformarImagen(smallCanvasRef, (imageData) => imgAddBorder(imageData, { }) */
     //transformarImagen(offScreenCanvasRef, imgAddBorder);
     setProcessList([
       ...processList,
-      (imageData) => imgAddBorder(imageData, { BorderPercent: "10" }),
+      (imageData) =>
+        imgAddBorder(imageData, {
+          BorderPercent: inputBorderPercent,
+          BorderColor: inputBorderColor,
+        }),
     ]);
   }
 
@@ -246,6 +257,24 @@ export default function Home() {
     }
   }
 
+  function hexToRgb(hexColor: string): {
+    red: number;
+    green: number;
+    blue: number;
+  } {
+    // Elimina el "#" si está presente
+    let color =
+      hexColor.charAt(0) === "#" ? hexColor.substring(1, 7) : hexColor;
+
+    // Convierte el color hexadecimal a RGB
+    let red = parseInt(color.substring(0, 2), 16);
+    let green = parseInt(color.substring(2, 4), 16);
+    let blue = parseInt(color.substring(4, 6), 16);
+
+    // Devuelve el objeto con los valores RGB
+    return { red, green, blue };
+  }
+
   //
   //* Poner las options como ENUMS
   //todo: poner tamaño y color de borde como parámetros
@@ -264,6 +293,8 @@ export default function Home() {
       borderHeight = 0,
       borderWidth = 0;
 
+    let borderColor = "#ffffff";
+
     if (options?.BorderPercent) {
       borderSize = parseInt(options.BorderPercent);
       borderWidth = (imageData.width * borderSize) / 100;
@@ -276,6 +307,10 @@ export default function Home() {
       borderHeight = borderSize;
     }
 
+    if (options?.BorderColor) {
+      borderColor = options.BorderColor;
+    }
+
     canvasTemp.width = imageData.width + borderWidth;
     canvasTemp.height = imageData.height + borderHeight;
 
@@ -286,9 +321,9 @@ export default function Home() {
 
     if (backgroundImageData) {
       for (let i = 0; i < backgroundImageData.data.length; i += 4) {
-        backgroundImageData.data[i] = 255; // red
-        backgroundImageData.data[i + 1] = 255; // green
-        backgroundImageData.data[i + 2] = 255; // blue
+        backgroundImageData.data[i] = hexToRgb(borderColor).red; // red
+        backgroundImageData.data[i + 1] = hexToRgb(borderColor).green; // green
+        backgroundImageData.data[i + 2] = hexToRgb(borderColor).blue; // blue
         backgroundImageData.data[i + 3] = 255; // alpha (transparency)
       }
 
@@ -432,9 +467,6 @@ export default function Home() {
 
       <section id="section__toolbar">
         <div className="toolbar">
-          <button type="button" id="btnBorde" onClick={() => handleBorde()}>
-            borde
-          </button>
           <button type="button" id="btnToBN" onClick={() => handleToBN()}>
             a BN
           </button>
@@ -448,13 +480,33 @@ export default function Home() {
         </div>
         <details className="toolbar__details">
           <summary className="toolbar__summary">Borders</summary>
-          <button
-            type="button"
-            id="btnDescargar"
-            onClick={() => handleDownload()}
-          >
-            descargar
+          <button type="button" id="btnBorde" onClick={() => handleBorde()}>
+            borde
           </button>
+          <input
+            type="range"
+            id="vol"
+            name="vol"
+            min="0"
+            max="100"
+            value={inputBorderPercent}
+            onChange={(e) => setInputBorderPercent(e.target.value)}
+          ></input>
+          {inputBorderPercent}%
+          <input
+            type="color"
+            list="true"
+            value={inputBorderColor}
+            onChange={(e) => setInputBorderColor(e.target.value)}
+          />
+          {inputBorderColor}
+          {/*  <datalist id="colors">
+            <option>#ff0000</option>
+            <option>#0000ff</option>
+            <option>#00ff00</option>
+            <option>#ffff00</option>
+            <option>#00ffff</option>
+          </datalist> */}
         </details>
         <canvas id="canvas2" hidden ref={offScreenCanvasRef}></canvas>
       </section>

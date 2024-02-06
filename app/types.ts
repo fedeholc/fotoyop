@@ -9,6 +9,7 @@ export type CanvasConfig = {
 const processOptionsKeys = {
   BorderPercent: "BorderPercent",
   BorderPixels: "BorderPixels",
+  BorderColor: "BorderColor",
 } as const;
 
 //este tipo son las keys de processOptionsKeys
