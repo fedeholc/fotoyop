@@ -1,17 +1,24 @@
 "use client";
 import styles from "./page.module.css";
-import "@radix-ui/themes/styles.css";
-import { Theme } from "@radix-ui/themes";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
-
 import { CanvasConfig, ProcessOptionsType, ProcessFunction } from "./types";
-import { Button } from "@radix-ui/themes";
+
+type DisplaySections = {
+  form: boolean;
+  canvas: boolean;
+};
 
 export default function Home() {
   /*   const [mainCanvasConfig, setMainCanvasConfig] = useState<CanvasConfig>({
     maxWidth: 0,
     maxHeight: 0,
   }); */
+
+  const [displays, setDisplays] = useState<DisplaySections>({
+    canvas: false,
+    form: true,
+  });
+
   const mainCanvasConfig: CanvasConfig = {
     maxWidth: 900,
     maxHeight: 900,
@@ -21,6 +28,7 @@ export default function Home() {
   const [originalImg, setOriginalImg] = useState<HTMLImageElement | null>(null);
   const [processList, setProcessList] = useState<ProcessFunction[]>([]);
 
+  const inputUploadRef = useRef<HTMLInputElement | null>(null);
   const smallCanvasCtxRef = useRef<CanvasRenderingContext2D | null>(null);
   const imagenPreviewRef = useRef<HTMLImageElement | null>(null);
   const smallCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -35,7 +43,7 @@ export default function Home() {
         willReadFrequently: true,
       });
     }
-  }, []); // quité mainCanvasConfig de las dependencias mientras no se use
+  }, [displays]); // quité mainCanvasConfig de las dependencias mientras no se use
 
   async function loadFile(file: File) {
     if (!file) {
@@ -45,6 +53,10 @@ export default function Home() {
       alert(file.name + " is not an image.");
       return;
     }
+
+    setDisplays((prev) => {
+      return { ...prev, canvas: true };
+    });
 
     if (file) {
       const reader = new FileReader();
@@ -350,46 +362,69 @@ export default function Home() {
       loadFile(files[0]);
     }
   }
+  function handleUploadFormClick() {
+    inputUploadRef.current?.click();
+  }
   return (
-    <Theme
-      accentColor="crimson"
-      /*       appearance="dark"
-       */ grayColor="sand"
-      radius="large"
-    >
-      <main id="app" className={styles.main}>
-        <div className="canvas__container">
-          <canvas id="canvas-small" ref={smallCanvasRef}></canvas>
-        </div>
-        <form onInput={handleFormInput} id="form-upload">
-          <label
-            htmlFor="imagenInput"
-            className="drop-container"
-            id="dropcontainer"
-            onDrop={handleDrop}
-            onDragOver={(event) => event.preventDefault()}
-          >
-            <span className="drop-title">Drop files here</span>
-            or <input type="file" id="input-upload" accept="image/*"></input>
-          </label>
-
-          <div>
-            <div>
-              <div>Original image.</div>
-              <div>Name: {originalFile?.name} </div>
-              <div>Size: {originalFile?.size} bytes.</div>
-              <div>
-                Size: {originalImg?.width} x {originalImg?.height} px.
-              </div>
-            </div>
-            <img
-              id="imagenPreview"
-              style={{ maxWidth: "300px", maxHeight: "300px" }}
-              ref={imagenPreviewRef}
-            ></img>
+    <main id="app" className={styles.main}>
+      <section id="section__image">
+        {displays.canvas && (
+          <div className="canvas__container">
+            <canvas id="canvas-small" ref={smallCanvasRef}></canvas>
           </div>
-        </form>
+        )}
 
+        {displays.form && (
+          <form
+            onClick={handleUploadFormClick}
+            onInput={handleFormInput}
+            id="form-upload"
+          >
+            <label
+              htmlFor="imagenInput"
+              className="drop-container"
+              id="dropcontainer"
+              onDrop={handleDrop}
+              onDragOver={(event) => event.preventDefault()}
+            >
+              <div className="drop-title-group">
+                <span className="drop-title">Drop files here</span>
+                <br />
+                <br />
+                <span className="drop-title">or</span>
+                <br />
+                <br />
+                <span className="drop-title">click / tap to upload</span>
+                <br />
+              </div>
+              <input
+                type="file"
+                id="input-upload"
+                accept="image/*"
+                style={{ display: "none" }}
+                ref={inputUploadRef}
+              ></input>
+            </label>
+          </form>
+        )}
+        <div>
+          <div>
+            <div>Original image.</div>
+            <div>Name: {originalFile?.name} </div>
+            <div>Size: {originalFile?.size} bytes.</div>
+            <div>
+              Size: {originalImg?.width} x {originalImg?.height} px.
+            </div>
+          </div>
+          <img
+            id="imagenPreview"
+            style={{ maxWidth: "300px", maxHeight: "300px" }}
+            ref={imagenPreviewRef}
+          ></img>
+        </div>
+      </section>
+
+      <section id="section__toolbar">
         <div className="toolbar">
           <button type="button" id="btnBorde" onClick={() => handleBorde()}>
             borde
@@ -397,17 +432,26 @@ export default function Home() {
           <button type="button" id="btnToBN" onClick={() => handleToBN()}>
             a BN
           </button>
-          <Button
+          <button
             type="button"
-            variant="surface"
             id="btnDescargar"
             onClick={() => handleDownload()}
           >
             descargar
-          </Button>
+          </button>
         </div>
+        <details className="toolbar__details">
+          <summary className="toolbar__summary">Procesos realizados</summary>
+          <button
+            type="button"
+            id="btnDescargar"
+            onClick={() => handleDownload()}
+          >
+            descargar
+          </button>
+        </details>
         <canvas id="canvas2" hidden ref={offScreenCanvasRef}></canvas>
-      </main>
-    </Theme>
+      </section>
+    </main>
   );
 }
