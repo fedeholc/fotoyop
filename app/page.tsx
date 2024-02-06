@@ -24,6 +24,8 @@ export default function Home() {
     maxHeight: 900,
   };
 
+  const [inputBorderPixels, setInputBorderPixels] = useState<string>("0");
+
   const [inputBorderPercent, setInputBorderPercent] = useState<string>("0");
   const [inputBorderColor, setInputBorderColor] = useState<string>("#ffffff");
 
@@ -44,7 +46,11 @@ export default function Home() {
       //smallCanvasRef.current.height = mainCanvasConfig.maxHeight;
       smallCanvasCtxRef.current = smallCanvasRef.current.getContext("2d", {
         willReadFrequently: true,
+        alpha: false,
       });
+      if (smallCanvasCtxRef.current) {
+        smallCanvasCtxRef.current.imageSmoothingEnabled = false;
+      }
     }
   }, [displays]); // quité mainCanvasConfig de las dependencias mientras no se use
 
@@ -162,6 +168,7 @@ export default function Home() {
       (imageData) =>
         imgAddBorder(imageData, {
           BorderPercent: inputBorderPercent,
+          BorderPixels: inputBorderPixels,
           BorderColor: inputBorderColor,
         }),
       true
@@ -173,6 +180,7 @@ export default function Home() {
       (imageData) =>
         imgAddBorder(imageData, {
           BorderPercent: inputBorderPercent,
+          BorderPixels: inputBorderPixels,
           BorderColor: inputBorderColor,
         }),
     ]);
@@ -295,16 +303,16 @@ export default function Home() {
 
     let borderColor = "#ffffff";
 
-    if (options?.BorderPercent) {
-      borderSize = parseInt(options.BorderPercent);
-      borderWidth = (imageData.width * borderSize) / 100;
-      borderHeight = (imageData.height * borderSize) / 100;
-    }
-
     if (options?.BorderPixels) {
       borderSize = parseInt(options.BorderPixels) * 2;
       borderWidth = borderSize;
       borderHeight = borderSize;
+    } else {
+      if (options?.BorderPercent) {
+        borderSize = parseInt(options.BorderPercent);
+        borderWidth = (imageData.width * borderSize) / 100;
+        borderHeight = (imageData.height * borderSize) / 100;
+      }
     }
 
     if (options?.BorderColor) {
@@ -485,14 +493,24 @@ export default function Home() {
           </button>
           <input
             type="range"
-            id="vol"
-            name="vol"
+            id="inputBorderPercent"
+            name="inputBorderPercent"
             min="0"
             max="100"
             value={inputBorderPercent}
             onChange={(e) => setInputBorderPercent(e.target.value)}
           ></input>
           {inputBorderPercent}%
+          <input
+            type="range"
+            id="inputBorderPixels"
+            name="inputBorderPixels"
+            min="0"
+            max="100"
+            value={inputBorderPixels}
+            onChange={(e) => setInputBorderPixels(e.target.value)}
+          ></input>
+          {inputBorderPixels}px
           <input
             type="color"
             list="true"
