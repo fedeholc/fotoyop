@@ -54,10 +54,6 @@ export default function Home() {
       return;
     }
 
-    setDisplays((prev) => {
-      return { ...prev, canvas: true };
-    });
-
     if (file) {
       const reader = new FileReader();
       const originalImage = new window.Image();
@@ -122,6 +118,10 @@ export default function Home() {
 
     const file = (event.target as HTMLFormElement).files[0];
     loadFile(file);
+    //todo: juntar esto de acá con el handleDrop para no repetir código
+    setDisplays((prev) => {
+      return { ...prev, canvas: true, form: false };
+    });
   }
 
   function calcularTamañoImagen(
@@ -286,9 +286,9 @@ export default function Home() {
 
     if (backgroundImageData) {
       for (let i = 0; i < backgroundImageData.data.length; i += 4) {
-        backgroundImageData.data[i] = 128; // red
-        backgroundImageData.data[i + 1] = 128; // green
-        backgroundImageData.data[i + 2] = 128; // blue
+        backgroundImageData.data[i] = 255; // red
+        backgroundImageData.data[i + 1] = 255; // green
+        backgroundImageData.data[i + 2] = 255; // blue
         backgroundImageData.data[i + 3] = 255; // alpha (transparency)
       }
 
@@ -360,11 +360,16 @@ export default function Home() {
 
     if (files.length > 0) {
       loadFile(files[0]);
+      setDisplays((prev) => {
+        return { ...prev, canvas: true, form: false };
+      });
     }
   }
+
   function handleUploadFormClick() {
     inputUploadRef.current?.click();
   }
+
   return (
     <main id="app" className={styles.main}>
       <section id="section__image">
@@ -407,6 +412,7 @@ export default function Home() {
             </label>
           </form>
         )}
+
         <div>
           <div>
             <div>Original image.</div>
@@ -441,7 +447,7 @@ export default function Home() {
           </button>
         </div>
         <details className="toolbar__details">
-          <summary className="toolbar__summary">Procesos realizados</summary>
+          <summary className="toolbar__summary">Borders</summary>
           <button
             type="button"
             id="btnDescargar"
