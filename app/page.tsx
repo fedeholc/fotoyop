@@ -8,6 +8,7 @@ import {
   DisplaySections,
 } from "./types";
 import { imgToBW } from "./imageProcessing";
+import { resolve } from "path";
 
 export default function Home() {
   const [displays, setDisplays] = useState<DisplaySections>({
@@ -45,6 +46,31 @@ export default function Home() {
     }
   }, [displays]);
   //el useEffect depende de displays porque oculta/muestra el canvas
+
+  async function getImageFromFile(file: File) {
+    return new Promise((resolve, reject) => {
+      if (!file) {
+        reject(new Error("No file provided"));
+      }
+      if (!file.type.startsWith("image/")) {
+        reject(new Error(`${file.name} is not an image.`));
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        if (e.target?.result) {
+          resolve(e.target.result as string);
+        } else {
+          reject(new Error("Error al leer el archivo"));
+        }
+      };
+      reader.onerror = function () {
+        reject(new Error("Error al leer el archivo"));
+      };
+
+      reader.readAsDataURL(file);
+    });
+  }
 
   async function loadFile(file: File) {
     if (!file) {
@@ -91,7 +117,8 @@ export default function Home() {
             newHeight
           );
         };
-
+        console.log("reader result:", reader.result);
+        //reader.result tiene la imagen en formato base64
         originalImage.src = reader.result as string;
 
         if (imagenPreviewRef.current) {
@@ -102,13 +129,60 @@ export default function Home() {
   }
   async function handleFormInput(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
+    
     const file = (event.target as HTMLFormElement).files[0];
-    loadFile(file);
-    //todo: juntar esto de acá con el handleDrop para no repetir código
+
     setDisplays((prev) => {
       return { ...prev, canvas: true, form: false };
     });
+
+    let originalImageB64: string;
+
+    try {
+      originalImageB64 = (await getImageFromFile(file as File)) as string;
+    } catch (error) {
+      console.log("Error:", error);
+      return;
+    }
+
+    if (originalImageB64) {
+      setOriginalFile(file);
+
+      const originalImageElement = new window.Image();
+
+      originalImageElement.onload = function () {
+        setOriginalImg(originalImageElement);
+
+        const { newWidth, newHeight } = calcularTamañoImagen(
+          mainCanvasConfig,
+          originalImageElement.width,
+          originalImageElement.height
+        );
+
+        //adapta el tamaño del canvas al de la imagen (ojo, antes adapto el tamaño al max widht/height, de ahí salen los valores de newWidth y newHeight)
+        if (smallCanvasRef.current) {
+          smallCanvasRef.current.width = newWidth;
+          smallCanvasRef.current.height = newHeight;
+        }
+        smallCanvasCtxRef.current?.drawImage(
+          originalImageElement,
+          0,
+          0,
+          newWidth,
+          newHeight
+        );
+      };
+
+      originalImageElement.src = originalImageB64;
+
+      console.log(originalImageB64, originalImageElement, smallCanvasRef);
+
+      if (imagenPreviewRef.current) {
+        imagenPreviewRef.current.src = originalImageB64;
+      }
+      //loadFile(file);
+      //todo: juntar esto de acá con el handleDrop para no repetir código
+    }
   }
 
   function calcularTamañoImagen(
