@@ -160,9 +160,9 @@ export default function Home() {
   }
 
   function handleBorde() {
-    /* Para pasar la función imgAddBorder con el objeto de opciones como segundo parámetro a transformarImagen, puedes usar una función de flecha para crear una nueva función que tome un solo argumento ImageData y llame a imgAddBorder con ese argumento y el objeto de opciones. 
-    En este código, (imageData) => imgAddBorder(imageData, options) crea una nueva función que toma un solo argumento ImageData y llama a imgAddBorder con ese argumento y el objeto de opciones. Esta nueva función se pasa como segundo argumento a transformarImagen.
-    De esta manera, cuando transformarImagen llama a la función que le pasaste, esa función a su vez llama a imgAddBorder con el ImageData y el objeto de opciones.*/
+    /* Para pasar la función imgAddBorder con el objeto de opciones como segundo parámetro a processImage, puedes usar una función de flecha para crear una nueva función que tome un solo argumento ImageData y llame a imgAddBorder con ese argumento y el objeto de opciones. 
+    En este código, (imageData) => imgAddBorder(imageData, options) crea una nueva función que toma un solo argumento ImageData y llama a imgAddBorder con ese argumento y el objeto de opciones. Esta nueva función se pasa como segundo argumento a processImage.
+    De esta manera, cuando processImage llama a la función que le pasaste, esa función a su vez llama a imgAddBorder con el ImageData y el objeto de opciones.*/
     processImage(
       smallCanvasRef,
       (imageData) =>
@@ -173,7 +173,7 @@ export default function Home() {
         }),
       true
     );
-    /* transformarImagen(smallCanvasRef, (imageData) => imgAddBorder(imageData, { }) */
+    /* processImage(smallCanvasRef, (imageData) => imgAddBorder(imageData, { }) */
     //transformarImagen(offScreenCanvasRef, imgAddBorder);
     setProcessList([
       ...processList,
@@ -292,10 +292,10 @@ export default function Home() {
     imageData: ImageData,
     options?: ProcessOptionsType
   ): ImageData {
-    const canvasTemp = document.createElement("canvas") as HTMLCanvasElement;
+    /*   const canvasTemp = document.createElement("canvas") as HTMLCanvasElement;
     const ctxTemp = canvasTemp.getContext("2d", {
       willreadFrequently: true,
-    }) as CanvasRenderingContext2D;
+    }) as CanvasRenderingContext2D; */
 
     let borderSize = 0,
       borderHeight = 0,
@@ -319,6 +319,16 @@ export default function Home() {
       borderColor = options.BorderColor;
     }
 
+    //* agregado
+    const canvasTemp = new OffscreenCanvas(
+      imageData.width + borderWidth,
+      imageData.height + borderHeight
+    );
+    const ctxTemp = canvasTemp.getContext("2d", {
+      willreadFrequently: true,
+    }) as OffscreenCanvasRenderingContext2D;
+    //* ----
+    
     canvasTemp.width = imageData.width + borderWidth;
     canvasTemp.height = imageData.height + borderHeight;
 
