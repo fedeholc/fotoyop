@@ -151,8 +151,6 @@ export default function Home() {
       const originalImageElement = new window.Image();
 
       originalImageElement.onload = function () {
-        setOriginalImg(originalImageElement);
-
         const { newWidth, newHeight } = calcularTamañoImagen(
           mainCanvasConfig,
           originalImageElement.width,
@@ -174,8 +172,9 @@ export default function Home() {
       };
 
       originalImageElement.src = originalImageB64;
+      setOriginalImg(originalImageElement);
 
-      console.log(originalImageB64, originalImageElement, smallCanvasRef);
+      //console.log(originalImageB64, originalImageElement, smallCanvasRef);
 
       if (imagenPreviewRef.current) {
         imagenPreviewRef.current.src = originalImageB64;
