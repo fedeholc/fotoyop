@@ -1,12 +1,12 @@
 "use client";
 import styles from "./page.module.css";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
-import { CanvasConfig, ProcessOptionsType, ProcessFunction } from "./types";
-
-type DisplaySections = {
-  form: boolean;
-  canvas: boolean;
-};
+import {
+  CanvasConfig,
+  ProcessOptionsType,
+  ProcessFunction,
+  DisplaySections,
+} from "./types";
 
 export default function Home() {
   /*   const [mainCanvasConfig, setMainCanvasConfig] = useState<CanvasConfig>({
@@ -25,7 +25,6 @@ export default function Home() {
   };
 
   const [inputBorderPixels, setInputBorderPixels] = useState<string>("0");
-
   const [inputBorderPercent, setInputBorderPercent] = useState<string>("0");
   const [inputBorderColor, setInputBorderColor] = useState<string>("#ffffff");
 
@@ -37,13 +36,13 @@ export default function Home() {
   const smallCanvasCtxRef = useRef<CanvasRenderingContext2D | null>(null);
   const imagenPreviewRef = useRef<HTMLImageElement | null>(null);
   const smallCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const offScreenCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const bigOffsCanvasRef = useRef<OffscreenCanvas>(new OffscreenCanvas(0, 0));
+  const bigOffsCanvas = bigOffsCanvasRef.current;
 
   useEffect(() => {
     setOriginalImg(new window.Image() as HTMLImageElement);
     if (smallCanvasRef.current) {
-      //smallCanvasRef.current.width = mainCanvasConfig.maxWidth;
-      //smallCanvasRef.current.height = mainCanvasConfig.maxHeight;
       smallCanvasCtxRef.current = smallCanvasRef.current.getContext("2d", {
         willReadFrequently: true,
       });
@@ -51,7 +50,7 @@ export default function Home() {
         smallCanvasCtxRef.current.imageSmoothingEnabled = false;
       }
     }
-  }, [displays]); // quité mainCanvasConfig de las dependencias mientras no se use
+  }, [displays]);
 
   async function loadFile(file: File) {
     if (!file) {
@@ -96,10 +95,10 @@ export default function Home() {
             newHeight
           );
 
-          if (offScreenCanvasRef.current) {
-            offScreenCanvasRef.current.width = originalImage.width;
-            offScreenCanvasRef.current.height = originalImage.height;
-            offScreenCanvasRef.current
+          if (bigOffsCanvas) {
+            bigOffsCanvas.width = originalImage.width;
+            bigOffsCanvas.height = originalImage.height;
+            bigOffsCanvas
               ?.getContext("2d", {
                 willReadFrequently: true,
               })
@@ -153,8 +152,8 @@ export default function Home() {
   }
 
   function handleToBN() {
-    processImage(smallCanvasRef, imgToBN);
-    //transformarImagen(offScreenCanvasRef, imgToBN);
+    processImage(smallCanvasRef.current, imgToBN);
+
     setProcessList([...processList, imgToBN]);
   }
 
@@ -162,15 +161,14 @@ export default function Home() {
     /* Para pasar la función imgAddBorder con el objeto de opciones como segundo parámetro a processImage, puedes usar una función de flecha para crear una nueva función que tome un solo argumento ImageData y llame a imgAddBorder con ese argumento y el objeto de opciones. 
     En este código, (imageData) => imgAddBorder(imageData, options) crea una nueva función que toma un solo argumento ImageData y llama a imgAddBorder con ese argumento y el objeto de opciones. Esta nueva función se pasa como segundo argumento a processImage.
     De esta manera, cuando processImage llama a la función que le pasaste, esa función a su vez llama a imgAddBorder con el ImageData y el objeto de opciones.*/
-    processImage(smallCanvasRef, (imageData) =>
+    processImage(smallCanvasRef.current, (imageData) =>
       imgAddBorder(imageData, {
         BorderPercent: inputBorderPercent,
         BorderPixels: inputBorderPixels,
         BorderColor: inputBorderColor,
       })
     );
-    /* processImage(smallCanvasRef, (imageData) => imgAddBorder(imageData, { }) */
-    //transformarImagen(offScreenCanvasRef, imgAddBorder);
+
     setProcessList([
       ...processList,
       (imageData) =>
@@ -189,25 +187,25 @@ export default function Home() {
    * @param keepMaxSize - si es true, mantiene el tamaño máximo del canvas (el ancho o la altura según cuál sea mayor), si es false, lo ajusta al tamaño de la imagen transformada. Es relevante para funciones de transformación que modifican el tamaño de la imágen, como puede ser agregar un borde.
    */
   function processImage(
-    canvasRef: MutableRefObject<HTMLCanvasElement | null>,
+    canvas: OffscreenCanvas | HTMLCanvasElement | null,
     processFunction: ProcessFunction
   ) {
-    const ctx = canvasRef.current?.getContext("2d", {
+    const ctx = canvas?.getContext("2d", {
       willReadFrequently: true,
-    });
+    }) as CanvasRenderingContext2D;
 
     const imageData = ctx?.getImageData(
       0,
       0,
-      canvasRef.current?.width || 0,
-      canvasRef.current?.height || 0
-    );
+      canvas?.width || 0,
+      canvas?.height || 0
+    ) as ImageData;
 
     const newData = processFunction(imageData as ImageData);
 
-    if (canvasRef.current) {
-      canvasRef.current.width = newData.width;
-      canvasRef.current.height = newData.height;
+    if (canvas) {
+      canvas.width = newData.width;
+      canvas.height = newData.height;
       ctx?.createImageData(newData.width, newData.height);
       ctx?.putImageData(newData, 0, 0);
     }
@@ -235,72 +233,6 @@ export default function Home() {
   //todo: poner tamaño y color de borde como parámetros
   //! ojo que si el parámetro del borde es en pixels no es lo mismo 100px para la imagen pequeña que para la imagen final.
   //
-  function imgAddBorder2(
-    imageData: ImageData,
-    options?: ProcessOptionsType
-  ): ImageData {
-    let borderSize = 0,
-      borderHeight = 0,
-      borderWidth = 0;
-
-    let borderColor = "#ffffff";
-
-    if (options?.BorderPixels && parseInt(options?.BorderPixels) > 0) {
-      borderSize = parseInt(options.BorderPixels) * 2;
-      borderWidth = borderSize;
-      borderHeight = borderSize;
-    } else {
-      if (options?.BorderPercent) {
-        borderSize = parseInt(options.BorderPercent);
-        borderWidth = (imageData.width * borderSize) / 100;
-        borderHeight = (imageData.height * borderSize) / 100;
-      }
-    }
-
-    if (options?.BorderColor) {
-      borderColor = options.BorderColor;
-    }
-
-    const canvasTemp = new OffscreenCanvas(
-      imageData.width + borderWidth,
-      imageData.height + borderHeight
-    );
-    const ctxTemp = canvasTemp.getContext("2d", {
-      willreadFrequently: true,
-    }) as OffscreenCanvasRenderingContext2D;
-
-    canvasTemp.width = imageData.width + borderWidth;
-    canvasTemp.height = imageData.height + borderHeight;
-
-    const backgroundImageData = ctxTemp?.createImageData(
-      imageData.width + borderWidth || 0,
-      imageData.height + borderHeight || 0
-    );
-
-    const { red, green, blue } = hexToRgb(borderColor);
-
-    if (backgroundImageData) {
-      for (let i = 0; i < backgroundImageData.data.length; i += 4) {
-        backgroundImageData.data[i] = red; // red
-        backgroundImageData.data[i + 1] = green; // green
-        backgroundImageData.data[i + 2] = blue; // blue
-        backgroundImageData.data[i + 3] = 255; // alpha (transparency)
-      }
-
-      ctxTemp?.putImageData(backgroundImageData, 0, 0);
-      ctxTemp?.putImageData(imageData, borderWidth / 2, borderHeight / 2);
-    }
-
-    const resultImageData = ctxTemp?.getImageData(
-      0,
-      0,
-      imageData.width + borderWidth,
-      imageData.height + borderHeight
-    ) as ImageData;
-
-    return resultImageData;
-  }
-
   function imgAddBorder(
     imageData: ImageData,
     options?: ProcessOptionsType
@@ -374,16 +306,55 @@ export default function Home() {
     return imageDataCopy as ImageData;
   }
 
-  function handleDownload() {
+  function processForDownload(
+    canvas: OffscreenCanvas | HTMLCanvasElement | null
+  ) {
+    const ctx = canvas?.getContext("2d", {
+      willReadFrequently: true,
+    }) as CanvasRenderingContext2D;
+
+    const imageData = ctx?.getImageData(
+      0,
+      0,
+      canvas?.width || 0,
+      canvas?.height || 0
+    ) as ImageData;
+
+    let newData = imageData as ImageData;
     processList.forEach((transform) => {
-      processImage(offScreenCanvasRef, transform);
+      newData = transform(newData as ImageData);
     });
 
-    const dataURL = offScreenCanvasRef.current?.toDataURL("image/jpeg", 1); // Especifica el formato JPEG
+    if (canvas) {
+      canvas.width = newData.width;
+      canvas.height = newData.height;
+      ctx?.createImageData(newData.width, newData.height);
+      ctx?.putImageData(newData, 0, 0);
+    }
+  }
+  function handleDownload() {
+    processForDownload(bigOffsCanvas);
+
+    let canvas = document.createElement("canvas");
+    if (bigOffsCanvas) {
+      canvas.width = bigOffsCanvas?.width;
+      canvas.height = bigOffsCanvas?.height;
+    }
+    let ctx = canvas.getContext("2d");
+
+    let bigImageData = bigOffsCanvas
+      ?.getContext("2d")
+      ?.getImageData(0, 0, bigOffsCanvas?.width, bigOffsCanvas?.height);
+
+    if (ctx && bigImageData) {
+      ctx.createImageData(bigImageData.width, bigImageData.height);
+      ctx.putImageData(bigImageData, 0, 0);
+    }
+    let dataURL = canvas.toDataURL("image/jpeg", 1);
 
     const enlaceDescarga = document.createElement("a");
     enlaceDescarga.href = dataURL || "";
-    enlaceDescarga.download = "mi_dibujo.jpg"; // Extensión del archivo
+    enlaceDescarga.download = "mi_dibujo.jpg";
 
     document.body.appendChild(enlaceDescarga);
     enlaceDescarga.click();
@@ -530,7 +501,7 @@ export default function Home() {
             <option>#00ffff</option>
           </datalist> */}
         </details>
-        <canvas id="canvas2" hidden ref={offScreenCanvasRef}></canvas>
+        {/*<canvas id="canvas2" hidden ref={offScreenCanvasRef}></canvas>*/}
       </section>
     </main>
   );

@@ -27,3 +27,9 @@ export type ProcessFunction = (
   inputImageData: ImageData,
   options?: ProcessOptionsType
 ) => ImageData;
+
+
+export type DisplaySections = {
+  form: boolean;
+  canvas: boolean;
+};
