@@ -37,13 +37,7 @@ export default function Home() {
   const imagenPreviewRef = useRef<HTMLImageElement | null>(null);
   const smallCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  let bigOffsCanvasRef = useRef<OffscreenCanvas>();
-  let bigOffsCanvas = bigOffsCanvasRef.current;
-
   useEffect(() => {
-    bigOffsCanvasRef.current = new window.OffscreenCanvas(1, 1);
-    bigOffsCanvas = bigOffsCanvasRef.current;
-
     setOriginalImg(new window.Image() as HTMLImageElement);
     if (smallCanvasRef.current) {
       smallCanvasCtxRef.current = smallCanvasRef.current.getContext("2d", {
@@ -97,25 +91,6 @@ export default function Home() {
             newWidth,
             newHeight
           );
-
-          if (bigOffsCanvas) {
-            console.log("bbb", bigOffsCanvas);
-            bigOffsCanvas.width = originalImage.width;
-            bigOffsCanvas.height = originalImage.height;
-            bigOffsCanvas
-              ?.getContext("2d", {
-                willReadFrequently: true,
-              })
-              ?.drawImage(
-                originalImage,
-                0,
-                0,
-                originalImage.width,
-                originalImage.height
-              );
-
-            console.log("bbb2", bigOffsCanvas);
-          }
         };
 
         originalImage.src = reader.result as string;
@@ -315,8 +290,6 @@ export default function Home() {
   function processForDownload(
     canvas: OffscreenCanvas | HTMLCanvasElement | null
   ) {
-    
-
     const ctx = canvas?.getContext("2d", {
       willReadFrequently: true,
     }) as CanvasRenderingContext2D;
@@ -341,12 +314,7 @@ export default function Home() {
     }
   }
   function handleDownload() {
-    console.log(bigOffsCanvas);
-    if (!bigOffsCanvas) {
-      return;
-    }
-    console.log(bigOffsCanvas);
-
+    //offcanvas con la imagen original grande
     let newCanvas = new OffscreenCanvas(
       originalImg?.width || 0,
       originalImg?.height || 0
@@ -361,6 +329,7 @@ export default function Home() {
     );
     processForDownload(newCanvas);
 
+    //canvas comun para poner la imagen a exportar
     let canvas = document.createElement("canvas");
     if (newCanvas) {
       canvas.width = newCanvas?.width;
