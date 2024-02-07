@@ -97,8 +97,9 @@ export default function Home() {
         originalImage.onload = function () {
           setOriginalImg(originalImage);
 
-          const { newWidth, newHeight } = calcularTamañoImagen(
-            mainCanvasConfig,
+          const { width, height } = getAdaptedSize(
+            mainCanvasConfig.maxWidth,
+            mainCanvasConfig.maxHeight,
             originalImage.width,
             originalImage.height
           );
@@ -106,15 +107,15 @@ export default function Home() {
 
           //adapta el tamaño del canvas al de la imagen (ojo, antes adapto el tamaño al max widht/height, de ahí salen los valores de newWidth y newHeight)
           if (smallCanvasRef.current) {
-            smallCanvasRef.current.width = newWidth;
-            smallCanvasRef.current.height = newHeight;
+            smallCanvasRef.current.width = width;
+            smallCanvasRef.current.height = height;
           }
           smallCanvasCtxRef.current?.drawImage(
             originalImage,
             0,
             0,
-            newWidth,
-            newHeight
+            width,
+            height
           );
         };
         console.log("reader result:", reader.result);
@@ -127,6 +128,32 @@ export default function Home() {
       }
     }
   }
+
+  function drawImageB64OnCanvas(
+    imageB64: string,
+    canvas: HTMLCanvasElement,
+    canvasMaxWidth: number,
+    canvasMaxHeight: number
+  ) {
+    const imgElement = new window.Image();
+    imgElement.src = imageB64;
+    imgElement.onload = function () {
+      const aspectRatio = imgElement.width / imgElement.height;
+
+      if (aspectRatio > 1) {
+        canvas.width = canvasMaxWidth;
+        canvas.height = canvasMaxWidth / aspectRatio;
+      } else {
+        canvas.height = canvasMaxHeight;
+        canvas.width = canvasMaxHeight * aspectRatio;
+      }
+
+      canvas
+        .getContext("2d")
+        ?.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
+    };
+  }
+
   async function handleFormInput(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -148,60 +175,52 @@ export default function Home() {
     if (originalImageB64) {
       setOriginalFile(file);
 
-      const originalImageElement = new window.Image();
+      const newImageElement = new window.Image();
+      newImageElement.src = originalImageB64;
+      setOriginalImg(newImageElement);
 
-      originalImageElement.onload = function () {
-        const { newWidth, newHeight } = calcularTamañoImagen(
-          mainCanvasConfig,
-          originalImageElement.width,
-          originalImageElement.height
-        );
-
-        //adapta el tamaño del canvas al de la imagen (ojo, antes adapto el tamaño al max widht/height, de ahí salen los valores de newWidth y newHeight)
-        if (smallCanvasRef.current) {
-          smallCanvasRef.current.width = newWidth;
-          smallCanvasRef.current.height = newHeight;
-        }
-        smallCanvasCtxRef.current?.drawImage(
-          originalImageElement,
-          0,
-          0,
-          newWidth,
-          newHeight
-        );
-      };
-
-      originalImageElement.src = originalImageB64;
-      setOriginalImg(originalImageElement);
-
-      //console.log(originalImageB64, originalImageElement, smallCanvasRef);
+      drawImageB64OnCanvas(
+        originalImageB64,
+        smallCanvasRef.current as HTMLCanvasElement,
+        mainCanvasConfig.maxWidth,
+        mainCanvasConfig.maxHeight
+      );
 
       if (imagenPreviewRef.current) {
         imagenPreviewRef.current.src = originalImageB64;
       }
-      //loadFile(file);
+
       //todo: juntar esto de acá con el handleDrop para no repetir código
     }
   }
 
-  function calcularTamañoImagen(
-    canvasData: CanvasConfig,
+  /**
+   * Función que calcula el alto y ancho que debe tener un canvas para adaptarse a una imagen, teniendo en cuenta el tamaño máximo que puede tener el canvas y si la imagen es horizontal o vertical.
+   * @param canvasMaxWidth
+   * @param canvasMaxHeight
+   * @param imageWidth
+   * @param imageHeight
+   * @returns
+   */
+  function getAdaptedSize(
+    canvasMaxWidth: number,
+    canvasMaxHeight: number,
     imageWidth: number,
     imageHeight: number
-  ): { newWidth: number; newHeight: number } {
+  ): { width: number; height: number } {
     const aspectRatio = imageWidth / imageHeight;
-    let newWidth = 0,
-      newHeight = 0;
+    let width = 0,
+      height = 0;
 
     //horizontal
     if (aspectRatio > 1) {
-      newWidth = canvasData.maxWidth;
-      newHeight = canvasData.maxWidth / aspectRatio;
+      width = canvasMaxWidth;
+      height = canvasMaxWidth / aspectRatio;
     } else {
-      newHeight = canvasData.maxHeight;
-      newWidth = canvasData.maxHeight * aspectRatio;
+      height = canvasMaxHeight;
+      width = canvasMaxHeight * aspectRatio;
     }
-    return { newWidth, newHeight };
+    return { width, height };
   }
 
   function handleToBN() {
