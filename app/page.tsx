@@ -129,7 +129,7 @@ export default function Home() {
   }
   async function handleFormInput(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    
+
     const file = (event.target as HTMLFormElement).files[0];
 
     setDisplays((prev) => {
