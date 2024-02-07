@@ -245,7 +245,7 @@ export default function Home() {
       imageData.height + borderHeight
     );
     const ctxTemp = canvasTemp.getContext("2d", {
-      willreadFrequently: true,
+      willReadFrequently: true,
     }) as OffscreenCanvasRenderingContext2D;
 
     canvasTemp.width = imageData.width + borderWidth;
@@ -319,7 +319,9 @@ export default function Home() {
       originalImg?.width || 0,
       originalImg?.height || 0
     );
-    let newCtx = newCanvas.getContext("2d");
+    let newCtx = newCanvas.getContext("2d", {
+      willReadFrequently: true,
+    });
     newCtx?.drawImage(
       originalImg as HTMLImageElement,
       0,
@@ -335,10 +337,14 @@ export default function Home() {
       canvas.width = newCanvas?.width;
       canvas.height = newCanvas?.height;
     }
-    let ctx = canvas.getContext("2d");
+    let ctx = canvas.getContext("2d", {
+      willReadFrequently: true,
+    });
 
     let bigImageData = newCanvas
-      ?.getContext("2d")
+      ?.getContext("2d", {
+        willReadFrequently: true,
+      })
       ?.getImageData(0, 0, newCanvas?.width, newCanvas?.height);
 
     if (ctx && bigImageData) {
