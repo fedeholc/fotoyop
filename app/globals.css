@@ -120,9 +120,11 @@
    height: 80vh;
  }
 
- .drop-container:hover {
+ .drop-container:hover,
+ .drop-container-dragover {
    border: 2px dashed white;
  }
+
 
  .drop-container:hover .drop-title {
    color: black;
@@ -138,9 +140,14 @@
 
  }
 
- .drop-container:hover .drop-title {
+ .drop-container:hover .drop-title,
+ .drop-title-dragover {
    background-color: deeppink;
  }
+
+ /*  .drop-title-dragover {
+   background-color: deeppink;
+ } */
 
 
 

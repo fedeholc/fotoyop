@@ -307,6 +307,25 @@ export default function Home() {
   function handleUploadFormClick() {
     inputUploadRef.current?.click();
   }
+  function handleDragOver(event: React.DragEvent<HTMLLabelElement>) {
+    event.preventDefault();
+    let dropTitles = document.querySelectorAll(".drop-title");
+    dropTitles.forEach((title) => {
+      title.classList.add("drop-title-dragover");
+    });
+
+    let dropContainer = document.querySelector(".drop-container");
+    dropContainer?.classList.add("drop-container-dragover");
+  }
+
+  function handleDragLeave(event: React.DragEvent<HTMLLabelElement>) {
+    let dropTitles = document.querySelectorAll(".drop-title");
+    dropTitles.forEach((title) => {
+      title.classList.remove("drop-title-dragover");
+    });
+    let dropContainer = document.querySelector(".drop-container");
+    dropContainer?.classList.remove("drop-container-dragover");
+  }
 
   return (
     <main id="app" className={styles.main}>
@@ -328,7 +347,8 @@ export default function Home() {
               className="drop-container"
               id="dropcontainer"
               onDrop={handleDrop}
-              onDragOver={(event) => event.preventDefault()}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
             >
               <div className="drop-title-group">
                 <span className="drop-title">Drop files here</span>
