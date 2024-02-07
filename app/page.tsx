@@ -1,19 +1,15 @@
 "use client";
 import styles from "./page.module.css";
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CanvasConfig,
   ProcessOptionsType,
   ProcessFunction,
   DisplaySections,
 } from "./types";
+import { imgToBW } from "./imageProcessing";
 
 export default function Home() {
-  /*   const [mainCanvasConfig, setMainCanvasConfig] = useState<CanvasConfig>({
-    maxWidth: 0,
-    maxHeight: 0,
-  }); */
-
   const [displays, setDisplays] = useState<DisplaySections>({
     canvas: false,
     form: true,
@@ -48,6 +44,7 @@ export default function Home() {
       }
     }
   }, [displays]);
+  //el useEffect depende de displays porque oculta/muestra el canvas
 
   async function loadFile(file: File) {
     if (!file) {
@@ -82,8 +79,10 @@ export default function Home() {
           //todo: al hacer un resize de la ventana me cambia el tamaño del canvas? si es así tiene sentido? el max del config tiene que ser el max al que voy a mostrar el canvas?
 
           //adapta el tamaño del canvas al de la imagen (ojo, antes adapto el tamaño al max widht/height, de ahí salen los valores de newWidth y newHeight)
-          smallCanvasRef.current!.width = newWidth;
-          smallCanvasRef.current!.height = newHeight;
+          if (smallCanvasRef.current) {
+            smallCanvasRef.current.width = newWidth;
+            smallCanvasRef.current.height = newHeight;
+          }
           smallCanvasCtxRef.current?.drawImage(
             originalImage,
             0,
@@ -133,9 +132,9 @@ export default function Home() {
   }
 
   function handleToBN() {
-    processImage(smallCanvasRef.current, imgToBN);
+    processImage(smallCanvasRef.current, imgToBW);
 
-    setProcessList([...processList, imgToBN]);
+    setProcessList([...processList, imgToBW]);
   }
 
   function handleBorde() {
@@ -190,23 +189,6 @@ export default function Home() {
       ctx?.createImageData(newData.width, newData.height);
       ctx?.putImageData(newData, 0, 0);
     }
-  }
-
-  function hexToRgb(hexColor: string): {
-    red: number;
-    green: number;
-    blue: number;
-  } {
-    // Elimina el "#" si está presente
-    let color =
-      hexColor.charAt(0) === "#" ? hexColor.substring(1, 7) : hexColor;
-
-    // Convierte el color hexadecimal a RGB
-    let red = parseInt(color.substring(0, 2), 16);
-    let green = parseInt(color.substring(2, 4), 16);
-    let blue = parseInt(color.substring(4, 6), 16);
-
-    return { red, green, blue };
   }
 
   //
@@ -264,27 +246,6 @@ export default function Home() {
     ) as ImageData;
 
     return resultImageData;
-  }
-
-  function imgToBN(imageData: ImageData): ImageData {
-    let imageDataCopy: ImageData | null = null;
-    if (imageData) {
-      imageDataCopy = new ImageData(
-        new Uint8ClampedArray(imageData.data),
-        imageData.width,
-        imageData.height
-      );
-    }
-    if (imageDataCopy) {
-      const data = imageDataCopy.data;
-      for (let i = 0; i < data.length; i += 4) {
-        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-        data[i] = avg; // red
-        data[i + 1] = avg; // green
-        data[i + 2] = avg; // blue
-      }
-    }
-    return imageDataCopy as ImageData;
   }
 
   function processForDownload(
@@ -377,12 +338,10 @@ export default function Home() {
       }
     }
 
-    if (files.length > 0) {
-      loadFile(files[0]);
-      setDisplays((prev) => {
-        return { ...prev, canvas: true, form: false };
-      });
-    }
+    loadFile(files[0]);
+    setDisplays((prev) => {
+      return { ...prev, canvas: true, form: false };
+    });
   }
 
   function handleUploadFormClick() {
