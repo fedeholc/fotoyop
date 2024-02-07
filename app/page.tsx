@@ -7,8 +7,11 @@ import {
   ProcessFunction,
   DisplaySections,
 } from "./types";
-import { imgToBW } from "./imageProcessing";
-import { resolve } from "path";
+import {
+  imgToBW,
+  getImageFromFile,
+  drawImageB64OnCanvas,
+} from "./imageProcessing";
 
 export default function Home() {
   const [displays, setDisplays] = useState<DisplaySections>({
@@ -47,118 +50,7 @@ export default function Home() {
   }, [displays]);
   //el useEffect depende de displays porque oculta/muestra el canvas
 
-  async function getImageFromFile(file: File) {
-    return new Promise((resolve, reject) => {
-      if (!file) {
-        reject(new Error("No file provided"));
-      }
-      if (!file.type.startsWith("image/")) {
-        reject(new Error(`${file.name} is not an image.`));
-      }
-
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        if (e.target?.result) {
-          resolve(e.target.result as string);
-        } else {
-          reject(new Error("Error al leer el archivo"));
-        }
-      };
-      reader.onerror = function () {
-        reject(new Error("Error al leer el archivo"));
-      };
-
-      reader.readAsDataURL(file);
-    });
-  }
-
-  async function loadFile(file: File) {
-    if (!file) {
-      return;
-    }
-    if (!file.type.startsWith("image/")) {
-      alert(file.name + " is not an image.");
-      return;
-    }
-
-    if (file) {
-      const reader = new FileReader();
-      const originalImage = new window.Image();
-
-      const loadEventPromise = new Promise<Event>((resolve) => {
-        reader.onload = resolve;
-      });
-
-      reader.readAsDataURL(file);
-      await loadEventPromise;
-      setOriginalFile(file);
-
-      if (reader.result) {
-        originalImage.onload = function () {
-          setOriginalImg(originalImage);
-
-          const { width, height } = getAdaptedSize(
-            mainCanvasConfig.maxWidth,
-            mainCanvasConfig.maxHeight,
-            originalImage.width,
-            originalImage.height
-          );
-          //todo: al hacer un resize de la ventana me cambia el tamaño del canvas? si es así tiene sentido? el max del config tiene que ser el max al que voy a mostrar el canvas?
-
-          //adapta el tamaño del canvas al de la imagen (ojo, antes adapto el tamaño al max widht/height, de ahí salen los valores de newWidth y newHeight)
-          if (smallCanvasRef.current) {
-            smallCanvasRef.current.width = width;
-            smallCanvasRef.current.height = height;
-          }
-          smallCanvasCtxRef.current?.drawImage(
-            originalImage,
-            0,
-            0,
-            width,
-            height
-          );
-        };
-        console.log("reader result:", reader.result);
-        //reader.result tiene la imagen en formato base64
-        originalImage.src = reader.result as string;
-
-        if (imagenPreviewRef.current) {
-          imagenPreviewRef.current.src = reader.result as string;
-        }
-      }
-    }
-  }
-
-  function drawImageB64OnCanvas(
-    imageB64: string,
-    canvas: HTMLCanvasElement,
-    canvasMaxWidth: number,
-    canvasMaxHeight: number
-  ) {
-    const imgElement = new window.Image();
-    imgElement.src = imageB64;
-    imgElement.onload = function () {
-      const aspectRatio = imgElement.width / imgElement.height;
-
-      if (aspectRatio > 1) {
-        canvas.width = canvasMaxWidth;
-        canvas.height = canvasMaxWidth / aspectRatio;
-      } else {
-        canvas.height = canvasMaxHeight;
-        canvas.width = canvasMaxHeight * aspectRatio;
-      }
-
-      canvas
-        .getContext("2d")
-        ?.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
-    };
-  }
-
-  async function handleFormInput(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const file = (event.target as HTMLFormElement).files[0];
-
+  async function loadFileProcedure(file: File) {
     setDisplays((prev) => {
       return { ...prev, canvas: true, form: false };
     });
@@ -189,38 +81,17 @@ export default function Home() {
       if (imagenPreviewRef.current) {
         imagenPreviewRef.current.src = originalImageB64;
       }
-
-      //todo: juntar esto de acá con el handleDrop para no repetir código
     }
   }
 
-  /**
-   * Función que calcula el alto y ancho que debe tener un canvas para adaptarse a una imagen, teniendo en cuenta el tamaño máximo que puede tener el canvas y si la imagen es horizontal o vertical.
-   * @param canvasMaxWidth
-   * @param canvasMaxHeight
-   * @param imageWidth
-   * @param imageHeight
-   * @returns
-   */
-  function getAdaptedSize(
-    canvasMaxWidth: number,
-    canvasMaxHeight: number,
-    imageWidth: number,
-    imageHeight: number
-  ): { width: number; height: number } {
-    const aspectRatio = imageWidth / imageHeight;
-    let width = 0,
-      height = 0;
+  async function handleUploadFormInput(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+    const file = (event.target as HTMLFormElement).files[0];
+    loadFileProcedure(file as File);
 
-    //horizontal
-    if (aspectRatio > 1) {
-      width = canvasMaxWidth;
-      height = canvasMaxWidth / aspectRatio;
-    } else {
-      height = canvasMaxHeight;
-      width = canvasMaxHeight * aspectRatio;
-    }
-    return { width, height };
+    //todo: juntar esto de acá con el handleDrop para no repetir código
   }
 
   function handleToBN() {
@@ -430,10 +301,7 @@ export default function Home() {
       }
     }
 
-    loadFile(files[0]);
-    setDisplays((prev) => {
-      return { ...prev, canvas: true, form: false };
-    });
+    loadFileProcedure(files[0]);
   }
 
   function handleUploadFormClick() {
@@ -452,7 +320,7 @@ export default function Home() {
         {displays.form && (
           <form
             onClick={handleUploadFormClick}
-            onInput={handleFormInput}
+            onInput={handleUploadFormInput}
             id="form-upload"
           >
             <label
