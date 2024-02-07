@@ -37,10 +37,13 @@ export default function Home() {
   const imagenPreviewRef = useRef<HTMLImageElement | null>(null);
   const smallCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  const bigOffsCanvasRef = useRef<OffscreenCanvas>(new OffscreenCanvas(0, 0));
-  const bigOffsCanvas = bigOffsCanvasRef.current;
+  let bigOffsCanvasRef = useRef<OffscreenCanvas>();
+  let bigOffsCanvas = bigOffsCanvasRef.current;
 
   useEffect(() => {
+    bigOffsCanvasRef.current = new window.OffscreenCanvas(1, 1);
+    bigOffsCanvas = bigOffsCanvasRef.current;
+
     setOriginalImg(new window.Image() as HTMLImageElement);
     if (smallCanvasRef.current) {
       smallCanvasCtxRef.current = smallCanvasRef.current.getContext("2d", {
@@ -96,6 +99,7 @@ export default function Home() {
           );
 
           if (bigOffsCanvas) {
+            console.log("bbb", bigOffsCanvas);
             bigOffsCanvas.width = originalImage.width;
             bigOffsCanvas.height = originalImage.height;
             bigOffsCanvas
@@ -109,6 +113,8 @@ export default function Home() {
                 originalImage.width,
                 originalImage.height
               );
+
+            console.log("bbb2", bigOffsCanvas);
           }
         };
 
@@ -309,6 +315,8 @@ export default function Home() {
   function processForDownload(
     canvas: OffscreenCanvas | HTMLCanvasElement | null
   ) {
+    
+
     const ctx = canvas?.getContext("2d", {
       willReadFrequently: true,
     }) as CanvasRenderingContext2D;
@@ -333,18 +341,36 @@ export default function Home() {
     }
   }
   function handleDownload() {
-    processForDownload(bigOffsCanvas);
+    console.log(bigOffsCanvas);
+    if (!bigOffsCanvas) {
+      return;
+    }
+    console.log(bigOffsCanvas);
+
+    let newCanvas = new OffscreenCanvas(
+      originalImg?.width || 0,
+      originalImg?.height || 0
+    );
+    let newCtx = newCanvas.getContext("2d");
+    newCtx?.drawImage(
+      originalImg as HTMLImageElement,
+      0,
+      0,
+      originalImg?.width || 0,
+      originalImg?.height || 0
+    );
+    processForDownload(newCanvas);
 
     let canvas = document.createElement("canvas");
-    if (bigOffsCanvas) {
-      canvas.width = bigOffsCanvas?.width;
-      canvas.height = bigOffsCanvas?.height;
+    if (newCanvas) {
+      canvas.width = newCanvas?.width;
+      canvas.height = newCanvas?.height;
     }
     let ctx = canvas.getContext("2d");
 
-    let bigImageData = bigOffsCanvas
+    let bigImageData = newCanvas
       ?.getContext("2d")
-      ?.getImageData(0, 0, bigOffsCanvas?.width, bigOffsCanvas?.height);
+      ?.getImageData(0, 0, newCanvas?.width, newCanvas?.height);
 
     if (ctx && bigImageData) {
       ctx.createImageData(bigImageData.width, bigImageData.height);
