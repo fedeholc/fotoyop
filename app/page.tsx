@@ -211,30 +211,30 @@ export default function Home() {
     return resultImageData;
   }
 
-  function processForDownload(
-    canvas: OffscreenCanvas | HTMLCanvasElement | null
+  function ApplyProcessListToCanvas(
+    canvas: OffscreenCanvas | HTMLCanvasElement | null,
+    processList: ProcessFunction[]
   ) {
     const ctx = canvas?.getContext("2d", {
       willReadFrequently: true,
     }) as CanvasRenderingContext2D;
 
-    const imageData = ctx?.getImageData(
+    let imageData = ctx?.getImageData(
       0,
       0,
       canvas?.width || 0,
       canvas?.height || 0
     ) as ImageData;
 
-    let newData = imageData as ImageData;
-    processList.forEach((transform) => {
-      newData = transform(newData as ImageData);
+    processList.forEach((processFunction) => {
+      imageData = processFunction(imageData);
     });
 
     if (canvas) {
-      canvas.width = newData.width;
-      canvas.height = newData.height;
-      ctx?.createImageData(newData.width, newData.height);
-      ctx?.putImageData(newData, 0, 0);
+      canvas.width = imageData.width;
+      canvas.height = imageData.height;
+      ctx?.createImageData(imageData.width, imageData.height);
+      ctx?.putImageData(imageData, 0, 0);
     }
   }
   function handleDownload() {
@@ -253,7 +253,7 @@ export default function Home() {
       originalImg?.width || 0,
       originalImg?.height || 0
     );
-    processForDownload(newCanvas);
+    ApplyProcessListToCanvas(newCanvas, processList);
 
     //canvas comun para poner la imagen a exportar
     let canvas = document.createElement("canvas");
