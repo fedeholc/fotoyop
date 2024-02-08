@@ -1,16 +1,14 @@
 "use client";
 import styles from "./page.module.css";
 import { useEffect, useRef, useState } from "react";
-import {
-  CanvasConfig,
-  ProcessOptionsType,
-  ProcessFunction,
-  DisplaySections,
-} from "./types";
+import { CanvasConfig, ProcessFunction, DisplaySections } from "./types";
 import {
   imgToBW,
+  imgAddBorder,
   getImageFromFile,
   drawImageB64OnCanvas,
+  applyProcessList,
+  applyProcessFunction,
 } from "./imageProcessing";
 
 export default function Home() {
@@ -50,6 +48,11 @@ export default function Home() {
   }, [displays]);
   //el useEffect depende de displays porque oculta/muestra el canvas
 
+  /**
+   * Pasos a seguir cuando se carga un archivo de imagen.
+   * @param file - archivo de imagen
+   * @returns
+   */
   async function loadFileProcedure(file: File) {
     setDisplays((prev) => {
       return { ...prev, canvas: true, form: false };
@@ -90,13 +93,10 @@ export default function Home() {
     event.preventDefault();
     const file = (event.target as HTMLFormElement).files[0];
     loadFileProcedure(file as File);
-
-    //todo: juntar esto de acá con el handleDrop para no repetir código
   }
 
   function handleToBN() {
-    processImage(smallCanvasRef.current, imgToBW);
-
+    applyProcessFunction(smallCanvasRef.current, imgToBW);
     setProcessList([...processList, imgToBW]);
   }
 
@@ -104,7 +104,7 @@ export default function Home() {
     /* Para pasar la función imgAddBorder con el objeto de opciones como segundo parámetro a processImage, puedes usar una función de flecha para crear una nueva función que tome un solo argumento ImageData y llame a imgAddBorder con ese argumento y el objeto de opciones. 
     En este código, (imageData) => imgAddBorder(imageData, options) crea una nueva función que toma un solo argumento ImageData y llama a imgAddBorder con ese argumento y el objeto de opciones. Esta nueva función se pasa como segundo argumento a processImage.
     De esta manera, cuando processImage llama a la función que le pasaste, esa función a su vez llama a imgAddBorder con el ImageData y el objeto de opciones.*/
-    processImage(smallCanvasRef.current, (imageData) =>
+    applyProcessFunction(smallCanvasRef.current, (imageData) =>
       imgAddBorder(imageData, {
         BorderPercent: inputBorderPercent,
         BorderPixels: inputBorderPixels,
@@ -123,120 +123,6 @@ export default function Home() {
     ]);
   }
 
-  /**
-   * Recibe una imagen en un canvas, y le aplica una transformación.
-   * @param canvasRef - referencia al canvas que tiene la imagen que se quiere transformar
-   * @param processFunction - función que toma un ImageData y devuelve otro ImageData transformado
-   * @param keepMaxSize - si es true, mantiene el tamaño máximo del canvas (el ancho o la altura según cuál sea mayor), si es false, lo ajusta al tamaño de la imagen transformada. Es relevante para funciones de transformación que modifican el tamaño de la imágen, como puede ser agregar un borde.
-   */
-  function processImage(
-    canvas: OffscreenCanvas | HTMLCanvasElement | null,
-    processFunction: ProcessFunction
-  ) {
-    const ctx = canvas?.getContext("2d", {
-      willReadFrequently: true,
-    }) as CanvasRenderingContext2D;
-
-    const imageData = ctx?.getImageData(
-      0,
-      0,
-      canvas?.width || 0,
-      canvas?.height || 0
-    ) as ImageData;
-
-    const newData = processFunction(imageData as ImageData);
-
-    if (canvas) {
-      canvas.width = newData.width;
-      canvas.height = newData.height;
-      ctx?.createImageData(newData.width, newData.height);
-      ctx?.putImageData(newData, 0, 0);
-    }
-  }
-
-  //
-  //* Poner las options como ENUMS
-  //todo: poner tamaño y color de borde como parámetros
-  //! ojo que si el parámetro del borde es en pixels no es lo mismo 100px para la imagen pequeña que para la imagen final.
-  //
-  function imgAddBorder(
-    imageData: ImageData,
-    options?: ProcessOptionsType
-  ): ImageData {
-    let borderSize = 0,
-      borderHeight = 0,
-      borderWidth = 0;
-
-    let borderColor = "#ffffff";
-
-    if (options?.BorderPixels && parseInt(options?.BorderPixels) > 0) {
-      borderSize = parseInt(options.BorderPixels) * 2;
-      borderWidth = borderSize;
-      borderHeight = borderSize;
-    } else {
-      if (options?.BorderPercent) {
-        borderSize = parseInt(options.BorderPercent);
-        borderWidth = (imageData.width * borderSize) / 100;
-        borderHeight = (imageData.height * borderSize) / 100;
-      }
-    }
-
-    if (options?.BorderColor) {
-      borderColor = options.BorderColor;
-    }
-
-    const canvasTemp = new OffscreenCanvas(
-      imageData.width + borderWidth,
-      imageData.height + borderHeight
-    );
-    const ctxTemp = canvasTemp.getContext("2d", {
-      willReadFrequently: true,
-    }) as OffscreenCanvasRenderingContext2D;
-
-    canvasTemp.width = imageData.width + borderWidth;
-    canvasTemp.height = imageData.height + borderHeight;
-
-    ctxTemp.fillStyle = borderColor;
-    ctxTemp.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
-
-    ctxTemp.putImageData(imageData, borderWidth / 2, borderHeight / 2);
-
-    const resultImageData = ctxTemp?.getImageData(
-      0,
-      0,
-      imageData.width + borderWidth,
-      imageData.height + borderHeight
-    ) as ImageData;
-
-    return resultImageData;
-  }
-
-  function ApplyProcessListToCanvas(
-    canvas: OffscreenCanvas | HTMLCanvasElement | null,
-    processList: ProcessFunction[]
-  ) {
-    const ctx = canvas?.getContext("2d", {
-      willReadFrequently: true,
-    }) as CanvasRenderingContext2D;
-
-    let imageData = ctx?.getImageData(
-      0,
-      0,
-      canvas?.width || 0,
-      canvas?.height || 0
-    ) as ImageData;
-
-    processList.forEach((processFunction) => {
-      imageData = processFunction(imageData);
-    });
-
-    if (canvas) {
-      canvas.width = imageData.width;
-      canvas.height = imageData.height;
-      ctx?.createImageData(imageData.width, imageData.height);
-      ctx?.putImageData(imageData, 0, 0);
-    }
-  }
   function handleDownload() {
     //offcanvas con la imagen original grande
     let newCanvas = new OffscreenCanvas(
@@ -253,7 +139,8 @@ export default function Home() {
       originalImg?.width || 0,
       originalImg?.height || 0
     );
-    ApplyProcessListToCanvas(newCanvas, processList);
+
+    applyProcessList(newCanvas, processList);
 
     //canvas comun para poner la imagen a exportar
     let canvas = document.createElement("canvas");

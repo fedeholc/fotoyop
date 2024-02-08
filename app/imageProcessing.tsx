@@ -1,10 +1,136 @@
+import { ProcessFunction, ProcessOptionsType } from "./types";
+
 export {
   imgToBW,
+  imgAddBorder,
   hexToRgb,
   getAdaptedSize,
   getImageFromFile,
   drawImageB64OnCanvas,
+  applyProcessList,
+  applyProcessFunction,
 };
+
+/**
+ * Función que agrega un borde a una imagen.
+ * @param imageData - datos de la imagen
+ * @param options - opciones de bordes para el proceso
+ * @returns - datos de la imagen con el borde agregado
+ */
+function imgAddBorder(
+  imageData: ImageData,
+  options?: ProcessOptionsType
+): ImageData {
+  let borderSize = 0,
+    borderHeight = 0,
+    borderWidth = 0;
+
+  let borderColor = "#ffffff";
+
+  if (options?.BorderPixels && parseInt(options?.BorderPixels) > 0) {
+    borderSize = parseInt(options.BorderPixels) * 2;
+    borderWidth = borderSize;
+    borderHeight = borderSize;
+  } else {
+    if (options?.BorderPercent) {
+      borderSize = parseInt(options.BorderPercent);
+      borderWidth = (imageData.width * borderSize) / 100;
+      borderHeight = (imageData.height * borderSize) / 100;
+    }
+  }
+
+  if (options?.BorderColor) {
+    borderColor = options.BorderColor;
+  }
+
+  const canvasTemp = new OffscreenCanvas(
+    imageData.width + borderWidth,
+    imageData.height + borderHeight
+  );
+  const ctxTemp = canvasTemp.getContext("2d", {
+    willReadFrequently: true,
+  }) as OffscreenCanvasRenderingContext2D;
+
+  canvasTemp.width = imageData.width + borderWidth;
+  canvasTemp.height = imageData.height + borderHeight;
+
+  ctxTemp.fillStyle = borderColor;
+  ctxTemp.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
+
+  ctxTemp.putImageData(imageData, borderWidth / 2, borderHeight / 2);
+
+  const resultImageData = ctxTemp?.getImageData(
+    0,
+    0,
+    imageData.width + borderWidth,
+    imageData.height + borderHeight
+  ) as ImageData;
+
+  return resultImageData;
+}
+
+/**
+ * Recibe una imagen en un canvas, y le aplica una transformación.
+ * @param canvasRef - referencia al canvas que tiene la imagen que se quiere transformar
+ * @param processFunction - función que toma un ImageData y devuelve otro ImageData transformado
+ * @param keepMaxSize - si es true, mantiene el tamaño máximo del canvas (el ancho o la altura según cuál sea mayor), si es false, lo ajusta al tamaño de la imagen transformada. Es relevante para funciones de transformación que modifican el tamaño de la imágen, como puede ser agregar un borde.
+ */
+function applyProcessFunction(
+  canvas: OffscreenCanvas | HTMLCanvasElement | null,
+  processFunction: ProcessFunction
+) {
+  const ctx = canvas?.getContext("2d", {
+    willReadFrequently: true,
+  }) as CanvasRenderingContext2D;
+
+  const imageData = ctx?.getImageData(
+    0,
+    0,
+    canvas?.width || 0,
+    canvas?.height || 0
+  ) as ImageData;
+
+  const newData = processFunction(imageData as ImageData);
+
+  if (canvas) {
+    canvas.width = newData.width;
+    canvas.height = newData.height;
+    ctx?.createImageData(newData.width, newData.height);
+    ctx?.putImageData(newData, 0, 0);
+  }
+}
+
+/**
+ * Función que toma un canvas y una lista de funciones de transformación, y aplica cada función a la imagen del canvas.
+ * @param canvas - canvas con la imagen a transformar y en el que se va a poner la imagen transformada
+ * @param processList - lista de funciones de transformación
+ */
+function applyProcessList(
+  canvas: OffscreenCanvas | HTMLCanvasElement | null,
+  processList: ProcessFunction[]
+) {
+  const ctx = canvas?.getContext("2d", {
+    willReadFrequently: true,
+  }) as CanvasRenderingContext2D;
+
+  let imageData = ctx?.getImageData(
+    0,
+    0,
+    canvas?.width || 0,
+    canvas?.height || 0
+  ) as ImageData;
+
+  processList.forEach((processFunction) => {
+    imageData = processFunction(imageData);
+  });
+
+  if (canvas) {
+    canvas.width = imageData.width;
+    canvas.height = imageData.height;
+    ctx?.createImageData(imageData.width, imageData.height);
+    ctx?.putImageData(imageData, 0, 0);
+  }
+}
 
 /**
  * Función que toma una imagenB64 y la dibuja en un canvas, adaptando el tamaño del canvas considerando el tamaño máximo que puede tener, el tamaño de la imagen y si es horizontal o vertical. Si la imagen es horizontal, el ancho del canvas es el máximo y el alto se ajusta proporcionalmente. Si la imagen es vertical, el alto del canvas es el máximo y el ancho se ajusta proporcionalmente.
