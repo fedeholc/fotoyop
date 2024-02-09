@@ -87,6 +87,10 @@ export default function Home() {
     }
   }
 
+  /**
+   * Handler del input cuando se sube un archivo.
+   * @param event 
+   */
   async function handleUploadFormInput(
     event: React.FormEvent<HTMLFormElement>
   ) {
@@ -95,22 +99,23 @@ export default function Home() {
     loadFileProcedure(file as File);
   }
 
+  /**
+   * Handler del click en convertir a blanco y negro.
+   */
   function handleToBN() {
     applyProcessFunction(smallCanvasRef.current, imgToBW);
     setProcessList([...processList, imgToBW]);
   }
 
+  /**
+   * Handler del click en agregar borde.
+   */
   function handleBorde() {
-    /* Para pasar la función imgAddBorder con el objeto de opciones como segundo parámetro a processImage, se usa una arrow function para crear una nueva función que tome un solo argumento ImageData y llame a imgAddBorder con ese argumento y el objeto de opciones. 
-    En este código, (imageData) => imgAddBorder(imageData, options) crea una nueva función que toma un solo argumento ImageData y llama a imgAddBorder con ese argumento y el objeto de opciones. Esta nueva función se pasa como segundo argumento a processImage.
-    De esta manera, cuando processImage llama a la función que le pasaste, esa función a su vez llama a imgAddBorder con el ImageData y el objeto de opciones.*/
-    applyProcessFunction(smallCanvasRef.current, (imageData) =>
-      imgAddBorder(imageData, {
-        BorderPercent: inputBorderPercent,
-        BorderPixels: inputBorderPixels,
-        BorderColor: inputBorderColor,
-      })
-    );
+    applyProcessFunction(smallCanvasRef.current, imgAddBorder, {
+      BorderPercent: inputBorderPercent,
+      BorderPixels: inputBorderPixels,
+      BorderColor: inputBorderColor,
+    });
 
     setProcessList([
       ...processList,
@@ -143,7 +148,7 @@ export default function Home() {
 
   /**
    * Cuando se suelta un archivo en el area de drop, se llama al procedimiento de carga de archivo.
-   * @param event 
+   * @param event
    */
   function handleDrop(event: React.DragEvent<HTMLLabelElement>) {
     event.preventDefault();

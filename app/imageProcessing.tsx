@@ -123,14 +123,14 @@ function imgAddBorder(
 }
 
 /**
- * Recibe una imagen en un canvas, y le aplica una transformación.
+ * Recibe un canvas con una imagen y le aplica una transformación, quedando el resultado aplicado sobre ese mismo canvas.
  * @param canvasRef - referencia al canvas que tiene la imagen que se quiere transformar
  * @param processFunction - función que toma un ImageData y devuelve otro ImageData transformado
- * @param keepMaxSize - si es true, mantiene el tamaño máximo del canvas (el ancho o la altura según cuál sea mayor), si es false, lo ajusta al tamaño de la imagen transformada. Es relevante para funciones de transformación que modifican el tamaño de la imágen, como puede ser agregar un borde.
  */
 function applyProcessFunction(
   canvas: OffscreenCanvas | HTMLCanvasElement | null,
-  processFunction: ProcessFunction
+  processFunction: ProcessFunction,
+  options?: ProcessOptionsType
 ) {
   const ctx = canvas?.getContext("2d", {
     willReadFrequently: true,
@@ -143,7 +143,7 @@ function applyProcessFunction(
     canvas?.height || 0
   ) as ImageData;
 
-  const newData = processFunction(imageData as ImageData);
+  const newData = processFunction(imageData as ImageData, options);
 
   if (canvas) {
     canvas.width = newData.width;
