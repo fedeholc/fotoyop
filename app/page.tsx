@@ -7,8 +7,8 @@ import {
   imgAddBorder,
   getImageFromFile,
   drawImageB64OnCanvas,
-  applyProcessList,
   applyProcessFunction,
+  processImgToCanvas,
 } from "./imageProcessing";
 
 export default function Home() {
@@ -101,7 +101,7 @@ export default function Home() {
   }
 
   function handleBorde() {
-    /* Para pasar la función imgAddBorder con el objeto de opciones como segundo parámetro a processImage, puedes usar una función de flecha para crear una nueva función que tome un solo argumento ImageData y llame a imgAddBorder con ese argumento y el objeto de opciones. 
+    /* Para pasar la función imgAddBorder con el objeto de opciones como segundo parámetro a processImage, se usa una arrow function para crear una nueva función que tome un solo argumento ImageData y llame a imgAddBorder con ese argumento y el objeto de opciones. 
     En este código, (imageData) => imgAddBorder(imageData, options) crea una nueva función que toma un solo argumento ImageData y llama a imgAddBorder con ese argumento y el objeto de opciones. Esta nueva función se pasa como segundo argumento a processImage.
     De esta manera, cuando processImage llama a la función que le pasaste, esa función a su vez llama a imgAddBorder con el ImageData y el objeto de opciones.*/
     applyProcessFunction(smallCanvasRef.current, (imageData) =>
@@ -123,56 +123,28 @@ export default function Home() {
     ]);
   }
 
+  /**
+   * Procedimiento para generar la imagen procesada y enviarla como descarga.
+   */
   function handleDownload() {
-    //offcanvas con la imagen original grande
-    let newCanvas = new OffscreenCanvas(
-      originalImg?.width || 0,
-      originalImg?.height || 0
-    );
-    let newCtx = newCanvas.getContext("2d", {
-      willReadFrequently: true,
-    });
-    newCtx?.drawImage(
-      originalImg as HTMLImageElement,
-      0,
-      0,
-      originalImg?.width || 0,
-      originalImg?.height || 0
-    );
-
-    applyProcessList(newCanvas, processList);
-
-    //canvas comun para poner la imagen a exportar
-    let canvas = document.createElement("canvas");
-    if (newCanvas) {
-      canvas.width = newCanvas?.width;
-      canvas.height = newCanvas?.height;
-    }
-    let ctx = canvas.getContext("2d", {
-      willReadFrequently: true,
-    });
-
-    let bigImageData = newCanvas
-      ?.getContext("2d", {
-        willReadFrequently: true,
-      })
-      ?.getImageData(0, 0, newCanvas?.width, newCanvas?.height);
-
-    if (ctx && bigImageData) {
-      ctx.createImageData(bigImageData.width, bigImageData.height);
-      ctx.putImageData(bigImageData, 0, 0);
-    }
-    let dataURL = canvas.toDataURL("image/jpeg", 1);
+    let downloadDataURL = processImgToCanvas(
+      originalImg!,
+      processList
+    ).toDataURL("image/jpeg", 1);
 
     const enlaceDescarga = document.createElement("a");
-    enlaceDescarga.href = dataURL || "";
-    enlaceDescarga.download = "mi_dibujo.jpg";
+    enlaceDescarga.href = downloadDataURL || "";
+    enlaceDescarga.download = "image.jpg";
 
     document.body.appendChild(enlaceDescarga);
     enlaceDescarga.click();
     document.body.removeChild(enlaceDescarga);
   }
 
+  /**
+   * Cuando se suelta un archivo en el area de drop, se llama al procedimiento de carga de archivo.
+   * @param event 
+   */
   function handleDrop(event: React.DragEvent<HTMLLabelElement>) {
     event.preventDefault();
     const files: File[] = [];
@@ -191,9 +163,17 @@ export default function Home() {
     loadFileProcedure(files[0]);
   }
 
+  /**
+   * Simula el click en el input de tipo file para abrir el explorador de archivos.
+   */
   function handleUploadFormClick() {
     inputUploadRef.current?.click();
   }
+
+  /**
+   * Cambia el CSS del area de drop cuando el mouse sobre ellos.
+   * @param event
+   */
   function handleDragOver(event: React.DragEvent<HTMLLabelElement>) {
     event.preventDefault();
     let dropTitles = document.querySelectorAll(".drop-title");
@@ -205,6 +185,10 @@ export default function Home() {
     dropContainer?.classList.add("drop-container-dragover");
   }
 
+  /**
+   * Cambia el CSS del area de drop (vuelve al estado inicial) cuando el mouse sale de allí.
+   * @param event
+   */
   function handleDragLeave(event: React.DragEvent<HTMLLabelElement>) {
     let dropTitles = document.querySelectorAll(".drop-title");
     dropTitles.forEach((title) => {

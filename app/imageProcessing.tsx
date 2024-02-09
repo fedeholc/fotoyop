@@ -9,7 +9,60 @@ export {
   drawImageB64OnCanvas,
   applyProcessList,
   applyProcessFunction,
+  processImgToCanvas,
 };
+
+/**
+ * Función que convierte un IMG en Canvas, aplicando una lista de procesos.
+ * Utiliza un offscreen canvas para aplicar todos los procesos, luego se pasa a un canvas común que es lo que devuelve la función.
+ * Devuelve uno común y no el offscreen porque uso la función para luego convertir el canvas a DataURL y generar el enlace de descarga de la imagen procesada, y el offscreen no tiene para pasar a DataURL.
+ * @param imgElement - elemento Img a convertir
+ * @param processList - lista de funciones de procesamiento
+ * @returns {HTMLCanvasElement} - canvas con la imagen procesada
+ */
+function processImgToCanvas(
+  imgElement: HTMLImageElement,
+  processList: ProcessFunction[]
+): HTMLCanvasElement {
+  let newOffscreenCanvas = new OffscreenCanvas(
+    imgElement?.width || 0,
+    imgElement?.height || 0
+  );
+  let newCtx = newOffscreenCanvas.getContext("2d", {
+    willReadFrequently: true,
+  });
+  newCtx?.drawImage(
+    imgElement as HTMLImageElement,
+    0,
+    0,
+    imgElement?.width || 0,
+    imgElement?.height || 0
+  );
+
+  applyProcessList(newOffscreenCanvas, processList);
+
+  //canvas comun para poner la imagen a exportar
+  let resultCanvas = document.createElement("canvas");
+  if (newOffscreenCanvas) {
+    resultCanvas.width = newOffscreenCanvas?.width;
+    resultCanvas.height = newOffscreenCanvas?.height;
+  }
+  let ctx = resultCanvas.getContext("2d", {
+    willReadFrequently: true,
+  });
+
+  let bigImageData = newOffscreenCanvas
+    ?.getContext("2d", {
+      willReadFrequently: true,
+    })
+    ?.getImageData(0, 0, newOffscreenCanvas?.width, newOffscreenCanvas?.height);
+
+  if (ctx && bigImageData) {
+    ctx.createImageData(bigImageData.width, bigImageData.height);
+    ctx.putImageData(bigImageData, 0, 0);
+  }
+  return resultCanvas;
+}
 
 /**
  * Función que agrega un borde a una imagen.
