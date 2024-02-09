@@ -89,7 +89,7 @@ export default function Home() {
 
   /**
    * Handler del input cuando se sube un archivo.
-   * @param event 
+   * @param event
    */
   async function handleUploadFormInput(
     event: React.FormEvent<HTMLFormElement>
@@ -203,6 +203,24 @@ export default function Home() {
     dropContainer?.classList.remove("drop-container-dragover");
   }
 
+  function handleInputBorderPixels(event: React.ChangeEvent<HTMLInputElement>) {
+    setInputBorderPixels(event.target.value);
+    /*    applyProcessFunction(smallCanvasRef.current, imgAddBorder, {
+      BorderPercent: inputBorderPercent,
+      BorderPixels: inputBorderPixels,
+      BorderColor: inputBorderColor,
+    }); */
+    /*  setProcessList([
+      ...processList,
+      (imageData) =>
+        imgAddBorder(imageData, {
+          BorderPercent: inputBorderPercent,
+          BorderPixels: inputBorderPixels,
+          BorderColor: inputBorderColor,
+        }),
+    ]); */
+  }
+
   return (
     <main id="app" className={styles.main}>
       <section id="section__image">
@@ -299,7 +317,7 @@ export default function Home() {
             min="0"
             max="100"
             value={inputBorderPixels}
-            onChange={(e) => setInputBorderPixels(e.target.value)}
+            onChange={handleInputBorderPixels}
           ></input>
           {inputBorderPixels}px
           <input
