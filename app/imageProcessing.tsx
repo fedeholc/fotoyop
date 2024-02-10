@@ -10,6 +10,9 @@ export {
   applyProcessList,
   applyProcessFunction,
   processImgToCanvas,
+  processToNewImageData,
+  drawImageDataOnCanvas,
+  imageB64ToImageData,
 };
 
 /**
@@ -153,6 +156,27 @@ function applyProcessFunction(
   }
 }
 
+function processToNewImageData(
+  canvas: OffscreenCanvas | HTMLCanvasElement | null,
+  processFunction: ProcessFunction,
+  options?: ProcessOptionsType
+): ImageData {
+  const ctx = canvas?.getContext("2d", {
+    willReadFrequently: true,
+  }) as CanvasRenderingContext2D;
+
+  const imageData = ctx?.getImageData(
+    0,
+    0,
+    canvas?.width || 0,
+    canvas?.height || 0
+  ) as ImageData;
+
+  const newData = processFunction(imageData as ImageData, options);
+
+  return newData;
+}
+
 /**
  * Función que toma un canvas y una lista de funciones de transformación, y aplica cada función a la imagen del canvas.
  * @param canvas - canvas con la imagen a transformar y en el que se va a poner la imagen transformada
@@ -215,6 +239,50 @@ function drawImageB64OnCanvas(
       .getContext("2d")
       ?.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
   };
+}
+
+//TODO: Limitar el tamaño al máximo del canvas.
+async function imageB64ToImageData(imageB64: string): Promise<ImageData> {
+  const canvas = document.createElement("canvas");
+  const imgElement = new window.Image();
+
+  const cargar = new Promise<void>((resolve, reject) => {
+    imgElement.onload = function () {
+      const aspectRatio = imgElement.width / imgElement.height;
+
+      if (aspectRatio > 1) {
+        canvas.width = imgElement.width;
+        canvas.height = imgElement.width / aspectRatio;
+      } else {
+        canvas.height = imgElement.height;
+        canvas.width = imgElement.height * aspectRatio;
+      }
+
+      canvas
+        .getContext("2d")
+        ?.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
+      resolve();
+    };
+
+    imgElement.onerror = function () {
+      reject(new Error("Error al cargar la imagen"));
+    };
+
+    imgElement.src = imageB64;
+  });
+  await cargar;
+  return canvas
+    .getContext("2d")
+    ?.getImageData(0, 0, canvas.width, canvas.height)!;
+}
+
+function drawImageDataOnCanvas(image: ImageData, canvas: HTMLCanvasElement) {
+  console.log("recibi para poner: ", image);
+  canvas.width = image.width;
+  canvas.height = image.height;
+  canvas
+    .getContext("2d")
+    ?.putImageData(image, 0, 0, 0, 0, image.width, image.height);
 }
 
 /**

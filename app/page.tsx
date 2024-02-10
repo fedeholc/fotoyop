@@ -9,6 +9,9 @@ import {
   drawImageB64OnCanvas,
   applyProcessFunction,
   processImgToCanvas,
+  processToNewImageData,
+  drawImageDataOnCanvas,
+  imageB64ToImageData,
 } from "./imageProcessing";
 
 export default function Home() {
@@ -29,6 +32,8 @@ export default function Home() {
   const [originalFile, setOriginalFile] = useState<File | null>(null);
   const [originalImg, setOriginalImg] = useState<HTMLImageElement | null>(null);
   const [processList, setProcessList] = useState<ProcessFunction[]>([]);
+
+  const [imageDataList, setImageDataList] = useState<ImageData[]>([]);
 
   const inputUploadRef = useRef<HTMLInputElement | null>(null);
   const smallCanvasCtxRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -84,6 +89,10 @@ export default function Home() {
       if (imagenPreviewRef.current) {
         imagenPreviewRef.current.src = originalImageB64;
       }
+      console.log("llamo");
+      let newImageData = await imageB64ToImageData(originalImageB64);
+      console.log("pusheo: ", newImageData);
+      imageDataList.push(newImageData);
     }
   }
 
@@ -105,6 +114,18 @@ export default function Home() {
   function handleToBN() {
     applyProcessFunction(smallCanvasRef.current, imgToBW);
     setProcessList([...processList, imgToBW]);
+
+    let newImageData = processToNewImageData(
+      smallCanvasRef.current,
+      imgAddBorder,
+      {
+        BorderPercent: inputBorderPercent,
+        BorderPixels: inputBorderPixels,
+        BorderColor: inputBorderColor,
+      }
+    );
+    console.log("agrego: ", newImageData);
+    setImageDataList([...imageDataList, newImageData]);
   }
 
   /**
@@ -116,6 +137,15 @@ export default function Home() {
       BorderPixels: inputBorderPixels,
       BorderColor: inputBorderColor,
     });
+
+    setImageDataList([
+      ...imageDataList,
+      processToNewImageData(smallCanvasRef.current, imgAddBorder, {
+        BorderPercent: inputBorderPercent,
+        BorderPixels: inputBorderPixels,
+        BorderColor: inputBorderColor,
+      }),
+    ]);
 
     setProcessList([
       ...processList,
@@ -221,6 +251,15 @@ export default function Home() {
     ]); */
   }
 
+  function handleUndo() {
+    console.log("img list", ...imageDataList);
+    imageDataList.pop();
+    drawImageDataOnCanvas(
+      imageDataList[imageDataList.length - 1],
+      smallCanvasRef.current!
+    );
+  }
+
   return (
     <main id="app" className={styles.main}>
       <section id="section__image">
@@ -293,6 +332,9 @@ export default function Home() {
             onClick={() => handleDownload()}
           >
             descargar
+          </button>
+          <button id="btnUndo" onClick={handleUndo}>
+            Undo
           </button>
         </div>
         <details className="toolbar__details">
