@@ -135,7 +135,6 @@ function imgAddBorder(
     imageData.width + borderWidth,
     imageData.height + borderHeight
   ) as ImageData;
-  console.log("result:", resultImageData);
   return resultImageData;
 }
 
@@ -300,7 +299,6 @@ async function imageB64ToImageData(
 }
 
 function drawImageDataOnCanvas(image: ImageData, canvas: HTMLCanvasElement) {
-  console.log("recibi para poner: ", image);
   canvas.width = image.width;
   canvas.height = image.height;
   canvas

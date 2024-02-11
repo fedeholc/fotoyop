@@ -36,6 +36,8 @@ export default function Home() {
 
   const [undoImageList, setUndoImageList] = useState<ImageData[]>([]);
 
+  const [addingBorder, setAddingBorder] = useState<boolean>(false);
+
   const inputUploadRef = useRef<HTMLInputElement | null>(null);
   const smallCanvasCtxRef = useRef<CanvasRenderingContext2D | null>(null);
   const imagenPreviewRef = useRef<HTMLImageElement | null>(null);
@@ -121,16 +123,18 @@ export default function Home() {
     setProcessList([...processList, imgToBW]);
 
     let newImageData = processToNewImageData(smallCanvasRef.current, imgToBW);
-    setUndoImageList([...undoImageList, newImageData]);
 
-    console.log("u:", undoImageList);
+    let newUndoImageList = [...undoImageList, newImageData];
+    setUndoImageList(newUndoImageList);
+    console.log("addingBorder, undoImageList en BN:", undoImageList);
+    console.log("addingBorder, newundoImageList:", newUndoImageList);
   }
 
   /**
    * Handler del click en agregar borde.
    */
   function handleBorde() {
-    let newImageData = applyProcessFunction(
+    /* let newImageData = applyProcessFunction(
       smallCanvasRef.current,
       imgAddBorder,
       {
@@ -140,18 +144,7 @@ export default function Home() {
       }
     );
 
-    //FIXME: ojo, estoy haciendo dos veces el proceso, tendría que hacer que applyPRocessFunction devuelva imageData que usó y no necesitaría llamar a processToNewImageData
-    /*  let newImageData = processToNewImageData(
-      smallCanvasRef.current,
-      imgAddBorder,
-      {
-        BorderPercent: inputBorderPercent,
-        BorderPixels: inputBorderPixels,
-        BorderColor: inputBorderColor,
-      }
-    ); */
     setUndoImageList([...undoImageList, newImageData]);
-    console.log("u:", undoImageList);
 
     setProcessList([
       ...processList,
@@ -161,7 +154,10 @@ export default function Home() {
           BorderPixels: inputBorderPixels,
           BorderColor: inputBorderColor,
         }),
-    ]);
+    ]); */
+
+    setAddingBorder(false);
+    //todo FIXME: ojo, si se sale de la parte de edición de borde para hacer otra cosa también hay que hacer el set addingBorder a false
   }
 
   /**
@@ -240,6 +236,7 @@ export default function Home() {
   }
 
   function handleInputBorderPixels(event: React.ChangeEvent<HTMLInputElement>) {
+    console.log(event.target.value);
     setInputBorderPixels(event.target.value);
     /*    applyProcessFunction(smallCanvasRef.current, imgAddBorder, {
       BorderPercent: inputBorderPercent,
@@ -256,19 +253,95 @@ export default function Home() {
         }),
     ]); */
   }
+  async function handleInputMouseUp(event: React.MouseEvent<HTMLInputElement>) {
+    //todo: un cambio de color del borde también debería venir acá?
+    console.log("up:", inputBorderPixels);
+    if (addingBorder === true) {
+      //handleBorde();
+
+      const newUndoImageList = [...undoImageList];
+      if (undoImageList.length > 1) {
+        newUndoImageList.pop();
+        setUndoImageList(newUndoImageList);
+        drawImageDataOnCanvas(
+          newUndoImageList[newUndoImageList.length - 1],
+          smallCanvasRef.current!
+        );
+
+        const newProcessList = [...processList];
+        newProcessList.pop();
+        setProcessList(newProcessList);
+        console.log("addingBorder, undoImageList1:", undoImageList);
+        console.log("addingBorder, newimagelist:", newUndoImageList);
+      }
+
+      let newImageData = applyProcessFunction(
+        smallCanvasRef.current,
+        imgAddBorder,
+        {
+          BorderPercent: inputBorderPercent,
+          BorderPixels: inputBorderPixels,
+          BorderColor: inputBorderColor,
+        }
+      );
+
+      setUndoImageList([...newUndoImageList, newImageData]);
+      /*
+      setProcessList([
+        ...processList,
+        (imageData) =>
+          imgAddBorder(imageData, {
+            BorderPercent: inputBorderPercent,
+            BorderPixels: inputBorderPixels,
+            BorderColor: inputBorderColor,
+          }),
+      ]); */
+    } else if (addingBorder === false) {
+      setAddingBorder(true);
+      let newImageData = applyProcessFunction(
+        smallCanvasRef.current,
+        imgAddBorder,
+        {
+          BorderPercent: inputBorderPercent,
+          BorderPixels: inputBorderPixels,
+          BorderColor: inputBorderColor,
+        }
+      );
+
+      let newUndoImageList = [...undoImageList, newImageData];
+      setUndoImageList(newUndoImageList);
+      console.log("addingBorder, undoImageList2:", undoImageList);
+      console.log("addingBorder, newundoImageList:", newUndoImageList);
+
+      setProcessList([
+        ...processList,
+        (imageData) =>
+          imgAddBorder(imageData, {
+            BorderPercent: inputBorderPercent,
+            BorderPixels: inputBorderPixels,
+            BorderColor: inputBorderColor,
+          }),
+      ]);
+    }
+
+    //handleBorde();
+  }
 
   function handleUndo() {
-    //todo: también hay que quitarlo de processList
-    console.log("img list", ...undoImageList);
     if (undoImageList.length > 1) {
       const newUndoImageList = [...undoImageList];
       newUndoImageList.pop();
       setUndoImageList(newUndoImageList);
-      console.log("new undo", newUndoImageList);
       drawImageDataOnCanvas(
         newUndoImageList[newUndoImageList.length - 1],
         smallCanvasRef.current!
       );
+
+      const newProcessList = [...processList];
+      newProcessList.pop();
+      setProcessList(newProcessList);
+      console.log("en undo, undoimagelist:", undoImageList);
+      console.log("en undo, undoimagelist:", newUndoImageList);
     }
   }
 
@@ -372,6 +445,7 @@ export default function Home() {
             max="100"
             value={inputBorderPixels}
             onChange={handleInputBorderPixels}
+            onMouseUp={handleInputMouseUp}
           ></input>
           {inputBorderPixels}px
           <input
@@ -390,19 +464,19 @@ export default function Home() {
           </datalist> */}
         </details>
         {/*<canvas id="canvas2" hidden ref={offScreenCanvasRef}></canvas>*/}
-      </section>
-      <div className="undoList">
-        {undoImageList.map((img, index) => {
-          return (
-            <span key={index}>
-              <img width={150} src={`${imageDataToBase64(img)}`.toString()} />
-              <span>
-                ̣{img.width}-{img.height}
+        <div className="undoList">
+          {undoImageList.map((img, index) => {
+            return (
+              <span key={index}>
+                <img width={150} src={`${imageDataToBase64(img)}`.toString()} />
+                <span>
+                  ̣{img.width}-{img.height}
+                </span>
               </span>
-            </span>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      </section>
     </main>
   );
 }
