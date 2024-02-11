@@ -394,12 +394,8 @@ export default function Home() {
       <div className="undoList">
         {undoImageList.map((img, index) => {
           return (
-            <span>
-              <img
-                width={150}
-                key={index}
-                src={`${imageDataToBase64(img)}`.toString()}
-              />
+            <span key={index}>
+              <img width={150} src={`${imageDataToBase64(img)}`.toString()} />
               <span>
                 ̣{img.width}-{img.height}
               </span>
