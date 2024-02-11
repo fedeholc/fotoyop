@@ -1,7 +1,12 @@
 "use client";
 import styles from "./page.module.css";
 import { useEffect, useRef, useState } from "react";
-import { CanvasConfig, ProcessFunction, DisplaySections } from "./types";
+import {
+  CanvasConfig,
+  ProcessFunction,
+  DisplaySections,
+  ImageProcess,
+} from "./types";
 import {
   imgToBW,
   imgAddBorder,
@@ -36,7 +41,9 @@ export default function Home() {
 
   const [undoImageList, setUndoImageList] = useState<ImageData[]>([]);
 
-  const [addingBorder, setAddingBorder] = useState<boolean>(false);
+  const [currentProcess, setCurrentProcess] = useState<ImageProcess | null>(
+    null
+  );
 
   const inputUploadRef = useRef<HTMLInputElement | null>(null);
   const smallCanvasCtxRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -132,7 +139,7 @@ export default function Home() {
 
   function handleDiscardBorder() {
     const newUndoImageList = [...undoImageList];
-    if (addingBorder && undoImageList.length > 1) {
+    if (currentProcess === ImageProcess.Border && undoImageList.length > 1) {
       newUndoImageList.pop();
       setUndoImageList(newUndoImageList);
 
@@ -152,7 +159,7 @@ export default function Home() {
     setInputBorderPercent("0");
     setInputBorderPixels("0");
 
-    setAddingBorder(false);
+    setCurrentProcess(null);
   }
   /**
    * Handler del click en aplicar borde.
@@ -162,7 +169,7 @@ export default function Home() {
     setInputBorderPercent("0");
     setInputBorderPixels("0");
 
-    setAddingBorder(false);
+    setCurrentProcess(null);
     //? en lugar de trabajar todo esto del undo con la lista de imagenes, el canvas, etc., tal vez mejor tener otro canvas para  mostrar las modificaciones de borde (tal vez con un dialog?) y que luego se plique al canvas principal???
     //todo FIXME: ojo, si se sale de la parte de edición de borde para hacer otra cosa también hay que hacer el set addingBorder a false
     //todo tal vez mejor que en lugar de tener un addingborder, es decir, una variable por cada proceso, se podría tener una que diga cuál se está aplicando, ejemplo: processInAction: "border", de modo que cuando cambia a otro, ya está listo el anterior.
@@ -266,7 +273,7 @@ export default function Home() {
   async function handleInputMouseUp() {
     //todo: un cambio de color del borde también debería venir acá?
     console.log("up:", inputBorderPixels);
-    if (addingBorder === true) {
+    if (currentProcess === ImageProcess.Border) {
       //handleBorde();
 
       const newUndoImageList = [...undoImageList];
@@ -332,8 +339,8 @@ export default function Home() {
             }),
         ]);
       }
-    } else if (addingBorder === false) {
-      setAddingBorder(true);
+    } else if (currentProcess === null) {
+      setCurrentProcess(ImageProcess.Border);
       let newImageData = applyProcessFunction(
         smallCanvasRef.current,
         imgAddBorder,

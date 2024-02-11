@@ -1,3 +1,12 @@
+
+export enum ImageProcess {
+  Border = "Border",
+  Grayscale = "Grayscale",
+}
+
+/**
+ * Define la configuración del canvas principal.
+ */
 export type CanvasConfig = {
   maxWidth: number;
   maxHeight: number;
@@ -14,6 +23,7 @@ const processOptionsKeys = {
 
 //este tipo son las keys de processOptionsKeys
 type ProcesssOptionsKeysType = keyof typeof processOptionsKeys;
+
 //este tipo es un par key-value con las keys de processOptionsKeys y valores string
 export type ProcessOptionsType = {
   [key in ProcesssOptionsKeysType]?: string;
@@ -28,7 +38,9 @@ export type ProcessFunction = (
   options?: ProcessOptionsType
 ) => ImageData;
 
-
+/**
+ * Define los estados de visibilidad de las diferentes secciones de la aplicación.
+ */
 export type DisplaySections = {
   form: boolean;
   canvas: boolean;
