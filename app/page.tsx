@@ -130,31 +130,37 @@ export default function Home() {
     console.log("addingBorder, newundoImageList:", newUndoImageList);
   }
 
+  function handleDiscardBorder() {
+    const newUndoImageList = [...undoImageList];
+    if (addingBorder && undoImageList.length > 1) {
+      newUndoImageList.pop();
+      setUndoImageList(newUndoImageList);
+
+      //setUndoImageList(newUndoImageList);
+      drawImageDataOnCanvas(
+        newUndoImageList[newUndoImageList.length - 1],
+        smallCanvasRef.current!
+      );
+
+      const newProcessList = [...processList];
+      newProcessList.pop();
+
+      setProcessList(newProcessList);
+    }
+
+    setInputBorderColor("#ffffff");
+    setInputBorderPercent("0");
+    setInputBorderPixels("0");
+
+    setAddingBorder(false);
+  }
   /**
-   * Handler del click en agregar borde.
+   * Handler del click en aplicar borde.
    */
-  function handleBorde() {
-    /* let newImageData = applyProcessFunction(
-      smallCanvasRef.current,
-      imgAddBorder,
-      {
-        BorderPercent: inputBorderPercent,
-        BorderPixels: inputBorderPixels,
-        BorderColor: inputBorderColor,
-      }
-    );
-
-    setUndoImageList([...undoImageList, newImageData]);
-
-    setProcessList([
-      ...processList,
-      (imageData) =>
-        imgAddBorder(imageData, {
-          BorderPercent: inputBorderPercent,
-          BorderPixels: inputBorderPixels,
-          BorderColor: inputBorderColor,
-        }),
-    ]); */
+  function handleApplyBorder() {
+    setInputBorderColor("#ffffff");
+    setInputBorderPercent("0");
+    setInputBorderPixels("0");
 
     setAddingBorder(false);
     //? en lugar de trabajar todo esto del undo con la lista de imagenes, el canvas, etc., tal vez mejor tener otro canvas para  mostrar las modificaciones de borde (tal vez con un dialog?) y que luego se plique al canvas principal???
@@ -468,8 +474,15 @@ export default function Home() {
         </div>
         <details className="toolbar__details">
           <summary className="toolbar__summary">Borders</summary>
-          <button type="button" id="btnBorde" onClick={() => handleBorde()}>
-            borde
+          <button type="button" id="btnApplyBorder" onClick={handleApplyBorder}>
+            Apply
+          </button>
+          <button
+            type="button"
+            id="btnDiscardBorder"
+            onClick={handleDiscardBorder}
+          >
+            Discard
           </button>
           <input
             type="range"
