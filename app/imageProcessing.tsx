@@ -13,7 +13,21 @@ export {
   processToNewImageData,
   drawImageDataOnCanvas,
   imageB64ToImageData,
+  imageDataToBase64,
 };
+
+function imageDataToBase64(imageData: ImageData): string {
+  const canvas = document.createElement("canvas");
+  canvas.width = imageData.width;
+  canvas.height = imageData.height;
+
+  const ctx = canvas.getContext("2d");
+  if (ctx) {
+    ctx.putImageData(imageData, 0, 0);
+  }
+
+  return canvas.toDataURL();
+}
 
 /**
  * Función que convierte un IMG en Canvas, aplicando una lista de procesos.
@@ -121,7 +135,7 @@ function imgAddBorder(
     imageData.width + borderWidth,
     imageData.height + borderHeight
   ) as ImageData;
-
+  console.log("result:", resultImageData);
   return resultImageData;
 }
 
@@ -129,12 +143,13 @@ function imgAddBorder(
  * Recibe un canvas con una imagen y le aplica una transformación, quedando el resultado aplicado sobre ese mismo canvas.
  * @param canvasRef - referencia al canvas que tiene la imagen que se quiere transformar
  * @param processFunction - función que toma un ImageData y devuelve otro ImageData transformado
+ * @return
  */
 function applyProcessFunction(
   canvas: OffscreenCanvas | HTMLCanvasElement | null,
   processFunction: ProcessFunction,
   options?: ProcessOptionsType
-) {
+): ImageData {
   const ctx = canvas?.getContext("2d", {
     willReadFrequently: true,
   }) as CanvasRenderingContext2D;
@@ -154,6 +169,8 @@ function applyProcessFunction(
     ctx?.createImageData(newData.width, newData.height);
     ctx?.putImageData(newData, 0, 0);
   }
+
+  return ctx.getImageData(0, 0, newData.width, newData.height);
 }
 
 function processToNewImageData(
@@ -242,25 +259,30 @@ function drawImageB64OnCanvas(
 }
 
 //TODO: Limitar el tamaño al máximo del canvas.
-async function imageB64ToImageData(imageB64: string): Promise<ImageData> {
+async function imageB64ToImageData(
+  imageB64: string,
+  canvasMaxWidth: number,
+  canvasMaxHeight: number
+): Promise<ImageData> {
   const canvas = document.createElement("canvas");
   const imgElement = new window.Image();
 
-  const cargar = new Promise<void>((resolve, reject) => {
+  const loadImage = new Promise<void>((resolve, reject) => {
     imgElement.onload = function () {
       const aspectRatio = imgElement.width / imgElement.height;
 
       if (aspectRatio > 1) {
-        canvas.width = imgElement.width;
-        canvas.height = imgElement.width / aspectRatio;
+        canvas.width = canvasMaxWidth;
+        canvas.height = canvasMaxWidth / aspectRatio;
       } else {
-        canvas.height = imgElement.height;
-        canvas.width = imgElement.height * aspectRatio;
+        canvas.height = canvasMaxHeight;
+        canvas.width = canvasMaxHeight * aspectRatio;
       }
 
       canvas
         .getContext("2d")
         ?.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
+
       resolve();
     };
 
@@ -270,7 +292,8 @@ async function imageB64ToImageData(imageB64: string): Promise<ImageData> {
 
     imgElement.src = imageB64;
   });
-  await cargar;
+
+  await loadImage;
   return canvas
     .getContext("2d")
     ?.getImageData(0, 0, canvas.width, canvas.height)!;

@@ -12,6 +12,7 @@ import {
   processToNewImageData,
   drawImageDataOnCanvas,
   imageB64ToImageData,
+  imageDataToBase64,
 } from "./imageProcessing";
 
 export default function Home() {
@@ -33,7 +34,7 @@ export default function Home() {
   const [originalImg, setOriginalImg] = useState<HTMLImageElement | null>(null);
   const [processList, setProcessList] = useState<ProcessFunction[]>([]);
 
-  const [imageDataList, setImageDataList] = useState<ImageData[]>([]);
+  const [undoImageList, setUndoImageList] = useState<ImageData[]>([]);
 
   const inputUploadRef = useRef<HTMLInputElement | null>(null);
   const smallCanvasCtxRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -89,10 +90,14 @@ export default function Home() {
       if (imagenPreviewRef.current) {
         imagenPreviewRef.current.src = originalImageB64;
       }
-      console.log("llamo");
-      let newImageData = await imageB64ToImageData(originalImageB64);
-      console.log("pusheo: ", newImageData);
-      imageDataList.push(newImageData);
+
+      undoImageList.push(
+        await imageB64ToImageData(
+          originalImageB64,
+          mainCanvasConfig.maxWidth,
+          mainCanvasConfig.maxHeight
+        )
+      );
     }
   }
 
@@ -115,7 +120,17 @@ export default function Home() {
     applyProcessFunction(smallCanvasRef.current, imgToBW);
     setProcessList([...processList, imgToBW]);
 
-    let newImageData = processToNewImageData(
+    let newImageData = processToNewImageData(smallCanvasRef.current, imgToBW);
+    setUndoImageList([...undoImageList, newImageData]);
+
+    console.log("u:", undoImageList);
+  }
+
+  /**
+   * Handler del click en agregar borde.
+   */
+  function handleBorde() {
+    let newImageData = applyProcessFunction(
       smallCanvasRef.current,
       imgAddBorder,
       {
@@ -124,28 +139,19 @@ export default function Home() {
         BorderColor: inputBorderColor,
       }
     );
-    console.log("agrego: ", newImageData);
-    setImageDataList([...imageDataList, newImageData]);
-  }
 
-  /**
-   * Handler del click en agregar borde.
-   */
-  function handleBorde() {
-    applyProcessFunction(smallCanvasRef.current, imgAddBorder, {
-      BorderPercent: inputBorderPercent,
-      BorderPixels: inputBorderPixels,
-      BorderColor: inputBorderColor,
-    });
-
-    setImageDataList([
-      ...imageDataList,
-      processToNewImageData(smallCanvasRef.current, imgAddBorder, {
+    //FIXME: ojo, estoy haciendo dos veces el proceso, tendría que hacer que applyPRocessFunction devuelva imageData que usó y no necesitaría llamar a processToNewImageData
+    /*  let newImageData = processToNewImageData(
+      smallCanvasRef.current,
+      imgAddBorder,
+      {
         BorderPercent: inputBorderPercent,
         BorderPixels: inputBorderPixels,
         BorderColor: inputBorderColor,
-      }),
-    ]);
+      }
+    ); */
+    setUndoImageList([...undoImageList, newImageData]);
+    console.log("u:", undoImageList);
 
     setProcessList([
       ...processList,
@@ -252,12 +258,18 @@ export default function Home() {
   }
 
   function handleUndo() {
-    console.log("img list", ...imageDataList);
-    imageDataList.pop();
-    drawImageDataOnCanvas(
-      imageDataList[imageDataList.length - 1],
-      smallCanvasRef.current!
-    );
+    //todo: también hay que quitarlo de processList
+    console.log("img list", ...undoImageList);
+    if (undoImageList.length > 1) {
+      const newUndoImageList = [...undoImageList];
+      newUndoImageList.pop();
+      setUndoImageList(newUndoImageList);
+      console.log("new undo", newUndoImageList);
+      drawImageDataOnCanvas(
+        newUndoImageList[newUndoImageList.length - 1],
+        smallCanvasRef.current!
+      );
+    }
   }
 
   return (
@@ -379,6 +391,22 @@ export default function Home() {
         </details>
         {/*<canvas id="canvas2" hidden ref={offScreenCanvasRef}></canvas>*/}
       </section>
+      <div className="undoList">
+        {undoImageList.map((img, index) => {
+          return (
+            <span>
+              <img
+                width={150}
+                key={index}
+                src={`${imageDataToBase64(img)}`.toString()}
+              />
+              <span>
+                ̣{img.width}-{img.height}
+              </span>
+            </span>
+          );
+        })}
+      </div>
     </main>
   );
 }

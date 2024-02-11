@@ -5,6 +5,7 @@
    padding: 0;
    box-sizing: border-box;
  }
+
  body {
    display: flex;
    flex-direction: column;
@@ -170,4 +171,13 @@
 
  .display-none {
    display: none;
+ }
+
+ .undoList {
+   display: flex;
+
+ }
+
+ .undoList img {
+   border: 1px solid red;
  }
