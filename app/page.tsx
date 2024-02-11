@@ -273,6 +273,21 @@ export default function Home() {
   async function handleInputMouseUp() {
     //todo: un cambio de color del borde también debería venir acá?
     console.log("up:", inputBorderPixels);
+    console.log("img original:", originalImg);
+    console.log("Img0:", undoImageList[0]);
+
+    let newBorderPixels = 0;
+    if (parseInt(inputBorderPixels) > 0) {
+      if (undoImageList[0].width > undoImageList[0].height) {
+        newBorderPixels =
+          (parseInt(inputBorderPixels) * 100) / originalImg!.width;
+      } else {
+        newBorderPixels =
+          (parseInt(inputBorderPixels) * 100) / originalImg!.height;
+      }
+      console.log("newBorderPixels:", newBorderPixels);
+    }
+
     if (currentProcess === ImageProcess.Border) {
       //handleBorde();
 
@@ -294,7 +309,7 @@ export default function Home() {
           imgAddBorder,
           {
             BorderPercent: inputBorderPercent,
-            BorderPixels: inputBorderPixels,
+            BorderPixels: newBorderPixels.toString(),
             BorderColor: inputBorderColor,
           }
         );
@@ -322,7 +337,7 @@ export default function Home() {
           imgAddBorder,
           {
             BorderPercent: inputBorderPercent,
-            BorderPixels: inputBorderPixels,
+            BorderPixels: newBorderPixels.toString(),
             BorderColor: inputBorderColor,
           }
         );
@@ -346,7 +361,7 @@ export default function Home() {
         imgAddBorder,
         {
           BorderPercent: inputBorderPercent,
-          BorderPixels: inputBorderPixels,
+          BorderPixels: newBorderPixels.toString(),
           BorderColor: inputBorderColor,
         }
       );
@@ -501,7 +516,8 @@ export default function Home() {
             onChange={handleInputBorderPercent}
             onMouseUp={handleInputMouseUp}
           ></input>
-          {inputBorderPercent}%
+          {inputBorderPercent}%{" "}
+          {originalImg && (originalImg!.width / 100) * parseInt(inputBorderPercent)}px
           <input
             type="range"
             id="inputBorderPixels"
