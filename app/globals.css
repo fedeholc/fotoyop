@@ -181,3 +181,39 @@
  .undoList img {
    border: 1px solid red;
  }
+
+ .toolbar__borders {
+   display: grid;
+   grid-template-columns: 1fr;
+   grid-template-rows: auto;
+   gap: 1rem;
+ }
+
+ .toolbar__borders input[type="Number"] {
+   border-radius: 5px;
+   padding: 0.2rem 0.4rem;
+   font-size: inherit;
+   border: 1px solid rgb(128 128 128 / 50%);
+   text-align: right;
+   width: 100px;
+ }
+
+ .toolbar__borders input[type="Range"] {
+   min-width: 200px;
+   max-width: 300px;
+   width: 100%;
+ }
+
+ .flex-row {
+   display: flex;
+   flex-direction: row;
+ }
+
+ .flex-col {
+   display: flex;
+   flex-direction: column;
+ }
+
+ .gap05 {
+   gap: 0.5rem;
+ }

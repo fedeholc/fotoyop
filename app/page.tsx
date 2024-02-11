@@ -6,6 +6,7 @@ import {
   ProcessFunction,
   DisplaySections,
   ImageProcess,
+  ProcessOptionsType,
 } from "./types";
 import {
   imgToBW,
@@ -117,6 +118,7 @@ export default function Home() {
   async function handleUploadFormInput(
     event: React.FormEvent<HTMLFormElement>
   ) {
+    console.log("holiX");
     event.preventDefault();
     const file = (event.target as HTMLFormElement).files[0];
     loadFileProcedure(file as File);
@@ -198,7 +200,7 @@ export default function Home() {
    * Cuando se suelta un archivo en el area de drop, se llama al procedimiento de carga de archivo.
    * @param event
    */
-  function handleDrop(event: React.DragEvent<HTMLLabelElement>) {
+  function handleDrop(event: React.DragEvent<HTMLDivElement>) {
     event.preventDefault();
     const files: File[] = [];
 
@@ -227,7 +229,7 @@ export default function Home() {
    * Cambia el CSS del area de drop cuando el mouse sobre ellos.
    * @param event
    */
-  function handleDragOver(event: React.DragEvent<HTMLLabelElement>) {
+  function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
     event.preventDefault();
     let dropTitles = document.querySelectorAll(".drop-title");
     dropTitles.forEach((title) => {
@@ -242,7 +244,7 @@ export default function Home() {
    * Cambia el CSS del area de drop (vuelve al estado inicial) cuando el mouse sale de allí.
    * @param event
    */
-  function handleDragLeave(event: React.DragEvent<HTMLLabelElement>) {
+  function handleDragLeave(event: React.DragEvent<HTMLDivElement>) {
     let dropTitles = document.querySelectorAll(".drop-title");
     dropTitles.forEach((title) => {
       title.classList.remove("drop-title-dragover");
@@ -251,25 +253,14 @@ export default function Home() {
     dropContainer?.classList.remove("drop-container-dragover");
   }
 
-  function handleInputBorderPixels(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleInputBorderPixelsRange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
     console.log(event.target.value);
     setInputBorderPercent("0");
     setInputBorderPixels(event.target.value);
-    /*    applyProcessFunction(smallCanvasRef.current, imgAddBorder, {
-      BorderPercent: inputBorderPercent,
-      BorderPixels: inputBorderPixels,
-      BorderColor: inputBorderColor,
-    }); */
-    /*  setProcessList([
-      ...processList,
-      (imageData) =>
-        imgAddBorder(imageData, {
-          BorderPercent: inputBorderPercent,
-          BorderPixels: inputBorderPixels,
-          BorderColor: inputBorderColor,
-        }),
-    ]); */
   }
+
   async function handleInputMouseUp() {
     //todo: un cambio de color del borde también debería venir acá?
     console.log("up:", inputBorderPixels);
@@ -415,8 +406,130 @@ export default function Home() {
 
   function handleInputBorderColor(event: React.ChangeEvent<HTMLInputElement>) {
     setInputBorderColor(event.target.value);
-    //handleInputMouseUp();
   }
+
+  function handleInputBorderPixelsText(
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.KeyboardEvent<HTMLInputElement>
+  ) {
+    setInputBorderPercent("0");
+    setInputBorderPixels((event.target as HTMLInputElement).value);
+    handleBorderChange({
+      BorderColor: inputBorderColor,
+      BorderPixels: (event.target as HTMLInputElement).value,
+      BorderPercent: "0",
+    });
+  }
+  function handleInputBorderPercentText(
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.KeyboardEvent<HTMLInputElement>
+  ) {
+    setInputBorderPixels("0");
+    setInputBorderPercent((event.target as HTMLInputElement).value);
+    handleBorderChange({
+      BorderColor: inputBorderColor,
+      BorderPixels: "0",
+      BorderPercent: (event.target as HTMLInputElement).value,
+    });
+  }
+
+  function handleInputBorderPixelsRangeMouseUp() {
+    setInputBorderPercent("0");
+    handleBorderChange({
+      BorderColor: inputBorderColor,
+      BorderPixels: inputBorderPixels,
+      BorderPercent: "0",
+    });
+  }
+  function handleInputBorderPercentRangeMouseUp() {
+    setInputBorderPixels("0");
+    handleBorderChange({
+      BorderColor: inputBorderColor,
+      BorderPixels: "0",
+      BorderPercent: inputBorderPercent,
+    });
+  }
+
+  function handleBorderChange(borderOptions: ProcessOptionsType) {
+    console.log("options", borderOptions);
+    let smallCanvasBorderOptions = { ...borderOptions };
+
+    let newBorderPixels = 0;
+    if (parseInt(inputBorderPixels) > 0) {
+      if (undoImageList[0].width > undoImageList[0].height) {
+        newBorderPixels =
+          (parseInt(inputBorderPixels) * mainCanvasConfig.maxWidth) /
+          originalImg!.width;
+      } else {
+        newBorderPixels =
+          (parseInt(inputBorderPixels) * mainCanvasConfig.maxHeight) /
+          originalImg!.height;
+      }
+    }
+
+    smallCanvasBorderOptions.BorderPixels = newBorderPixels.toString();
+    console.log("smallCanvasBorderOptions:", smallCanvasBorderOptions);
+    if (currentProcess === ImageProcess.Border) {
+      const newUndoImageList = [...undoImageList];
+      if (undoImageList.length > 1) {
+        newUndoImageList.pop();
+        drawImageDataOnCanvas(
+          newUndoImageList[newUndoImageList.length - 1],
+          smallCanvasRef.current!
+        );
+
+        const tempProcessList = [...processList];
+        tempProcessList.pop();
+
+        let newImageData = applyProcessFunction(
+          smallCanvasRef.current,
+          imgAddBorder,
+          smallCanvasBorderOptions
+        );
+
+        setUndoImageList([...newUndoImageList, newImageData]);
+
+        let newProcessList: ProcessFunction[] = [
+          ...tempProcessList,
+          (imageData) => imgAddBorder(imageData, borderOptions),
+        ];
+
+        setProcessList(newProcessList);
+      } else {
+        let newImageData = applyProcessFunction(
+          smallCanvasRef.current,
+          imgAddBorder,
+          smallCanvasBorderOptions
+        );
+
+        setUndoImageList([...newUndoImageList, newImageData]);
+
+        setProcessList([
+          ...processList,
+          (imageData) => imgAddBorder(imageData, borderOptions),
+        ]);
+      }
+    } else if (currentProcess === null) {
+      setCurrentProcess(ImageProcess.Border);
+      let newImageData = applyProcessFunction(
+        smallCanvasRef.current,
+        imgAddBorder,
+        smallCanvasBorderOptions
+      );
+
+      let newUndoImageList = [...undoImageList, newImageData];
+      setUndoImageList(newUndoImageList);
+
+      let newProcessList: ProcessFunction[] = [
+        ...processList,
+        (imageData) => imgAddBorder(imageData, borderOptions),
+      ];
+      setProcessList(newProcessList);
+    }
+  }
+
   return (
     <main id="app" className={styles.main}>
       <section id="section__image">
@@ -432,8 +545,7 @@ export default function Home() {
             onInput={handleUploadFormInput}
             id="form-upload"
           >
-            <label
-              htmlFor="imagenInput"
+            <div
               className="drop-container"
               id="dropcontainer"
               onDrop={handleDrop}
@@ -457,7 +569,7 @@ export default function Home() {
                 style={{ display: "none" }}
                 ref={inputUploadRef}
               ></input>
-            </label>
+            </div>
           </form>
         )}
 
@@ -496,53 +608,97 @@ export default function Home() {
         </div>
         <details className="toolbar__details">
           <summary className="toolbar__summary">Borders</summary>
-          <button type="button" id="btnApplyBorder" onClick={handleApplyBorder}>
-            Apply
-          </button>
-          <button
-            type="button"
-            id="btnDiscardBorder"
-            onClick={handleDiscardBorder}
-          >
-            Discard
-          </button>
-          <input
-            type="range"
-            id="inputBorderPercent"
-            name="inputBorderPercent"
-            min="0"
-            max="100"
-            value={inputBorderPercent}
-            onChange={handleInputBorderPercent}
-            onMouseUp={handleInputMouseUp}
-          ></input>
-          {inputBorderPercent}%{" "}
-          {originalImg && (originalImg!.width / 100) * parseInt(inputBorderPercent)}px
-          <input
-            type="range"
-            id="inputBorderPixels"
-            name="inputBorderPixels"
-            min="0"
-            max="100"
-            value={inputBorderPixels}
-            onChange={handleInputBorderPixels}
-            onMouseUp={handleInputMouseUp}
-          ></input>
-          {inputBorderPixels}px
-          <input
-            type="color"
-            list="true"
-            value={inputBorderColor}
-            onChange={handleInputBorderColor}
-          />
-          {inputBorderColor}
-          {/*  <datalist id="colors">
-            <option>#ff0000</option>
-            <option>#0000ff</option>
-            <option>#00ff00</option>
-            <option>#ffff00</option>
-            <option>#00ffff</option>
-          </datalist> */}
+          <div className="toolbar__borders">
+            <div className="flex-col">
+              <div>Border in percent</div>
+
+              <div className="flex-row gap05">
+                <input
+                  type="range"
+                  id="inputBorderPercent"
+                  name="inputBorderPercent"
+                  min="0"
+                  max="100"
+                  value={inputBorderPercent}
+                  onChange={handleInputBorderPercent}
+                  onMouseUp={handleInputBorderPercentRangeMouseUp}
+                ></input>
+
+                <input
+                  type="number"
+                  id="inputBorderPercentN"
+                  name="inputBorderPercentN"
+                  min="0"
+                  value={inputBorderPercent}
+                  onKeyUp={handleInputBorderPercentText}
+                  onChange={handleInputBorderPercentText}
+                ></input>
+                <div>
+                  {inputBorderPercent}%{" "}
+                  {originalImg &&
+                    (originalImg!.width / 100) * parseInt(inputBorderPercent)}
+                  px
+                </div>
+              </div>
+            </div>
+            <div className="flex-col">
+              <div>Border in pixels</div>
+              <div className="flex-row gap05">
+                <input
+                  type="range"
+                  id="inputBorderPixels"
+                  name="inputBorderPixels"
+                  min="0"
+                  max="1920"
+                  value={inputBorderPixels}
+                  onChange={handleInputBorderPixelsRange}
+                  onMouseUp={handleInputBorderPixelsRangeMouseUp}
+                ></input>
+                <input
+                  type="number"
+                  id="inputBorderPixelsN"
+                  name="inputBorderPixelsN"
+                  min="0"
+                  value={inputBorderPixels}
+                  onKeyUp={handleInputBorderPixelsText}
+                  onChange={handleInputBorderPixelsText}
+                ></input>
+                <div>px</div>
+              </div>
+            </div>
+            <div>
+              <input
+                type="color"
+                list="true"
+                value={inputBorderColor}
+                onChange={handleInputBorderColor}
+              />
+              {inputBorderColor}
+              {/*  <datalist id="colors">
+                <option>#ff0000</option>
+                <option>#0000ff</option>
+                <option>#00ff00</option>
+                <option>#ffff00</option>
+                <option>#00ffff</option>
+              </datalist> */}
+            </div>
+            <div>
+              <button
+                type="button"
+                id="btnApplyBorder"
+                onClick={handleApplyBorder}
+              >
+                Apply
+              </button>
+              <button
+                type="button"
+                id="btnDiscardBorder"
+                onClick={handleDiscardBorder}
+              >
+                Discard
+              </button>
+            </div>
+          </div>
         </details>
         {/*<canvas id="canvas2" hidden ref={offScreenCanvasRef}></canvas>*/}
         <div className="undoList">
