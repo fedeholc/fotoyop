@@ -158,6 +158,8 @@ export default function Home() {
 
     setAddingBorder(false);
     //todo FIXME: ojo, si se sale de la parte de edición de borde para hacer otra cosa también hay que hacer el set addingBorder a false
+    //todo tal vez mejor que en lugar de tener un addingborder, es decir, una variable por cada proceso, se podría tener una que diga cuál se está aplicando, ejemplo: processInAction: "border", de modo que cuando cambia a otro, ya está listo el anterior.
+    //FIXME: //todo: otro problema, cuando se aplica el border pixel, ej 100px, le pone 100 al small canvas y luego le pone 100 a la imagen final, esto último está bien pero al small debería ser proporcional.
   }
 
   /**
@@ -286,7 +288,7 @@ export default function Home() {
       );
 
       setUndoImageList([...newUndoImageList, newImageData]);
-      /*
+
       setProcessList([
         ...processList,
         (imageData) =>
@@ -295,7 +297,7 @@ export default function Home() {
             BorderPixels: inputBorderPixels,
             BorderColor: inputBorderColor,
           }),
-      ]); */
+      ]);
     } else if (addingBorder === false) {
       setAddingBorder(true);
       let newImageData = applyProcessFunction(
