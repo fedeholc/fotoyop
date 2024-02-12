@@ -486,7 +486,6 @@ export default function Home() {
               </div>
             </form>
           )}
-          <button onClick={handleNewImage}>New Image</button>
           <div>
             <div>
               <div>Original image.</div>
@@ -504,124 +503,135 @@ export default function Home() {
           </div>
         </section>
         <section id="section__toolbar">
-          <div className="toolbar">
-            <button type="button" id="btnToBN" onClick={() => handleToBN()}>
-              a BN
-            </button>
+          <div className="toolbar__top">
             <button
               type="button"
               id="btnDescargar"
               onClick={() => handleDownload()}
             >
-              descargar
+              Download
             </button>
+            <button onClick={handleNewImage}>New Image</button>
+
             <button id="btnUndo" onClick={handleUndo}>
               Undo
             </button>
           </div>
-          <details className="toolbar__details">
-            <summary className="toolbar__summary">Borders</summary>
-            <div className="toolbar__borders">
-              <div className="toolbar-row ">
-                <div className="toolbar-row__title">Color</div>
-                <div className="toolbar-row__border-color">
-                  <input
-                    type="color"
-                    list="true"
-                    value={inputBorderColor}
-                    onChange={handleInputBorderColor}
-                  />
-                  {/*  <datalist id="colors">
-                      <option>#ff0000</option>
-                      <option>#0000ff</option>
-                      <option>#00ff00</option>
-                      <option>#ffff00</option>
-                      <option>#00ffff</option>
-                    </datalist> */}
-                  <input
-                    type="Text"
-                    min="0"
-                    value={inputBorderColor}
-                    onChange={handleInputBorderColor}
-                  ></input>
-                </div>
-              </div>
-
-              <div className="toolbar-row ">
-                <div className="toolbar-row__title">Border in percent</div>
-
-                <div className="toolbar-row__border-ranges">
-                  <input
-                    type="number"
-                    id="inputBorderPercentN"
-                    name="inputBorderPercentN"
-                    min="0"
-                    value={inputBorderPercent}
-                    onKeyUp={handleInputBorderPercentText}
-                    onChange={handleInputBorderPercentText}
-                  ></input>
-
-                  <div className="toolbar_row__units">%</div>
-                  <input
-                    type="range"
-                    id="inputBorderPercent"
-                    name="inputBorderPercent"
-                    min="0"
-                    max="100"
-                    value={inputBorderPercent}
-                    onChange={handleInputBorderPercent}
-                    onMouseUp={handleInputBorderPercentRangeMouseUp}
-                  ></input>
-                </div>
-              </div>
-              <div className="toolbar-row">
-                <div className="toolbar-row__title">Border in pixels</div>
-
-                <div className="toolbar-row__border-ranges">
-                  <input
-                    type="number"
-                    id="inputBorderPixelsN"
-                    name="inputBorderPixelsN"
-                    min="0"
-                    value={inputBorderPixels}
-                    onKeyUp={handleInputBorderPixelsText}
-                    onChange={handleInputBorderPixelsText}
-                  ></input>
-                  <div className="toolbar_row__units">px</div>
-                  <input
-                    type="range"
-                    id="inputBorderPixels"
-                    name="inputBorderPixels"
-                    min="0"
-                    max="1920"
-                    value={inputBorderPixels}
-                    onChange={handleInputBorderPixelsRange}
-                    onMouseUp={handleInputBorderPixelsRangeMouseUp}
-                  ></input>
-                </div>
-              </div>
-
+          <div className="toolbar__group-container">
+            <details className="toolbar__details">
+              <summary className="toolbar__summary">Grayscale</summary>
               <div className="toolbar-row">
                 <div className="toolbar-row__buttons">
                   <button
                     type="button"
-                    id="btnApplyBorder"
-                    onClick={handleApplyBorder}
+                    id="btnToBN"
+                    onClick={() => handleToBN()}
                   >
-                    Apply
-                  </button>
-                  <button
-                    type="button"
-                    id="btnDiscardBorder"
-                    onClick={handleDiscardBorder}
-                  >
-                    Discard
+                    Convert to Grayscale
                   </button>
                 </div>
               </div>
-            </div>
-          </details>
+            </details>
+            <details className="toolbar__details">
+              <summary className="toolbar__summary">Borders</summary>
+              <div className="toolbar__borders">
+                <div className="toolbar-row ">
+                  <div className="toolbar-row__title">Color</div>
+                  <div className="toolbar-row__border-color">
+                    <input
+                      type="color"
+                      list="true"
+                      value={inputBorderColor}
+                      onChange={handleInputBorderColor}
+                    />
+                    {/*  <datalist id="colors">
+                        <option>#ff0000</option>
+                        <option>#0000ff</option>
+                        <option>#00ff00</option>
+                        <option>#ffff00</option>
+                        <option>#00ffff</option>
+                      </datalist> */}
+                    <input
+                      type="Text"
+                      min="0"
+                      value={inputBorderColor}
+                      onChange={handleInputBorderColor}
+                    ></input>
+                  </div>
+                </div>
+                <div className="toolbar-row ">
+                  <div className="toolbar-row__title">Border in percent</div>
+                  <div className="toolbar-row__border-ranges">
+                    <input
+                      type="number"
+                      id="inputBorderPercentN"
+                      name="inputBorderPercentN"
+                      min="0"
+                      value={inputBorderPercent}
+                      onKeyUp={handleInputBorderPercentText}
+                      onChange={handleInputBorderPercentText}
+                    ></input>
+                    <div className="toolbar_row__units">%</div>
+                    <input
+                      type="range"
+                      id="inputBorderPercent"
+                      name="inputBorderPercent"
+                      min="0"
+                      max="100"
+                      value={inputBorderPercent}
+                      onChange={handleInputBorderPercent}
+                      onMouseUp={handleInputBorderPercentRangeMouseUp}
+                    ></input>
+                  </div>
+                </div>
+                <div className="toolbar-row">
+                  <div className="toolbar-row__title">Border in pixels</div>
+                  <div className="toolbar-row__border-ranges">
+                    <input
+                      type="number"
+                      id="inputBorderPixelsN"
+                      name="inputBorderPixelsN"
+                      min="0"
+                      value={inputBorderPixels}
+                      onKeyUp={handleInputBorderPixelsText}
+                      onChange={handleInputBorderPixelsText}
+                    ></input>
+                    <div className="toolbar_row__units">px</div>
+                    <input
+                      type="range"
+                      id="inputBorderPixels"
+                      name="inputBorderPixels"
+                      min="0"
+                      max="1920"
+                      value={inputBorderPixels}
+                      onChange={handleInputBorderPixelsRange}
+                      onMouseUp={handleInputBorderPixelsRangeMouseUp}
+                    ></input>
+                  </div>
+                </div>
+                <div className="toolbar-row">
+                  <div className="toolbar-row__buttons">
+                    <button
+                      type="button"
+                      id="btnApplyBorder"
+                      onClick={handleApplyBorder}
+                    >
+                      Apply
+                    </button>
+                    <button
+                      type="button"
+                      id="btnDiscardBorder"
+                      onClick={handleDiscardBorder}
+                    >
+                      Discard
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
           {/*<canvas id="canvas2" hidden ref={offScreenCanvasRef}></canvas>*/}
+          <br />
           <div className="undoList">
             {undoImageList.map((img, index) => {
               return (
