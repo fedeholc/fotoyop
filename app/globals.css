@@ -205,17 +205,24 @@
    display: none;
  }
 
- .undoList {
+ .undo-list {
    display: flex;
    flex-direction: row;
    flex-wrap: wrap;
-   gap: 0.5rem;
-   justify-content: space-around;
+   gap: 1rem;
+   justify-content: space-evenly;
+   margin-top: 1rem;
+   margin-bottom: 1rem;
+   max-height: 500px;
  }
 
- .undoList img {
+ .undo-list img {
    box-shadow: 1px 1px 8px 1px rgb(12, 12, 12);
-   height: 100px;
+   width: 120px;
+ }
+
+ .toolbar-undo-list {
+   overflow: auto;
  }
 
  .toolbar__borders {
@@ -273,7 +280,7 @@
  }
 
  .place-end {
-   place-content: end;
+   place-content: flex-end;
  }
 
  .place-center {
@@ -318,7 +325,7 @@
  .toolbar-row__buttons {
    display: flex;
    flex-direction: row;
-   justify-content: end;
+   justify-content: flex-end;
    gap: 1rem;
    padding: 0.5rem;
  }

@@ -181,6 +181,9 @@ export default function Home() {
    * Procedimiento para generar la imagen procesada y enviarla como descarga.
    */
   function handleDownload() {
+    if (!originalFile) {
+      return;
+    }
     let downloadDataURL = processImgToCanvas(
       originalImg!,
       processList
@@ -545,6 +548,7 @@ export default function Home() {
                   <div className="toolbar-row__title">Color</div>
                   <div className="toolbar-row__border-color">
                     <input
+                      id="inputBorderColor"
                       type="color"
                       list="true"
                       value={inputBorderColor}
@@ -558,6 +562,7 @@ export default function Home() {
                         <option>#00ffff</option>
                       </datalist> */}
                     <input
+                      id="inputBorderColorText"
                       type="Text"
                       min="0"
                       value={inputBorderColor}
@@ -637,17 +642,21 @@ export default function Home() {
             </details>
             <details className="toolbar__details">
               <summary className="toolbar__summary">Changes history</summary>
-              <div className="toolbar-row undoList">
-                {undoImageList.toReversed().map((img, index) => {
-                  return (
-                    <span key={index}>
-                      <img src={`${imageDataToBase64(img)}`.toString()} />
-                      {/*  <span>
-                        ̣{img.width}-{img.height}
-                      </span> */}
-                    </span>
-                  );
-                })}
+              <div className="toolbar-row toolbar-undo-list">
+                {undoImageList && (
+                  <div className="undo-list">
+                    {undoImageList.toReversed().map((img, index) => {
+                      return (
+                        <span key={index}>
+                          <img src={`${imageDataToBase64(img)}`.toString()} />
+                          {/*  <span>
+                          ̣{img.width}-{img.height}
+                        </span> */}
+                        </span>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </details>
           </div>
