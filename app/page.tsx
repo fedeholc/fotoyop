@@ -522,9 +522,46 @@ export default function Home() {
           <details className="toolbar__details">
             <summary className="toolbar__summary">Borders</summary>
             <div className="toolbar__borders">
-              <div className="flex-col">
-                <div>Border in percent</div>
-                <div className="flex-row gap05">
+              <div className="toolbar-row ">
+                <div className="toolbar-row__title">Color</div>
+                <div className="toolbar-row__border-color">
+                  <input
+                    type="color"
+                    list="true"
+                    value={inputBorderColor}
+                    onChange={handleInputBorderColor}
+                  />
+                  {/*  <datalist id="colors">
+                      <option>#ff0000</option>
+                      <option>#0000ff</option>
+                      <option>#00ff00</option>
+                      <option>#ffff00</option>
+                      <option>#00ffff</option>
+                    </datalist> */}
+                  <input
+                    type="Text"
+                    min="0"
+                    value={inputBorderColor}
+                    onChange={handleInputBorderColor}
+                  ></input>
+                </div>
+              </div>
+
+              <div className="toolbar-row ">
+                <div className="toolbar-row__title">Border in percent</div>
+
+                <div className="toolbar-row__border-ranges">
+                  <input
+                    type="number"
+                    id="inputBorderPercentN"
+                    name="inputBorderPercentN"
+                    min="0"
+                    value={inputBorderPercent}
+                    onKeyUp={handleInputBorderPercentText}
+                    onChange={handleInputBorderPercentText}
+                  ></input>
+
+                  <div className="toolbar_row__units">%</div>
                   <input
                     type="range"
                     id="inputBorderPercent"
@@ -535,26 +572,22 @@ export default function Home() {
                     onChange={handleInputBorderPercent}
                     onMouseUp={handleInputBorderPercentRangeMouseUp}
                   ></input>
-                  <input
-                    type="number"
-                    id="inputBorderPercentN"
-                    name="inputBorderPercentN"
-                    min="0"
-                    value={inputBorderPercent}
-                    onKeyUp={handleInputBorderPercentText}
-                    onChange={handleInputBorderPercentText}
-                  ></input>
-                  <div>
-                    {inputBorderPercent}%{" "}
-                    {originalImg &&
-                      (originalImg!.width / 100) * parseInt(inputBorderPercent)}
-                    px
-                  </div>
                 </div>
               </div>
-              <div className="flex-col">
-                <div>Border in pixels</div>
-                <div className="flex-row gap05">
+              <div className="toolbar-row">
+                <div className="toolbar-row__title">Border in pixels</div>
+
+                <div className="toolbar-row__border-ranges">
+                  <input
+                    type="number"
+                    id="inputBorderPixelsN"
+                    name="inputBorderPixelsN"
+                    min="0"
+                    value={inputBorderPixels}
+                    onKeyUp={handleInputBorderPixelsText}
+                    onChange={handleInputBorderPixelsText}
+                  ></input>
+                  <div className="toolbar_row__units">px</div>
                   <input
                     type="range"
                     id="inputBorderPixels"
@@ -565,49 +598,26 @@ export default function Home() {
                     onChange={handleInputBorderPixelsRange}
                     onMouseUp={handleInputBorderPixelsRangeMouseUp}
                   ></input>
-                  <input
-                    type="number"
-                    id="inputBorderPixelsN"
-                    name="inputBorderPixelsN"
-                    min="0"
-                    value={inputBorderPixels}
-                    onKeyUp={handleInputBorderPixelsText}
-                    onChange={handleInputBorderPixelsText}
-                  ></input>
-                  <div>px</div>
                 </div>
               </div>
-              <div>
-                <input
-                  type="color"
-                  list="true"
-                  value={inputBorderColor}
-                  onChange={handleInputBorderColor}
-                />
-                {inputBorderColor}
-                {/*  <datalist id="colors">
-                  <option>#ff0000</option>
-                  <option>#0000ff</option>
-                  <option>#00ff00</option>
-                  <option>#ffff00</option>
-                  <option>#00ffff</option>
-                </datalist> */}
-              </div>
-              <div>
-                <button
-                  type="button"
-                  id="btnApplyBorder"
-                  onClick={handleApplyBorder}
-                >
-                  Apply
-                </button>
-                <button
-                  type="button"
-                  id="btnDiscardBorder"
-                  onClick={handleDiscardBorder}
-                >
-                  Discard
-                </button>
+
+              <div className="toolbar-row">
+                <div className="toolbar-row__buttons">
+                  <button
+                    type="button"
+                    id="btnApplyBorder"
+                    onClick={handleApplyBorder}
+                  >
+                    Apply
+                  </button>
+                  <button
+                    type="button"
+                    id="btnDiscardBorder"
+                    onClick={handleDiscardBorder}
+                  >
+                    Discard
+                  </button>
+                </div>
               </div>
             </div>
           </details>
@@ -616,7 +626,10 @@ export default function Home() {
             {undoImageList.map((img, index) => {
               return (
                 <span key={index}>
-                  <img width={150} src={`${imageDataToBase64(img)}`.toString()} />
+                  <img
+                    width={150}
+                    src={`${imageDataToBase64(img)}`.toString()}
+                  />
                   <span>
                     ̣{img.width}-{img.height}
                   </span>
