@@ -425,6 +425,25 @@ export default function Home() {
     }
   }
 
+  /**
+   * Handler del botón New Image. Vuelve al estado inicial.
+   */
+  function handleNewImage() {
+    console.log("New Image");
+    setDisplays((prev) => {
+      return { ...prev, canvas: false, form: true };
+    });
+    setOriginalFile(null);
+    setOriginalImg(null);
+    setProcessList([]);
+    setUndoImageList([]);
+    setCurrentProcess(null);
+    setInputBorderPixels("0");
+    setInputBorderPercent("0");
+    setInputBorderColor("#ffffff");
+    imagenPreviewRef.current!.src = "";
+  }
+
   return (
     <main id="app" className={styles.main}>
       <section id="section__image">
@@ -468,6 +487,7 @@ export default function Home() {
           </form>
         )}
 
+        <button onClick={handleNewImage}>New Image</button>
         <div>
           <div>
             <div>Original image.</div>
