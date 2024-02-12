@@ -118,7 +118,6 @@ export default function Home() {
   async function handleUploadFormInput(
     event: React.FormEvent<HTMLFormElement>
   ) {
-    console.log("holiX");
     event.preventDefault();
     const file = (event.target as HTMLFormElement).files[0];
     loadFileProcedure(file as File);
@@ -128,6 +127,11 @@ export default function Home() {
    * Handler del click en convertir a blanco y negro.
    */
   function handleToBN() {
+    if (currentProcess === ImageProcess.Border) {
+      handleApplyBorder();
+      setCurrentProcess(null);
+    }
+
     applyProcessFunction(smallCanvasRef.current, imgToBW);
     setProcessList([...processList, imgToBW]);
 
@@ -135,17 +139,17 @@ export default function Home() {
 
     let newUndoImageList = [...undoImageList, newImageData];
     setUndoImageList(newUndoImageList);
-    console.log("addingBorder, undoImageList en BN:", undoImageList);
-    console.log("addingBorder, newundoImageList:", newUndoImageList);
   }
 
+  /**
+   * Handler del botón descartar borde. Descarta las últimas modificaciones recuperando el snapshot anterior.
+   */
   function handleDiscardBorder() {
     const newUndoImageList = [...undoImageList];
     if (currentProcess === ImageProcess.Border && undoImageList.length > 1) {
       newUndoImageList.pop();
       setUndoImageList(newUndoImageList);
 
-      //setUndoImageList(newUndoImageList);
       drawImageDataOnCanvas(
         newUndoImageList[newUndoImageList.length - 1],
         smallCanvasRef.current!
@@ -160,9 +164,9 @@ export default function Home() {
     setInputBorderColor("#ffffff");
     setInputBorderPercent("0");
     setInputBorderPixels("0");
-
     setCurrentProcess(null);
   }
+
   /**
    * Handler del click en aplicar borde.
    */
@@ -170,12 +174,7 @@ export default function Home() {
     setInputBorderColor("#ffffff");
     setInputBorderPercent("0");
     setInputBorderPixels("0");
-
     setCurrentProcess(null);
-    //? en lugar de trabajar todo esto del undo con la lista de imagenes, el canvas, etc., tal vez mejor tener otro canvas para  mostrar las modificaciones de borde (tal vez con un dialog?) y que luego se plique al canvas principal???
-    //todo FIXME: ojo, si se sale de la parte de edición de borde para hacer otra cosa también hay que hacer el set addingBorder a false
-    //todo tal vez mejor que en lugar de tener un addingborder, es decir, una variable por cada proceso, se podría tener una que diga cuál se está aplicando, ejemplo: processInAction: "border", de modo que cuando cambia a otro, ya está listo el anterior.
-    //FIXME: //todo: otro problema, cuando se aplica el border pixel, ej 100px, le pone 100 al small canvas y luego le pone 100 a la imagen final, esto último está bien pero al small debería ser proporcional.
   }
 
   /**
@@ -186,7 +185,6 @@ export default function Home() {
       originalImg!,
       processList
     ).toDataURL("image/jpeg", 1);
-    console.log(processList);
     const enlaceDescarga = document.createElement("a");
     enlaceDescarga.href = downloadDataURL || "";
     enlaceDescarga.download = "image.jpg";
@@ -194,6 +192,13 @@ export default function Home() {
     document.body.appendChild(enlaceDescarga);
     enlaceDescarga.click();
     document.body.removeChild(enlaceDescarga);
+  }
+
+  /**
+   * Simula el click en el input de tipo file para abrir el explorador de archivos.
+   */
+  function handleUploadFormClick() {
+    inputUploadRef.current?.click();
   }
 
   /**
@@ -216,13 +221,6 @@ export default function Home() {
     }
 
     loadFileProcedure(files[0]);
-  }
-
-  /**
-   * Simula el click en el input de tipo file para abrir el explorador de archivos.
-   */
-  function handleUploadFormClick() {
-    inputUploadRef.current?.click();
   }
 
   /**
@@ -253,132 +251,20 @@ export default function Home() {
     dropContainer?.classList.remove("drop-container-dragover");
   }
 
+  /**
+   *
+   * @param event - evento del input de rango de borde en pixels
+   */
   function handleInputBorderPixelsRange(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
-    console.log(event.target.value);
     setInputBorderPercent("0");
     setInputBorderPixels(event.target.value);
   }
 
-  async function handleInputMouseUp() {
-    //todo: un cambio de color del borde también debería venir acá?
-    console.log("up:", inputBorderPixels);
-    console.log("img original:", originalImg);
-    console.log("Img0:", undoImageList[0]);
-
-    let newBorderPixels = 0;
-    if (parseInt(inputBorderPixels) > 0) {
-      if (undoImageList[0].width > undoImageList[0].height) {
-        newBorderPixels =
-          (parseInt(inputBorderPixels) * 100) / originalImg!.width;
-      } else {
-        newBorderPixels =
-          (parseInt(inputBorderPixels) * 100) / originalImg!.height;
-      }
-      console.log("newBorderPixels:", newBorderPixels);
-    }
-
-    if (currentProcess === ImageProcess.Border) {
-      //handleBorde();
-
-      const newUndoImageList = [...undoImageList];
-      if (undoImageList.length > 1) {
-        newUndoImageList.pop();
-        //setUndoImageList(newUndoImageList);
-        drawImageDataOnCanvas(
-          newUndoImageList[newUndoImageList.length - 1],
-          smallCanvasRef.current!
-        );
-
-        const tempProcessList = [...processList];
-        tempProcessList.pop();
-        //setProcessList(newProcessList);
-
-        let newImageData = applyProcessFunction(
-          smallCanvasRef.current,
-          imgAddBorder,
-          {
-            BorderPercent: inputBorderPercent,
-            BorderPixels: newBorderPixels.toString(),
-            BorderColor: inputBorderColor,
-          }
-        );
-
-        setUndoImageList([...newUndoImageList, newImageData]);
-
-        let newProcessList: ProcessFunction[] = [
-          ...tempProcessList,
-          (imageData) =>
-            imgAddBorder(imageData, {
-              BorderPercent: inputBorderPercent,
-              BorderPixels: inputBorderPixels,
-              BorderColor: inputBorderColor,
-            }),
-        ];
-
-        setProcessList(newProcessList);
-
-        console.log("addingBorder, undoImageList1:", undoImageList);
-        console.log("addingBorder, newimagelist:", newUndoImageList);
-        console.log("new processList:", tempProcessList);
-      } else {
-        let newImageData = applyProcessFunction(
-          smallCanvasRef.current,
-          imgAddBorder,
-          {
-            BorderPercent: inputBorderPercent,
-            BorderPixels: newBorderPixels.toString(),
-            BorderColor: inputBorderColor,
-          }
-        );
-
-        setUndoImageList([...newUndoImageList, newImageData]);
-
-        setProcessList([
-          ...processList,
-          (imageData) =>
-            imgAddBorder(imageData, {
-              BorderPercent: inputBorderPercent,
-              BorderPixels: inputBorderPixels,
-              BorderColor: inputBorderColor,
-            }),
-        ]);
-      }
-    } else if (currentProcess === null) {
-      setCurrentProcess(ImageProcess.Border);
-      let newImageData = applyProcessFunction(
-        smallCanvasRef.current,
-        imgAddBorder,
-        {
-          BorderPercent: inputBorderPercent,
-          BorderPixels: newBorderPixels.toString(),
-          BorderColor: inputBorderColor,
-        }
-      );
-
-      let newUndoImageList = [...undoImageList, newImageData];
-      setUndoImageList(newUndoImageList);
-
-      let newProcessList: ProcessFunction[] = [
-        ...processList,
-        (imageData) =>
-          imgAddBorder(imageData, {
-            BorderPercent: inputBorderPercent,
-            BorderPixels: inputBorderPixels,
-            BorderColor: inputBorderColor,
-          }),
-      ];
-      setProcessList(newProcessList);
-      console.log("addingBorder, undoImageList2:", undoImageList);
-      console.log("addingBorder, newundoImageList:", newUndoImageList);
-      console.log("process list:", processList);
-      console.log("new processList:", newProcessList);
-    }
-
-    //handleBorde();
-  }
-
+  /**
+   * Handler del botón Undo. Deshace la última modificación.
+   */
   function handleUndo() {
     if (undoImageList.length > 1) {
       const newUndoImageList = [...undoImageList];
@@ -392,11 +278,13 @@ export default function Home() {
       const newProcessList = [...processList];
       newProcessList.pop();
       setProcessList(newProcessList);
-      console.log("en undo, undoimagelist:", undoImageList);
-      console.log("en undo, undoimagelist:", newUndoImageList);
     }
   }
 
+  /**
+   *
+   * @param event - evento del input de rango de borde en porcentaje
+   */
   function handleInputBorderPercent(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
@@ -404,10 +292,18 @@ export default function Home() {
     setInputBorderPercent(event.target.value);
   }
 
+  /**
+   *
+   * @param event - evento del input de color de borde
+   */
   function handleInputBorderColor(event: React.ChangeEvent<HTMLInputElement>) {
     setInputBorderColor(event.target.value);
   }
 
+  /**
+   *
+   * @param event - evento del input box de borde en pixels
+   */
   function handleInputBorderPixelsText(
     event:
       | React.ChangeEvent<HTMLInputElement>
@@ -421,6 +317,11 @@ export default function Home() {
       BorderPercent: "0",
     });
   }
+
+  /**
+   *
+   * @param event - evento del input box de borde en porcentaje
+   */
   function handleInputBorderPercentText(
     event:
       | React.ChangeEvent<HTMLInputElement>
@@ -435,6 +336,10 @@ export default function Home() {
     });
   }
 
+  /**
+   * Handler del Mouse Up del input de rango de borde en pixels.
+   * Al mover el range, cuando se suelta el botón del mouse, se aplica el borde.
+   */
   function handleInputBorderPixelsRangeMouseUp() {
     setInputBorderPercent("0");
     handleBorderChange({
@@ -443,6 +348,11 @@ export default function Home() {
       BorderPercent: "0",
     });
   }
+
+  /**
+   * Handler del Mouse Up del input de rango de borde en porcentaje.
+   *
+   */
   function handleInputBorderPercentRangeMouseUp() {
     setInputBorderPixels("0");
     handleBorderChange({
@@ -452,10 +362,13 @@ export default function Home() {
     });
   }
 
+  /**
+   * Procedimiento para aplicar el borde a la imagen.
+   * @param borderOptions - opciones de borde
+   */
   function handleBorderChange(borderOptions: ProcessOptionsType) {
-    console.log("options", borderOptions);
+    // El borderOptions como viene lo uso para guardar en processList, ya que el borde en pixels se aplica tal cual a la imagen final con la resolución original. Pero para el small canvas, que es el que se muestra, el borde en pixels se tiene que ajustar a la resolución del canvas.
     let smallCanvasBorderOptions = { ...borderOptions };
-
     let newBorderPixels = 0;
     if (parseInt(inputBorderPixels) > 0) {
       if (undoImageList[0].width > undoImageList[0].height) {
@@ -468,65 +381,47 @@ export default function Home() {
           originalImg!.height;
       }
     }
-
     smallCanvasBorderOptions.BorderPixels = newBorderPixels.toString();
-    console.log("smallCanvasBorderOptions:", smallCanvasBorderOptions);
-    if (currentProcess === ImageProcess.Border) {
-      const newUndoImageList = [...undoImageList];
-      if (undoImageList.length > 1) {
-        newUndoImageList.pop();
-        drawImageDataOnCanvas(
-          newUndoImageList[newUndoImageList.length - 1],
-          smallCanvasRef.current!
-        );
 
-        const tempProcessList = [...processList];
-        tempProcessList.pop();
+    // Puede pasar que el cambio de borde se haga por primera vez o que ya se esté trabajando en eso y no sea la primera modificación. La idea es que si ya se hicieron modificaciones y se vuelve a modificar, se descarta la última modificación y se agrega la nueva, de forma tal que no se acumulen bordes. Por ejemplo, si se aplica un borde de 10 pixel y luego se mueve el rango a 20, se descarta el de 10 y se aplica el de 20. Todo esto hasta que se haga click en Apply.
 
-        let newImageData = applyProcessFunction(
-          smallCanvasRef.current,
-          imgAddBorder,
-          smallCanvasBorderOptions
-        );
-
-        setUndoImageList([...newUndoImageList, newImageData]);
-
-        let newProcessList: ProcessFunction[] = [
-          ...tempProcessList,
-          (imageData) => imgAddBorder(imageData, borderOptions),
-        ];
-
-        setProcessList(newProcessList);
-      } else {
-        let newImageData = applyProcessFunction(
-          smallCanvasRef.current,
-          imgAddBorder,
-          smallCanvasBorderOptions
-        );
-
-        setUndoImageList([...newUndoImageList, newImageData]);
-
-        setProcessList([
-          ...processList,
-          (imageData) => imgAddBorder(imageData, borderOptions),
-        ]);
-      }
-    } else if (currentProcess === null) {
+    // Si es primera modificación del borde, se agrega el proceso a processList y se guarda el snapshot de la imagen en undoImageList.
+    if (currentProcess === null || undoImageList.length <= 1) {
       setCurrentProcess(ImageProcess.Border);
       let newImageData = applyProcessFunction(
         smallCanvasRef.current,
         imgAddBorder,
         smallCanvasBorderOptions
       );
-
-      let newUndoImageList = [...undoImageList, newImageData];
-      setUndoImageList(newUndoImageList);
-
-      let newProcessList: ProcessFunction[] = [
+      setUndoImageList([...undoImageList, newImageData]);
+      setProcessList([
         ...processList,
         (imageData) => imgAddBorder(imageData, borderOptions),
-      ];
-      setProcessList(newProcessList);
+      ]);
+    }
+
+    // Si ya se vienen haciendo modificaciones al borde (aún no aplicadas) se descarta la última modificación y se agrega la nueva.
+    if (currentProcess === ImageProcess.Border && undoImageList.length > 1) {
+      const newUndoImageList = [...undoImageList];
+      newUndoImageList.pop();
+      drawImageDataOnCanvas(
+        newUndoImageList[newUndoImageList.length - 1],
+        smallCanvasRef.current!
+      );
+
+      let newImageData = applyProcessFunction(
+        smallCanvasRef.current,
+        imgAddBorder,
+        smallCanvasBorderOptions
+      );
+      setUndoImageList([...newUndoImageList, newImageData]);
+
+      const tempProcessList = [...processList];
+      tempProcessList.pop();
+      setProcessList([
+        ...tempProcessList,
+        (imageData) => imgAddBorder(imageData, borderOptions),
+      ]);
     }
   }
 
