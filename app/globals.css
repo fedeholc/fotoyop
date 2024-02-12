@@ -207,11 +207,15 @@
 
  .undoList {
    display: flex;
-
+   flex-direction: row;
+   flex-wrap: wrap;
+   gap: 0.5rem;
+   justify-content: space-around;
  }
 
  .undoList img {
-   border: 1px solid red;
+   box-shadow: 1px 1px 8px 1px rgb(12, 12, 12);
+   height: 100px;
  }
 
  .toolbar__borders {

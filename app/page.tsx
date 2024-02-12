@@ -486,35 +486,16 @@ export default function Home() {
               </div>
             </form>
           )}
-          {/*   <div>
-            <div>
-              <div>Original image.</div>
-              <div>Name: {originalFile?.name} </div>
-              <div>Size: {originalFile?.size} bytes.</div>
-              <div>
-                Size: {originalImg?.width} x {originalImg?.height} px.
-              </div>
-            </div>
-            <img
-              id="imagenPreview"
-              style={{ maxWidth: "300px", maxHeight: "300px" }}
-              ref={imagenPreviewRef}
-            ></img>
-          </div> */}
         </section>
         <section id="section__toolbar">
           <div className="toolbar__top">
-            <button
-              type="button"
-              id="btnDescargar"
-              onClick={() => handleDownload()}
-            >
-              Download
+            <button id="btnUndo" onClick={handleUndo}>
+              Undo
             </button>
             <button onClick={handleNewImage}>New Image</button>
 
-            <button id="btnUndo" onClick={handleUndo}>
-              Undo
+            <button type="button" id="btnDescargar" onClick={handleDownload}>
+              Download
             </button>
           </div>
           <div className="toolbar__group-container">
@@ -654,24 +635,24 @@ export default function Home() {
                 </div>
               </div>
             </details>
+            <details className="toolbar__details">
+              <summary className="toolbar__summary">Changes history</summary>
+              <div className="toolbar-row undoList">
+                {undoImageList.toReversed().map((img, index) => {
+                  return (
+                    <span key={index}>
+                      <img src={`${imageDataToBase64(img)}`.toString()} />
+                      {/*  <span>
+                        ̣{img.width}-{img.height}
+                      </span> */}
+                    </span>
+                  );
+                })}
+              </div>
+            </details>
           </div>
-          {/*<canvas id="canvas2" hidden ref={offScreenCanvasRef}></canvas>*/}
+
           <br />
-          <div className="undoList">
-            {undoImageList.map((img, index) => {
-              return (
-                <span key={index}>
-                  <img
-                    width={150}
-                    src={`${imageDataToBase64(img)}`.toString()}
-                  />
-                  <span>
-                    ̣{img.width}-{img.height}
-                  </span>
-                </span>
-              );
-            })}
-          </div>
         </section>
       </main>
     </div>
