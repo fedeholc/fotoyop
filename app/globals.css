@@ -9,16 +9,33 @@
  body {
    display: flex;
    flex-direction: column;
+   align-items: center;
 
    min-height: 100vh;
    min-width: fit-content;
 
+   background-color: #101010;
+
+ }
+
+ .app-wrapper {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   max-width: 1187px;
+   width: 100%;
+
+   /*    border: 1px solid red;
+ */
  }
 
  #app {
+
+
    display: grid;
-   grid-template-columns: 1fr 1fr;
+   grid-template-columns: 1fr 400px;
    grid-template-rows: 1fr;
+   grid-template-areas: "section-image section-toolbar";
 
    /*    border: 2px solid palevioletred;
  */
@@ -26,16 +43,22 @@
   align-content: center; */
    min-height: 100vh;
    box-sizing: border-box;
+   width: 100%;
+
  }
 
  #section__image {
+   grid-area: section-image;
    border-right: 1px solid var(--gray-8);
    background-color: rgb(128 128 128);
    padding: 1rem;
  }
 
  #section__toolbar {
-   margin: 1rem;
+   grid-area: section-toolbar;
+   background-color: #202020;
+   padding: 1rem;
+   color: whitesmoke
  }
 
  .canvas__container {
@@ -53,7 +76,8 @@
 
    /* ojo, no debe ser nunca mayor que el valor de max width que está en la configuración mainCanvasConfig */
    max-width: 800px;
-   width: 100%;
+   /*    width: 100%;
+ */
  }
 
  #form-upload {

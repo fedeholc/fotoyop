@@ -445,190 +445,187 @@ export default function Home() {
   }
 
   return (
-    <main id="app" className={styles.main}>
-      <section id="section__image">
-        {displays.canvas && (
-          <div className="canvas__container">
-            <canvas id="canvas-small" ref={smallCanvasRef}></canvas>
-          </div>
-        )}
-
-        {displays.form && (
-          <form
-            onClick={handleUploadFormClick}
-            onInput={handleUploadFormInput}
-            id="form-upload"
-          >
-            <div
-              className="drop-container"
-              id="dropcontainer"
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
+    <div className="app-wrapper">
+      <main id="app" className={styles.main}>
+        <section id="section__image">
+          {displays.canvas && (
+            <div className="canvas__container">
+              <canvas id="canvas-small" ref={smallCanvasRef}></canvas>
+            </div>
+          )}
+          {displays.form && (
+            <form
+              onClick={handleUploadFormClick}
+              onInput={handleUploadFormInput}
+              id="form-upload"
             >
-              <div className="drop-title-group">
-                <span className="drop-title">Drop files here</span>
-                <br />
-                <br />
-                <span className="drop-title">or</span>
-                <br />
-                <br />
-                <span className="drop-title">click / tap to upload</span>
-                <br />
+              <div
+                className="drop-container"
+                id="dropcontainer"
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+              >
+                <div className="drop-title-group">
+                  <span className="drop-title">Drop files here</span>
+                  <br />
+                  <br />
+                  <span className="drop-title">or</span>
+                  <br />
+                  <br />
+                  <span className="drop-title">click / tap to upload</span>
+                  <br />
+                </div>
+                <input
+                  type="file"
+                  id="input-upload"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  ref={inputUploadRef}
+                ></input>
               </div>
-              <input
-                type="file"
-                id="input-upload"
-                accept="image/*"
-                style={{ display: "none" }}
-                ref={inputUploadRef}
-              ></input>
-            </div>
-          </form>
-        )}
-
-        <button onClick={handleNewImage}>New Image</button>
-        <div>
+            </form>
+          )}
+          <button onClick={handleNewImage}>New Image</button>
           <div>
-            <div>Original image.</div>
-            <div>Name: {originalFile?.name} </div>
-            <div>Size: {originalFile?.size} bytes.</div>
             <div>
-              Size: {originalImg?.width} x {originalImg?.height} px.
+              <div>Original image.</div>
+              <div>Name: {originalFile?.name} </div>
+              <div>Size: {originalFile?.size} bytes.</div>
+              <div>
+                Size: {originalImg?.width} x {originalImg?.height} px.
+              </div>
             </div>
+            <img
+              id="imagenPreview"
+              style={{ maxWidth: "300px", maxHeight: "300px" }}
+              ref={imagenPreviewRef}
+            ></img>
           </div>
-          <img
-            id="imagenPreview"
-            style={{ maxWidth: "300px", maxHeight: "300px" }}
-            ref={imagenPreviewRef}
-          ></img>
-        </div>
-      </section>
-
-      <section id="section__toolbar">
-        <div className="toolbar">
-          <button type="button" id="btnToBN" onClick={() => handleToBN()}>
-            a BN
-          </button>
-          <button
-            type="button"
-            id="btnDescargar"
-            onClick={() => handleDownload()}
-          >
-            descargar
-          </button>
-          <button id="btnUndo" onClick={handleUndo}>
-            Undo
-          </button>
-        </div>
-        <details className="toolbar__details">
-          <summary className="toolbar__summary">Borders</summary>
-          <div className="toolbar__borders">
-            <div className="flex-col">
-              <div>Border in percent</div>
-
-              <div className="flex-row gap05">
-                <input
-                  type="range"
-                  id="inputBorderPercent"
-                  name="inputBorderPercent"
-                  min="0"
-                  max="100"
-                  value={inputBorderPercent}
-                  onChange={handleInputBorderPercent}
-                  onMouseUp={handleInputBorderPercentRangeMouseUp}
-                ></input>
-
-                <input
-                  type="number"
-                  id="inputBorderPercentN"
-                  name="inputBorderPercentN"
-                  min="0"
-                  value={inputBorderPercent}
-                  onKeyUp={handleInputBorderPercentText}
-                  onChange={handleInputBorderPercentText}
-                ></input>
-                <div>
-                  {inputBorderPercent}%{" "}
-                  {originalImg &&
-                    (originalImg!.width / 100) * parseInt(inputBorderPercent)}
-                  px
+        </section>
+        <section id="section__toolbar">
+          <div className="toolbar">
+            <button type="button" id="btnToBN" onClick={() => handleToBN()}>
+              a BN
+            </button>
+            <button
+              type="button"
+              id="btnDescargar"
+              onClick={() => handleDownload()}
+            >
+              descargar
+            </button>
+            <button id="btnUndo" onClick={handleUndo}>
+              Undo
+            </button>
+          </div>
+          <details className="toolbar__details">
+            <summary className="toolbar__summary">Borders</summary>
+            <div className="toolbar__borders">
+              <div className="flex-col">
+                <div>Border in percent</div>
+                <div className="flex-row gap05">
+                  <input
+                    type="range"
+                    id="inputBorderPercent"
+                    name="inputBorderPercent"
+                    min="0"
+                    max="100"
+                    value={inputBorderPercent}
+                    onChange={handleInputBorderPercent}
+                    onMouseUp={handleInputBorderPercentRangeMouseUp}
+                  ></input>
+                  <input
+                    type="number"
+                    id="inputBorderPercentN"
+                    name="inputBorderPercentN"
+                    min="0"
+                    value={inputBorderPercent}
+                    onKeyUp={handleInputBorderPercentText}
+                    onChange={handleInputBorderPercentText}
+                  ></input>
+                  <div>
+                    {inputBorderPercent}%{" "}
+                    {originalImg &&
+                      (originalImg!.width / 100) * parseInt(inputBorderPercent)}
+                    px
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex-col">
-              <div>Border in pixels</div>
-              <div className="flex-row gap05">
+              <div className="flex-col">
+                <div>Border in pixels</div>
+                <div className="flex-row gap05">
+                  <input
+                    type="range"
+                    id="inputBorderPixels"
+                    name="inputBorderPixels"
+                    min="0"
+                    max="1920"
+                    value={inputBorderPixels}
+                    onChange={handleInputBorderPixelsRange}
+                    onMouseUp={handleInputBorderPixelsRangeMouseUp}
+                  ></input>
+                  <input
+                    type="number"
+                    id="inputBorderPixelsN"
+                    name="inputBorderPixelsN"
+                    min="0"
+                    value={inputBorderPixels}
+                    onKeyUp={handleInputBorderPixelsText}
+                    onChange={handleInputBorderPixelsText}
+                  ></input>
+                  <div>px</div>
+                </div>
+              </div>
+              <div>
                 <input
-                  type="range"
-                  id="inputBorderPixels"
-                  name="inputBorderPixels"
-                  min="0"
-                  max="1920"
-                  value={inputBorderPixels}
-                  onChange={handleInputBorderPixelsRange}
-                  onMouseUp={handleInputBorderPixelsRangeMouseUp}
-                ></input>
-                <input
-                  type="number"
-                  id="inputBorderPixelsN"
-                  name="inputBorderPixelsN"
-                  min="0"
-                  value={inputBorderPixels}
-                  onKeyUp={handleInputBorderPixelsText}
-                  onChange={handleInputBorderPixelsText}
-                ></input>
-                <div>px</div>
+                  type="color"
+                  list="true"
+                  value={inputBorderColor}
+                  onChange={handleInputBorderColor}
+                />
+                {inputBorderColor}
+                {/*  <datalist id="colors">
+                  <option>#ff0000</option>
+                  <option>#0000ff</option>
+                  <option>#00ff00</option>
+                  <option>#ffff00</option>
+                  <option>#00ffff</option>
+                </datalist> */}
+              </div>
+              <div>
+                <button
+                  type="button"
+                  id="btnApplyBorder"
+                  onClick={handleApplyBorder}
+                >
+                  Apply
+                </button>
+                <button
+                  type="button"
+                  id="btnDiscardBorder"
+                  onClick={handleDiscardBorder}
+                >
+                  Discard
+                </button>
               </div>
             </div>
-            <div>
-              <input
-                type="color"
-                list="true"
-                value={inputBorderColor}
-                onChange={handleInputBorderColor}
-              />
-              {inputBorderColor}
-              {/*  <datalist id="colors">
-                <option>#ff0000</option>
-                <option>#0000ff</option>
-                <option>#00ff00</option>
-                <option>#ffff00</option>
-                <option>#00ffff</option>
-              </datalist> */}
-            </div>
-            <div>
-              <button
-                type="button"
-                id="btnApplyBorder"
-                onClick={handleApplyBorder}
-              >
-                Apply
-              </button>
-              <button
-                type="button"
-                id="btnDiscardBorder"
-                onClick={handleDiscardBorder}
-              >
-                Discard
-              </button>
-            </div>
-          </div>
-        </details>
-        {/*<canvas id="canvas2" hidden ref={offScreenCanvasRef}></canvas>*/}
-        <div className="undoList">
-          {undoImageList.map((img, index) => {
-            return (
-              <span key={index}>
-                <img width={150} src={`${imageDataToBase64(img)}`.toString()} />
-                <span>
-                  ̣{img.width}-{img.height}
+          </details>
+          {/*<canvas id="canvas2" hidden ref={offScreenCanvasRef}></canvas>*/}
+          <div className="undoList">
+            {undoImageList.map((img, index) => {
+              return (
+                <span key={index}>
+                  <img width={150} src={`${imageDataToBase64(img)}`.toString()} />
+                  <span>
+                    ̣{img.width}-{img.height}
+                  </span>
                 </span>
-              </span>
-            );
-          })}
-        </div>
-      </section>
-    </main>
+              );
+            })}
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }
