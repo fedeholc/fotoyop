@@ -486,7 +486,7 @@ export default function Home() {
               </div>
             </form>
           )}
-          <div>
+        {/*   <div>
             <div>
               <div>Original image.</div>
               <div>Name: {originalFile?.name} </div>
@@ -500,7 +500,7 @@ export default function Home() {
               style={{ maxWidth: "300px", maxHeight: "300px" }}
               ref={imagenPreviewRef}
             ></img>
-          </div>
+          </div> */}
         </section>
         <section id="section__toolbar">
           <div className="toolbar__top">
@@ -518,6 +518,24 @@ export default function Home() {
             </button>
           </div>
           <div className="toolbar__group-container">
+            <details className="toolbar__details">
+              <summary className="toolbar__summary">Image Information</summary>
+              <div className="toolbar-row">
+                <div>
+           
+                  <div>File name: {originalFile?.name} </div>
+                  <div>Size: {(((originalFile!.size)/10).toString())} Kbytes.</div>
+                  <div>
+                    Size: {originalImg?.width} x {originalImg?.height} px.
+                  </div>
+                </div>
+                <img
+                  id="imagenPreview"
+                  style={{ maxWidth: "300px", maxHeight: "300px" }}
+                  ref={imagenPreviewRef}
+                ></img>
+              </div>
+            </details>
             <details className="toolbar__details">
               <summary className="toolbar__summary">Grayscale</summary>
               <div className="toolbar-row">
