@@ -73,11 +73,7 @@
  }
 
  #canvas-small {
-
-   /* ojo, no debe ser nunca mayor que el valor de max width que está en la configuración mainCanvasConfig */
-   max-width: 800px;
-   /*    width: 100%;
- */
+   max-width: 100%;
  }
 
  #form-upload {

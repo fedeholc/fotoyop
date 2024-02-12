@@ -28,8 +28,8 @@ export default function Home() {
   });
 
   const mainCanvasConfig: CanvasConfig = {
-    maxWidth: 400,
-    maxHeight: 400,
+    maxWidth: 600,
+    maxHeight: 600,
   };
 
   const [inputBorderPixels, setInputBorderPixels] = useState<string>("0");
