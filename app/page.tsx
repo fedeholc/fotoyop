@@ -50,6 +50,7 @@ export default function Home() {
   const smallCanvasCtxRef = useRef<CanvasRenderingContext2D | null>(null);
   const imagenPreviewRef = useRef<HTMLImageElement | null>(null);
   const smallCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const inputBorderPixelsRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setOriginalImg(new window.Image() as HTMLImageElement);
@@ -88,6 +89,13 @@ export default function Home() {
 
       const newImageElement = new window.Image();
       newImageElement.src = originalImageB64;
+      newImageElement.onload = () => {
+        if (newImageElement.width > newImageElement.height) {
+          inputBorderPixelsRef.current!.max = newImageElement.width.toString();
+        } else {
+          inputBorderPixelsRef.current!.max = newImageElement.height.toString();
+        }
+      };
       setOriginalImg(newImageElement);
 
       drawImageB64OnCanvas(
@@ -613,7 +621,7 @@ export default function Home() {
                       id="inputBorderPixels"
                       name="inputBorderPixels"
                       min="0"
-                      max="1920"
+                      ref={inputBorderPixelsRef}
                       value={inputBorderPixels}
                       onChange={handleInputBorderPixelsRange}
                       onMouseUp={handleInputBorderPixelsRangeMouseUp}

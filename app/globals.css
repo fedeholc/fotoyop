@@ -43,6 +43,7 @@
   align-content: center; */
    min-height: 100vh;
    box-sizing: border-box;
+   background-color: rgb(128 128 128);
    width: 100%;
 
  }
@@ -52,14 +53,16 @@
    border-right: 1px solid var(--gray-8);
    background-color: rgb(128 128 128);
    padding: 1rem;
+   margin-top: auto;
+   margin-bottom: auto;
  }
 
  #section__toolbar {
    grid-area: section-toolbar;
    background-color: #202020;
    padding: 1rem;
-
-   color: whitesmoke
+   color: whitesmoke;
+   border-right: 1px solid #404040;
  }
 
  .toolbar__group-container {
@@ -235,9 +238,10 @@
  .toolbar__borders input[type="Number"] {
    border-radius: 5px;
    padding: 0.2rem 0.4rem;
-   font-size: inherit;
+   font-size: 0.9rem;
    border: 1px solid rgb(128 128 128 / 50%);
    text-align: right;
+   font-family: monospace;
  }
 
  .toolbar__borders input[type="Text"] {
@@ -310,7 +314,7 @@
    padding-right: 0.5rem;
    padding-left: 0.5rem;
    display: grid;
-   grid-template-columns: minmax(50px, 1fr) 20px 200px;
+   grid-template-columns: minmax(80px, 1fr) 20px 170px;
    gap: 0.4rem;
  }
 
