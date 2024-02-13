@@ -134,7 +134,11 @@ export default function Home() {
   /**
    * Handler del click en convertir a blanco y negro.
    */
-  function handleToBN() {
+  function handleToGrayscale() {
+    if (!originalFile) {
+      return;
+    }
+
     if (currentProcess === ImageProcess.Border) {
       handleApplyBorder();
       setCurrentProcess(null);
@@ -277,6 +281,9 @@ export default function Home() {
    * Handler del botón Undo. Deshace la última modificación.
    */
   function handleUndo() {
+    if (!originalFile) {
+      return;
+    }
     if (undoImageList.length > 1) {
       const newUndoImageList = [...undoImageList];
       newUndoImageList.pop();
@@ -378,6 +385,9 @@ export default function Home() {
    * @param borderOptions - opciones de borde
    */
   function handleBorderChange(borderOptions: ProcessOptionsType) {
+    if (!originalFile) {
+      return;
+    }
     // El borderOptions como viene lo uso para guardar en processList, ya que el borde en pixels se aplica tal cual a la imagen final con la resolución original. Pero para el small canvas, que es el que se muestra, el borde en pixels se tiene que ajustar a la resolución del canvas.
     let smallCanvasBorderOptions = { ...borderOptions };
     let newBorderPixels = 0;
@@ -542,7 +552,7 @@ export default function Home() {
                   <button
                     type="button"
                     id="btnToBN"
-                    onClick={() => handleToBN()}
+                    onClick={() => handleToGrayscale()}
                   >
                     Convert to Grayscale
                   </button>

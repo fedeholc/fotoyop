@@ -25,7 +25,7 @@
 
  #app {
    display: grid;
-   grid-template-columns: 1fr 400px;
+   grid-template-columns: 1fr 420px;
    grid-template-rows: 1fr;
    grid-template-areas: "section-image section-toolbar";
    /*    border: 2px solid palevioletred;
@@ -223,6 +223,7 @@
    grid-template-columns: 1fr;
    grid-template-rows: auto;
    gap: 1rem;
+
  }
 
  .toolbar__borders input[type="Number"] {
@@ -283,8 +284,9 @@
  }
 
  .toolbar-row {
-   border-top: 1px solid #3f3f3f;
+   border-top: 1px solid hsl(0, 0%, 18%);
    padding-top: 0.5rem;
+   padding-bottom: 0rem;
    padding-left: 0.5rem;
    padding-right: 0.5rem;
 
@@ -301,16 +303,14 @@
  }
 
  .toolbar-row__border-ranges {
-   padding-right: 0.5rem;
-   padding-left: 0.5rem;
+
    display: grid;
-   grid-template-columns: minmax(80px, 1fr) 20px 170px;
+   grid-template-columns: 80px 20px 1fr;
    gap: 0.4rem;
  }
 
  .toolbar-row__border-color {
-   padding-right: 0.5rem;
-   padding-left: 0.5rem;
+
    display: grid;
    grid-template-columns: 1fr 80px;
    gap: 1rem;
@@ -319,9 +319,10 @@
  .toolbar-row__buttons {
    display: flex;
    flex-direction: row;
-   justify-content: flex-end;
+   justify-content: center;
    gap: 1rem;
-   padding: 0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
  }
 
  .toolbar__image-info {
