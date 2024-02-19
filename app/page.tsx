@@ -20,6 +20,7 @@ import {
   imageB64ToImageData,
   imageDataToBase64,
 } from "./imageProcessing";
+import type { Metadata } from "next";
 
 export default function Home() {
   const [displays, setDisplays] = useState<DisplaySections>({
