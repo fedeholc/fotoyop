@@ -28,10 +28,8 @@
    grid-template-columns: 1fr 420px;
    grid-template-rows: 1fr;
    grid-template-areas: "section-image section-toolbar";
-   /*    border: 2px solid palevioletred;
- */
-   /*  justify-items: center;
-  align-content: center; */
+
+
    min-height: 100vh;
    box-sizing: border-box;
    background-color: rgb(128 128 128);
@@ -321,8 +319,8 @@
    flex-direction: row;
    justify-content: center;
    gap: 1rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+   padding-top: 0.5rem;
+   padding-bottom: 0.5rem;
  }
 
  .toolbar__image-info {
@@ -366,4 +364,23 @@
  #section__toolbar input {
    color: whitesmoke;
    background-color: #202020;
+ }
+
+
+ @media screen and (max-width: 468px) {
+   #app {
+     display: grid;
+     /*  grid-template-columns: 1fr 420px;
+   grid-template-rows: 1fr; */
+     /*    grid-template-areas: "section-image section-toolbar";
+ */
+     grid-template-columns: 1fr;
+     grid-template-areas: "section-image" " section-toolbar";
+     min-height: 100vh;
+     box-sizing: border-box;
+     background-color: rgb(128 128 128);
+     width: 100%;
+   }
+
+
  }

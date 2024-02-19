@@ -611,6 +611,7 @@ export default function Home() {
                       value={inputBorderPercent}
                       onChange={handleInputBorderPercent}
                       onMouseUp={handleInputBorderPercentRangeMouseUp}
+                      onTouchEnd={handleInputBorderPercentRangeMouseUp}
                     ></input>
                   </div>
                 </div>
@@ -636,6 +637,7 @@ export default function Home() {
                       value={inputBorderPixels}
                       onChange={handleInputBorderPixelsRange}
                       onMouseUp={handleInputBorderPixelsRangeMouseUp}
+                      onTouchEnd={handleInputBorderPixelsRangeMouseUp}
                     ></input>
                   </div>
                 </div>
