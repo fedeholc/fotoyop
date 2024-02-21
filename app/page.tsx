@@ -7,6 +7,7 @@ import {
   DisplaySections,
   ImageProcess,
   ProcessOptionsType,
+  DisplayToolbars,
 } from "./types";
 import {
   imgToBW,
@@ -26,6 +27,11 @@ export default function Home() {
   const [displays, setDisplays] = useState<DisplaySections>({
     canvas: false,
     form: true,
+  });
+
+  const [toolbarsDisplay, setToolbarsDisplay] = useState<DisplayToolbars>({
+    border: false,
+    gray: false,
   });
 
   const mainCanvasConfig: CanvasConfig = {
@@ -73,7 +79,7 @@ export default function Home() {
    */
   async function loadFileProcedure(file: File) {
     setDisplays((prev) => {
-      return { ...prev, canvas: true, form: false };
+      return { canvas: true, form: false };
     });
 
     let originalImageB64: string;
@@ -453,7 +459,7 @@ export default function Home() {
   function handleNewImage() {
     console.log("New Image");
     setDisplays((prev) => {
-      return { ...prev, canvas: false, form: true };
+      return { canvas: false, form: true };
     });
     setOriginalFile(null);
     setOriginalImg(null);
@@ -464,6 +470,13 @@ export default function Home() {
     setInputBorderPercent("0");
     setInputBorderColor("#ffffff");
     imagenPreviewRef.current!.src = "";
+  }
+
+  function handleToolbarBorder() {
+    setToolbarsDisplay({ gray: false, border: true });
+  }
+  function handleToolbarGray() {
+    setToolbarsDisplay({ gray: true, border: false });
   }
 
   return (
@@ -683,6 +696,29 @@ export default function Home() {
           </div>
 
           <br />
+        </section>
+        <section id="section__mobile">
+          {toolbarsDisplay.border && (
+            <div className="toolbar__border">
+              <button>b</button>
+            </div>
+          )}
+          {toolbarsDisplay.gray && (
+            <div className="toolbar__gray">
+              <button>G</button>
+            </div>
+          )}
+          <div className="row1">
+            <button id="btnUndo2" onClick={handleUndo}>
+              Undo
+            </button>
+            <button onClick={handleNewImage}>New Image</button>
+            <button type="button" id="btnDescargar2" onClick={handleDownload}>
+              Download
+            </button>
+            <button onClick={handleToolbarBorder}>Borde</button>
+            <button onClick={handleToolbarGray}>Gris</button>
+          </div>
         </section>
       </main>
     </div>

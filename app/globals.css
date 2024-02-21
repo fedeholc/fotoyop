@@ -14,9 +14,9 @@
    min-width: fit-content;
    background-color: #101010;
 
-  font-family: -apple-system, BlinkMacSystemFont,
-      "Segoe UI", system-ui, Roboto, Oxygen-Sans, Ubuntu, Cantarell,
-      "Helvetica Neue", sans-serif;
+   font-family: -apple-system, BlinkMacSystemFont,
+     "Segoe UI", system-ui, Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+     "Helvetica Neue", sans-serif;
  }
 
  .app-wrapper {
@@ -125,6 +125,7 @@
  }
 
  .drop-container {
+
    position: relative;
    display: flex;
    gap: 1rem;
@@ -340,7 +341,8 @@
    cursor: pointer;
  }
 
- #section__toolbar button {
+ #section__toolbar button,
+ #section__mobile button {
    padding: 0.5rem 1rem;
    border-radius: 5px;
    /*    border: 1px solid #8f8f8f;
@@ -356,7 +358,8 @@
    font-weight: 400;
  }
 
- #section__toolbar button:hover {
+ #section__toolbar button:hover,
+ #section__mobile button:hover {
    /*    background-color: #252525;
  */
    color: white;
@@ -364,13 +367,36 @@
    border: 1px solid deeppink;
  }
 
- #section__toolbar input {
+ #section__toolbar input,
+ #section__mobile input {
    color: whitesmoke;
    background-color: #202020;
  }
 
+ #section__mobile {
+   grid-area: "section-mobile";
+   display: none;
+   background-color: hsl(0, 0%, 18%);
+   padding: 1rem;
+   gap: 1rem;
+ }
+
+
 
  @media screen and (max-width: 840px) {
+
+   .drop-container {
+     height: 60vh;
+   }
+
+   #canvas-small {
+     max-height: 60vh;
+   }
+
+   #section__toolbar {
+     display: none;
+   }
+
    #app {
      display: grid;
      /*  grid-template-columns: 1fr 420px;
@@ -378,12 +404,16 @@
      /*    grid-template-areas: "section-image section-toolbar";
  */
      grid-template-columns: 1fr;
-     grid-template-areas: "section-image" " section-toolbar";
-     min-height: 100vh;
+     grid-template-areas: "section-image" "section-mobile";
+     height: 100vh;
      box-sizing: border-box;
      background-color: rgb(128 128 128);
-     width: 100%;
+     /* width: 100%; */
    }
 
+   #section__mobile {
+     display: flex;
+     flex-direction: column;
+   }
 
  }

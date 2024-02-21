@@ -45,3 +45,8 @@ export type DisplaySections = {
   form: boolean;
   canvas: boolean;
 };
+
+export type DisplayToolbars = {
+  border: boolean;
+  gray: boolean;
+}
