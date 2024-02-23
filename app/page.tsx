@@ -31,6 +31,7 @@ export default function Home() {
 
   const [toolbarsDisplay, setToolbarsDisplay] = useState<DisplayToolbars>({
     border: false,
+    borderPixels: false,
     gray: false,
   });
 
@@ -473,10 +474,10 @@ export default function Home() {
   }
 
   function handleToolbarBorder() {
-    setToolbarsDisplay({ gray: false, border: true });
+    setToolbarsDisplay({ gray: false, borderPixels: false, border: true });
   }
   function handleToolbarGray() {
-    setToolbarsDisplay({ gray: true, border: false });
+    setToolbarsDisplay({ gray: true, borderPixels: false, border: false });
   }
 
   return (
@@ -698,9 +699,66 @@ export default function Home() {
           <br />
         </section>
         <section id="section__mobile">
+          {toolbarsDisplay.borderPixels && (
+            <div className="toolbar__borders toolbar-row__border-ranges">
+              <input
+                type="range"
+                id="inputBorderPixels"
+                name="inputBorderPixels"
+                min="0"
+                ref={inputBorderPixelsRef}
+                value={inputBorderPixels}
+                onChange={handleInputBorderPixelsRange}
+                onMouseUp={handleInputBorderPixelsRangeMouseUp}
+                onTouchEnd={handleInputBorderPixelsRangeMouseUp}
+              ></input>
+              <input
+                type="number"
+                id="inputBorderPixelsN"
+                name="inputBorderPixelsN"
+                min="0"
+                value={inputBorderPixels}
+                onKeyUp={handleInputBorderPixelsText}
+                onChange={handleInputBorderPixelsText}
+              ></input>
+              <div className="toolbar_row__units">px</div>
+            </div>
+          )}
           {toolbarsDisplay.border && (
-            <div className="toolbar__border">
-              <button>b</button>
+            <div className="toolbar__borders ">
+              <input
+                id="inputBorderColor"
+                type="color"
+                list="true"
+                value={inputBorderColor}
+                onChange={handleInputBorderColor}
+              />
+              {/*  <datalist id="colors">
+                        <option>#ff0000</option>
+                        <option>#0000ff</option>
+                        <option>#00ff00</option>
+                        <option>#ffff00</option>
+                        <option>#00ffff</option>
+                      </datalist> */}
+              <input
+                id="inputBorderColorText"
+                type="Text"
+                min="0"
+                value={inputBorderColor}
+                onChange={handleInputBorderColor}
+              ></input>
+              <button>%</button>
+              <button
+                onClick={() =>
+                  setToolbarsDisplay({
+                    border: true,
+                    borderPixels: true,
+                    gray: false,
+                  })
+                }
+              >
+                px
+              </button>
             </div>
           )}
           {toolbarsDisplay.gray && (

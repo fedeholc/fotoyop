@@ -48,5 +48,6 @@ export type DisplaySections = {
 
 export type DisplayToolbars = {
   border: boolean;
+  borderPixels: boolean
   gray: boolean;
 }
