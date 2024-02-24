@@ -533,6 +533,8 @@ export default function Home() {
         smallCanvasBorderOptions
       ); */
 
+      //FIXME: se genera un flickeo al hacer el resize dentro de applyProcessFunctionWithSize
+      //TODO: revisar el calculo de las medidas, estan pensadas para adaptar a vertical en el tel nada más
       let newImageData = applyProcessFunctionWithSize(
         smallCanvasRef.current,
         imgAddBorder,
@@ -541,7 +543,7 @@ export default function Home() {
         smallCanvasBorderOptions
       );
 
-      // TODO: ojo, esto redimensiona el canvas para adaptarlo a la pantalla pero hace un flickeo porque ya se acaba de dibujar antes en applyProcessFunction, habría que hacer que ahí se dibuje más chico a la vez que el newimagedata se guarda con el tamaño que viene (tal vez usando un canvas temporal y offscreen en ese proceso?)
+      //esto era lo que usaba para el resize, si no lo voy a usar borrar
       /*  drawImageB64OnCanvas(
         imageDataToBase64(newImageData).toString(),
         smallCanvasRef.current as HTMLCanvasElement,
