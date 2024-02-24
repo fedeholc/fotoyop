@@ -51,8 +51,8 @@ export default function Home() {
   );
 
   const [windowDimensions, setWindowDimensions] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: 0,
+    height: 0,
   });
 
   const [processList, setProcessList] = useState<ProcessFunction[]>([]);
@@ -80,6 +80,11 @@ export default function Home() {
       }
     }
     console.log("wd:", windowDimensions);
+
+    setWindowDimensions({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
   }, [displays]);
   //el useEffect depende de displays porque oculta/muestra el canvas
 
