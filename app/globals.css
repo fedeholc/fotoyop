@@ -17,6 +17,7 @@
    font-family: -apple-system, BlinkMacSystemFont,
      "Segoe UI", system-ui, Roboto, Oxygen-Sans, Ubuntu, Cantarell,
      "Helvetica Neue", sans-serif;
+
  }
 
  .app-wrapper {
@@ -34,7 +35,7 @@
    grid-template-areas: "section-image section-toolbar";
 
 
-   min-height: 100vh;
+   min-height: 100svh;
    box-sizing: border-box;
    background-color: rgb(128 128 128);
    width: 100%;
@@ -139,7 +140,7 @@
    cursor: pointer;
    /*    transition: background .2s ease-in-out, border .2s ease-in-out;
  */
-   height: 80vh;
+   height: 80svh;
  }
 
  .drop-container:hover,
@@ -385,6 +386,11 @@
 
  @media screen and (max-width: 840px) {
 
+   /* TODO: tendría que ser solo para teléfonos, por el problema este de cuando se muestra la barra de navegación y cambia el tamaño de la pantalla, por lo que no combiene hacer un resize ahi, pero en una pc con una ventana vertical si habría que hacer que cambie con el resize o permitir el overflow */
+   body {
+     overflow-y: hidden;
+   }
+
    .toolbar__borders {
      display: flex;
      flex-direction: row;
@@ -446,7 +452,7 @@
      grid-template-columns: 1fr;
      grid-template-areas: "section-image" "section-mobile";
      grid-template-rows: 1fr auto;
-     height: 100vh;
+     height: 100svh;
      box-sizing: border-box;
      background-color: rgb(128 128 128);
    }

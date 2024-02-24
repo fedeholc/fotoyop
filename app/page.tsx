@@ -15,6 +15,7 @@ import {
   getImageFromFile,
   drawImageB64OnCanvas,
   applyProcessFunction,
+  applyProcessFunctionWithSize,
   processImgToCanvas,
   processToNewImageData,
   drawImageDataOnCanvas,
@@ -53,6 +54,8 @@ export default function Home() {
   const [windowDimensions, setWindowDimensions] = useState({
     width: 0,
     height: 0,
+    mobileToolbarHeight: 0,
+    mobileToolbarWidth: 0,
   });
 
   const [processList, setProcessList] = useState<ProcessFunction[]>([]);
@@ -69,6 +72,15 @@ export default function Home() {
   const smallCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const inputBorderPixelsRef = useRef<HTMLInputElement | null>(null);
 
+  function resize() {
+    drawImageB64OnCanvas(
+      imageDataToBase64(undoImageList[undoImageList.length - 1]).toString(),
+      smallCanvasRef.current as HTMLCanvasElement,
+      windowDimensions.width,
+      windowDimensions.height - windowDimensions.mobileToolbarHeight - 100
+    );
+  }
+
   useEffect(() => {
     setOriginalImg(new window.Image() as HTMLImageElement);
     if (smallCanvasRef.current) {
@@ -79,11 +91,14 @@ export default function Home() {
         smallCanvasCtxRef.current.imageSmoothingEnabled = false;
       }
     }
-    console.log("wd:", windowDimensions);
 
     setWindowDimensions({
       width: window.innerWidth,
       height: window.innerHeight,
+      mobileToolbarHeight:
+        document.querySelector("#section__mobile")?.clientHeight || 0,
+      mobileToolbarWidth:
+        document.querySelector("#section__mobile")?.clientWidth || 0,
     });
   }, [displays]);
   //el useEffect depende de displays porque oculta/muestra el canvas
@@ -91,23 +106,7 @@ export default function Home() {
   useEffect(() => {
     console.log("wd4:", windowDimensions);
     //console.log("u:", undoImageList.length, undoImageList, originalImg?.src);
-    if (smallCanvasRef?.current) {
-      console.log("nuevo tamaño");
-      //smallCanvasRef.current!.height = Math.floor(windowDimensions.height / 2);
-      /*     document
-        .querySelector("canvas")!
-        .setAttribute(
-          "height",
-          Math.floor(windowDimensions.height / 2).toString()
-        );
-      document
-        .querySelector("canvas")!
-        .setAttribute(
-          "width",
-          Math.floor(windowDimensions.width / 2).toString()
-        ); */
-      //smallCanvasRef.current!.width = Math.floor(windowDimensions.width / 2);
-    }
+
     if (undoImageList.length > 0 && smallCanvasRef.current && originalImg) {
       console.log("nuevo draw");
       /*      drawImageDataOnCanvas(
@@ -119,16 +118,22 @@ export default function Home() {
       // FIXME por otra parte el calculo hay que hacer que se aplica en otras partes del código, cuando se hace la modificación del borde, por ejemplo.
       // habría que veri si con eso se evita hacer esto en el resize. Tal vez tenga que quedar para cuando se agranda la pantalla porque si se va achicando se va trabajando con imagenes más pequeñas que al ser amplicadas se pixelan.
 
-      drawImageB64OnCanvas(
-        //originalImg.src,
+      /*   drawImageB64OnCanvas(
         imageDataToBase64(undoImageList[undoImageList.length - 1]).toString(),
         smallCanvasRef.current as HTMLCanvasElement,
         windowDimensions.width,
-        windowDimensions.height - 400
-      );
-      //setDisplays({ canvas: true, form: false });
+        windowDimensions.height - windowDimensions.mobileToolbarHeight - 100
+      ); */
     }
-    console.log("wd5:", smallCanvasRef);
+    console.log(
+      "canvasref:",
+      smallCanvasRef.current?.width,
+      smallCanvasRef.current?.height
+    );
+    console.log(
+      "toolbar heigh:",
+      document.querySelector("#section__mobile")?.clientHeight
+    );
   }, [windowDimensions]);
 
   useEffect(() => {
@@ -136,8 +141,11 @@ export default function Home() {
       setWindowDimensions({
         width: window.innerWidth,
         height: window.innerHeight,
+        mobileToolbarHeight:
+          document.querySelector("#section__mobile")?.clientHeight || 0,
+        mobileToolbarWidth:
+          document.querySelector("#section__mobile")?.clientWidth || 0,
       });
-      console.log("wd3:", window.innerWidth, window.innerHeight);
     }
 
     window.addEventListener("resize", handleResize);
@@ -518,11 +526,29 @@ export default function Home() {
         smallCanvasRef.current!
       );
 
-      let newImageData = applyProcessFunction(
+      //version sin hacer resize (no genera flickeo)
+      /*   let newImageData = applyProcessFunction(
         smallCanvasRef.current,
         imgAddBorder,
         smallCanvasBorderOptions
+      ); */
+
+      let newImageData = applyProcessFunctionWithSize(
+        smallCanvasRef.current,
+        imgAddBorder,
+        windowDimensions.width,
+        windowDimensions.height - windowDimensions.mobileToolbarHeight - 200,
+        smallCanvasBorderOptions
       );
+
+      // TODO: ojo, esto redimensiona el canvas para adaptarlo a la pantalla pero hace un flickeo porque ya se acaba de dibujar antes en applyProcessFunction, habría que hacer que ahí se dibuje más chico a la vez que el newimagedata se guarda con el tamaño que viene (tal vez usando un canvas temporal y offscreen en ese proceso?)
+      /*  drawImageB64OnCanvas(
+        imageDataToBase64(newImageData).toString(),
+        smallCanvasRef.current as HTMLCanvasElement,
+        windowDimensions.width,
+        windowDimensions.height - windowDimensions.mobileToolbarHeight - 200
+      ); */
+
       setUndoImageList([...newUndoImageList, newImageData]);
 
       const tempProcessList = [...processList];

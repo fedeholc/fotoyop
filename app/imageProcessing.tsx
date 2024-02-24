@@ -9,6 +9,7 @@ export {
   drawImageB64OnCanvas,
   applyProcessList,
   applyProcessFunction,
+  applyProcessFunctionWithSize,
   processImgToCanvas,
   processToNewImageData,
   drawImageDataOnCanvas,
@@ -169,7 +170,44 @@ function applyProcessFunction(
     ctx?.putImageData(newData, 0, 0);
   }
 
-  return ctx.getImageData(0, 0, newData.width, newData.height);
+  return newData;
+}
+
+function applyProcessFunctionWithSize(
+  canvas: OffscreenCanvas | HTMLCanvasElement | null,
+  processFunction: ProcessFunction,
+  width: number,
+  height: number,
+  options?: ProcessOptionsType
+): ImageData {
+  const ctx = canvas?.getContext("2d", {
+    willReadFrequently: true,
+  }) as CanvasRenderingContext2D;
+
+  const imageData = ctx?.getImageData(
+    0,
+    0,
+    canvas?.width || 0,
+    canvas?.height || 0
+  ) as ImageData;
+
+  const newData = processFunction(imageData as ImageData, options);
+
+  if (canvas) {
+   /*  canvas.width = newData.width;
+    canvas.height = newData.height;
+    ctx?.createImageData(newData.width, newData.height);
+    ctx?.putImageData(newData, 0, 0); */
+
+    drawImageB64OnCanvas(
+      imageDataToBase64(newData).toString(),
+      canvas as HTMLCanvasElement,
+      width,
+      height
+    );
+  }
+
+  return newData;
 }
 
 function processToNewImageData(
@@ -298,6 +336,7 @@ async function imageB64ToImageData(
     ?.getImageData(0, 0, canvas.width, canvas.height)!;
 }
 
+//todo: renombrar a putImageDataOnCanvas
 function drawImageDataOnCanvas(image: ImageData, canvas: HTMLCanvasElement) {
   canvas.width = image.width;
   canvas.height = image.height;
