@@ -46,6 +46,15 @@ export default function Home() {
 
   const [originalFile, setOriginalFile] = useState<File | null>(null);
   const [originalImg, setOriginalImg] = useState<HTMLImageElement | null>(null);
+  const [smallCanvasImg, setSmallCanvasImg] = useState<HTMLImageElement | null>(
+    null
+  );
+
+  const [windowDimensions, setWindowDimensions] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
   const [processList, setProcessList] = useState<ProcessFunction[]>([]);
 
   const [undoImageList, setUndoImageList] = useState<ImageData[]>([]);
@@ -70,8 +79,65 @@ export default function Home() {
         smallCanvasCtxRef.current.imageSmoothingEnabled = false;
       }
     }
+    console.log("wd:", windowDimensions);
   }, [displays]);
   //el useEffect depende de displays porque oculta/muestra el canvas
+
+  useEffect(() => {
+    console.log("wd4:", windowDimensions);
+    //console.log("u:", undoImageList.length, undoImageList, originalImg?.src);
+    if (smallCanvasRef?.current) {
+      console.log("nuevo tamaño");
+      //smallCanvasRef.current!.height = Math.floor(windowDimensions.height / 2);
+      /*     document
+        .querySelector("canvas")!
+        .setAttribute(
+          "height",
+          Math.floor(windowDimensions.height / 2).toString()
+        );
+      document
+        .querySelector("canvas")!
+        .setAttribute(
+          "width",
+          Math.floor(windowDimensions.width / 2).toString()
+        ); */
+      //smallCanvasRef.current!.width = Math.floor(windowDimensions.width / 2);
+    }
+    if (undoImageList.length > 0 && smallCanvasRef.current && originalImg) {
+      console.log("nuevo draw");
+      /*      drawImageDataOnCanvas(
+        undoImageList[undoImageList.length - 1],
+        smallCanvasRef.current!
+      ); */
+
+      //TODO ver bien que cálculo hacer, para vertical con -300 va bien pero también se podría calcular el tamaño de la toolbar y restarle eso. Hay que hacer lo mismo con el ancho.
+      // FIXME por otra parte el calculo hay que hacer que se aplica en otras partes del código, cuando se hace la modificación del borde, por ejemplo.
+      // habría que veri si con eso se evita hacer esto en el resize. Tal vez tenga que quedar para cuando se agranda la pantalla porque si se va achicando se va trabajando con imagenes más pequeñas que al ser amplicadas se pixelan.
+
+      drawImageB64OnCanvas(
+        //originalImg.src,
+        imageDataToBase64(undoImageList[undoImageList.length - 1]).toString(),
+        smallCanvasRef.current as HTMLCanvasElement,
+        windowDimensions.width,
+        windowDimensions.height - 400
+      );
+      //setDisplays({ canvas: true, form: false });
+    }
+    console.log("wd5:", smallCanvasRef);
+  }, [windowDimensions]);
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+      console.log("wd3:", window.innerWidth, window.innerHeight);
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   /**
    * Pasos a seguir cuando se carga un archivo de imagen.
@@ -79,6 +145,7 @@ export default function Home() {
    * @returns
    */
   async function loadFileProcedure(file: File) {
+    console.log("wd2:", windowDimensions);
     setDisplays((prev) => {
       return { canvas: true, form: false };
     });
@@ -106,24 +173,32 @@ export default function Home() {
       };
       setOriginalImg(newImageElement);
 
-      drawImageB64OnCanvas(
+      /*  drawImageB64OnCanvas(
         originalImageB64,
         smallCanvasRef.current as HTMLCanvasElement,
         mainCanvasConfig.maxWidth,
         mainCanvasConfig.maxHeight
+      ); */
+
+      //TODO VER
+      drawImageB64OnCanvas(
+        originalImageB64,
+        smallCanvasRef.current as HTMLCanvasElement,
+        windowDimensions.width / 2,
+        windowDimensions.height / 2
       );
 
       if (imagenPreviewRef.current) {
         imagenPreviewRef.current.src = originalImageB64;
       }
 
-      undoImageList.push(
-        await imageB64ToImageData(
+      setUndoImageList([
+        (await imageB64ToImageData(
           originalImageB64,
           mainCanvasConfig.maxWidth,
           mainCanvasConfig.maxHeight
-        )
-      );
+        )) as ImageData,
+      ]);
     }
   }
 
@@ -684,9 +759,6 @@ export default function Home() {
                       return (
                         <span key={index}>
                           <img src={`${imageDataToBase64(img)}`.toString()} />
-                          {/*  <span>
-                          ̣{img.width}-{img.height}
-                        </span> */}
                         </span>
                       );
                     })}
