@@ -194,7 +194,7 @@ function applyProcessFunctionWithSize(
   const newData = processFunction(imageData as ImageData, options);
 
   if (canvas) {
-   /*  canvas.width = newData.width;
+    /*  canvas.width = newData.width;
     canvas.height = newData.height;
     ctx?.createImageData(newData.width, newData.height);
     ctx?.putImageData(newData, 0, 0); */

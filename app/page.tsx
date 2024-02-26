@@ -73,12 +73,29 @@ export default function Home() {
   const inputBorderPixelsRef = useRef<HTMLInputElement | null>(null);
 
   function resize() {
-    drawImageB64OnCanvas(
-      imageDataToBase64(undoImageList[undoImageList.length - 1]).toString(),
-      smallCanvasRef.current as HTMLCanvasElement,
-      windowDimensions.width,
-      windowDimensions.height - windowDimensions.mobileToolbarHeight - 100
-    );
+    if (undoImageList.length > 0 && smallCanvasRef.current && originalImg) {
+      console.log("oi: ", originalImg.width, originalImg.height);
+
+      let ratio = originalImg.width / originalImg.height;
+
+      let newWidth = 0;
+      let newHeight = 0;
+
+      if (ratio > 1) {
+        newWidth = windowDimensions.width - 100;
+        newHeight = newWidth / ratio;
+      } else {
+        newHeight =
+          windowDimensions.height - windowDimensions.mobileToolbarHeight - 100;
+        newWidth = newHeight * ratio;
+      }
+
+      console.log("new size:", ratio, newWidth, newHeight);
+
+      document
+        .querySelector(".canvas__container")
+        ?.setAttribute("style", `width: ${newWidth}px; height: ${newHeight}px`);
+    }
   }
 
   useEffect(() => {
@@ -105,35 +122,8 @@ export default function Home() {
 
   useEffect(() => {
     console.log("wd4:", windowDimensions);
+    resize();
     //console.log("u:", undoImageList.length, undoImageList, originalImg?.src);
-
-    if (undoImageList.length > 0 && smallCanvasRef.current && originalImg) {
-      console.log("nuevo draw");
-      /*      drawImageDataOnCanvas(
-        undoImageList[undoImageList.length - 1],
-        smallCanvasRef.current!
-      ); */
-
-      //TODO ver bien que cálculo hacer, para vertical con -300 va bien pero también se podría calcular el tamaño de la toolbar y restarle eso. Hay que hacer lo mismo con el ancho.
-      // FIXME por otra parte el calculo hay que hacer que se aplica en otras partes del código, cuando se hace la modificación del borde, por ejemplo.
-      // habría que veri si con eso se evita hacer esto en el resize. Tal vez tenga que quedar para cuando se agranda la pantalla porque si se va achicando se va trabajando con imagenes más pequeñas que al ser amplicadas se pixelan.
-
-      /*   drawImageB64OnCanvas(
-        imageDataToBase64(undoImageList[undoImageList.length - 1]).toString(),
-        smallCanvasRef.current as HTMLCanvasElement,
-        windowDimensions.width,
-        windowDimensions.height - windowDimensions.mobileToolbarHeight - 100
-      ); */
-    }
-    console.log(
-      "canvasref:",
-      smallCanvasRef.current?.width,
-      smallCanvasRef.current?.height
-    );
-    console.log(
-      "toolbar heigh:",
-      document.querySelector("#section__mobile")?.clientHeight
-    );
   }, [windowDimensions]);
 
   useEffect(() => {
@@ -158,7 +148,6 @@ export default function Home() {
    * @returns
    */
   async function loadFileProcedure(file: File) {
-    console.log("wd2:", windowDimensions);
     setDisplays((prev) => {
       return { canvas: true, form: false };
     });
@@ -183,28 +172,41 @@ export default function Home() {
         } else {
           inputBorderPixelsRef.current!.max = newImageElement.height.toString();
         }
-      };
-      setOriginalImg(newImageElement);
 
-      /*  drawImageB64OnCanvas(
+        /*  drawImageB64OnCanvas(
         originalImageB64,
         smallCanvasRef.current as HTMLCanvasElement,
         mainCanvasConfig.maxWidth,
         mainCanvasConfig.maxHeight
       ); */
 
-      //TODO VER
-      drawImageB64OnCanvas(
-        originalImageB64,
-        smallCanvasRef.current as HTMLCanvasElement,
-        windowDimensions.width / 2,
-        windowDimensions.height / 2
-      );
+        let ratio = newImageElement.width / newImageElement.height;
+        let newWidth = 0;
+        let newHeight = 0;
+        if (ratio > 1) {
+          newWidth = windowDimensions.width - 100;
+          newHeight = newWidth / ratio;
+        } else {
+          newHeight =
+            windowDimensions.height -
+            windowDimensions.mobileToolbarHeight -
+            100;
+          newWidth = newHeight * ratio;
+        }
 
-      if (imagenPreviewRef.current) {
-        imagenPreviewRef.current.src = originalImageB64;
-      }
+        console.log("new size:", ratio, newWidth, newHeight);
+        drawImageB64OnCanvas(
+          originalImageB64,
+          smallCanvasRef.current as HTMLCanvasElement,
+          newWidth,
+          newHeight
+        );
 
+        if (imagenPreviewRef.current) {
+          imagenPreviewRef.current.src = originalImageB64;
+        }
+      };
+      setOriginalImg(newImageElement);
       setUndoImageList([
         (await imageB64ToImageData(
           originalImageB64,
@@ -527,21 +529,21 @@ export default function Home() {
       );
 
       //version sin hacer resize (no genera flickeo)
-      /*   let newImageData = applyProcessFunction(
+      let newImageData = applyProcessFunction(
         smallCanvasRef.current,
         imgAddBorder,
         smallCanvasBorderOptions
-      ); */
+      );
 
       //FIXME: se genera un flickeo al hacer el resize dentro de applyProcessFunctionWithSize
       //TODO: revisar el calculo de las medidas, estan pensadas para adaptar a vertical en el tel nada más
-      let newImageData = applyProcessFunctionWithSize(
+      /*      let newImageData = applyProcessFunctionWithSize(
         smallCanvasRef.current,
         imgAddBorder,
         windowDimensions.width,
         windowDimensions.height - windowDimensions.mobileToolbarHeight - 200,
         smallCanvasBorderOptions
-      );
+      ); */
 
       //esto era lo que usaba para el resize, si no lo voy a usar borrar
       /*  drawImageB64OnCanvas(

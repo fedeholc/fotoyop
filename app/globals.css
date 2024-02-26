@@ -48,6 +48,10 @@
    padding: 1rem;
    margin-top: auto;
    margin-bottom: auto;
+
+   /* cambios */
+   display: grid;
+   place-content: center;
  }
 
  #section__toolbar {
@@ -67,13 +71,14 @@
  }
 
  .canvas__container {
-   padding: 1rem 1rem 1.5rem 1rem;
+   /* padding: 1rem 1rem 1.5rem 1rem; */
    /*    border: 1px solid green;
  */
    display: flex;
    flex-direction: row;
    justify-content: center;
 
+   /* si se pone altura fija aca, redimensiona el canvas */
 
  }
 
