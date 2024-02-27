@@ -72,30 +72,42 @@ export default function Home() {
   const smallCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const inputBorderPixelsRef = useRef<HTMLInputElement | null>(null);
 
-  function resize() {
-    if (undoImageList.length > 0 && smallCanvasRef.current && originalImg) {
-      console.log("oi: ", originalImg.width, originalImg.height);
+  /**
+   * Función que calcula un nuevo tamaño para la imagen del small canvas teniendo en cuenta el tamaño de la ventana.
+   * @param imageWidth - ancho de la imagen original
+   * @param imageHeight - alto de la imagen original
+   * @returns - ancho y alto de la imagen redimensionada
+   */
+  function calcResize(
+    imageWidth: number,
+    imageHeight: number
+  ): { newWidth: number; newHeight: number } {
+    let ratio = imageWidth / imageHeight;
+    let newWidth = 0;
+    let newHeight = 0;
 
-      let ratio = originalImg.width / originalImg.height;
-
-      let newWidth = 0;
-      let newHeight = 0;
-
-      if (ratio > 1) {
-        newWidth = windowDimensions.width - 100;
-        newHeight = newWidth / ratio;
+    if (ratio > 1) {
+      if (windowDimensions.width < mainCanvasConfig.maxWidth) {
+        newWidth = windowDimensions.width;
       } else {
+        newWidth = mainCanvasConfig.maxWidth;
+      }
+      newHeight = newWidth / ratio;
+    } else {
+      if (
+        windowDimensions.height - windowDimensions.mobileToolbarHeight <
+        mainCanvasConfig.maxHeight
+      ) {
         newHeight =
-          windowDimensions.height - windowDimensions.mobileToolbarHeight - 100;
-        newWidth = newHeight * ratio;
+          windowDimensions.height - windowDimensions.mobileToolbarHeight;
+      } else {
+        newHeight = mainCanvasConfig.maxHeight;
       }
 
-      console.log("new size:", ratio, newWidth, newHeight);
-
-      document
-        .querySelector(".canvas__container")
-        ?.setAttribute("style", `width: ${newWidth}px; height: ${newHeight}px`);
+      newWidth = newHeight * ratio;
     }
+
+    return { newWidth, newHeight };
   }
 
   useEffect(() => {
@@ -120,10 +132,18 @@ export default function Home() {
   }, [displays]);
   //el useEffect depende de displays porque oculta/muestra el canvas
 
+  // resize
   useEffect(() => {
-    console.log("wd4:", windowDimensions);
-    resize();
-    //console.log("u:", undoImageList.length, undoImageList, originalImg?.src);
+    if (smallCanvasRef.current && originalImg) {
+      const { newWidth, newHeight } = calcResize(
+        originalImg.width,
+        originalImg.height
+      );
+
+      document
+        .querySelector(".canvas__container")
+        ?.setAttribute("style", `width: ${newWidth}px; height: ${newHeight}px`); //todo: usar una ref?
+    }
   }, [windowDimensions]);
 
   useEffect(() => {
@@ -173,28 +193,11 @@ export default function Home() {
           inputBorderPixelsRef.current!.max = newImageElement.height.toString();
         }
 
-        /*  drawImageB64OnCanvas(
-        originalImageB64,
-        smallCanvasRef.current as HTMLCanvasElement,
-        mainCanvasConfig.maxWidth,
-        mainCanvasConfig.maxHeight
-      ); */
+        const { newWidth, newHeight } = calcResize(
+          newImageElement.width,
+          newImageElement.height
+        );
 
-        let ratio = newImageElement.width / newImageElement.height;
-        let newWidth = 0;
-        let newHeight = 0;
-        if (ratio > 1) {
-          newWidth = windowDimensions.width - 100;
-          newHeight = newWidth / ratio;
-        } else {
-          newHeight =
-            windowDimensions.height -
-            windowDimensions.mobileToolbarHeight -
-            100;
-          newWidth = newHeight * ratio;
-        }
-
-        console.log("new size:", ratio, newWidth, newHeight);
         drawImageB64OnCanvas(
           originalImageB64,
           smallCanvasRef.current as HTMLCanvasElement,
@@ -534,24 +537,6 @@ export default function Home() {
         imgAddBorder,
         smallCanvasBorderOptions
       );
-
-      //FIXME: se genera un flickeo al hacer el resize dentro de applyProcessFunctionWithSize
-      //TODO: revisar el calculo de las medidas, estan pensadas para adaptar a vertical en el tel nada más
-      /*      let newImageData = applyProcessFunctionWithSize(
-        smallCanvasRef.current,
-        imgAddBorder,
-        windowDimensions.width,
-        windowDimensions.height - windowDimensions.mobileToolbarHeight - 200,
-        smallCanvasBorderOptions
-      ); */
-
-      //esto era lo que usaba para el resize, si no lo voy a usar borrar
-      /*  drawImageB64OnCanvas(
-        imageDataToBase64(newImageData).toString(),
-        smallCanvasRef.current as HTMLCanvasElement,
-        windowDimensions.width,
-        windowDimensions.height - windowDimensions.mobileToolbarHeight - 200
-      ); */
 
       setUndoImageList([...newUndoImageList, newImageData]);
 

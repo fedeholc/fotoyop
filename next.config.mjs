@@ -12,4 +12,7 @@ const nextConfig = {
   reactStrictMode: true,
 };
 
-export default withSerwist(nextConfig);
+/* export default withSerwist(nextConfig);
+ */
+
+export default nextConfig;
