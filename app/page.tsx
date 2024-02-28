@@ -144,7 +144,7 @@ export default function Home() {
         .querySelector(".canvas__container")
         ?.setAttribute("style", `width: ${newWidth}px; height: ${newHeight}px`); //todo: usar una ref?
     }
-  }, [windowDimensions]);
+  }, [windowDimensions, originalImg]);
 
   useEffect(() => {
     function handleResize() {
