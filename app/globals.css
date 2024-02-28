@@ -387,7 +387,9 @@
    gap: 1rem;
  }
 
-
+ .unselectable {
+   user-select: none;
+ }
 
  @media screen and (max-width: 1050px) {
 

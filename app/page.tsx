@@ -86,6 +86,7 @@ export default function Home() {
     let newWidth = 0;
     let newHeight = 0;
 
+    // horizontal
     if (ratio > 1) {
       if (windowDimensions.width < mainCanvasConfig.maxWidth) {
         newWidth = windowDimensions.width;
@@ -93,7 +94,18 @@ export default function Home() {
         newWidth = mainCanvasConfig.maxWidth;
       }
       newHeight = newWidth / ratio;
-    } else {
+
+      if (
+        newHeight >
+        windowDimensions.height - windowDimensions.mobileToolbarHeight
+      ) {
+        newHeight =
+          windowDimensions.height - windowDimensions.mobileToolbarHeight;
+        newWidth = newHeight * ratio;
+      }
+    }
+    // vertical
+    else {
       if (
         windowDimensions.height - windowDimensions.mobileToolbarHeight <
         mainCanvasConfig.maxHeight
@@ -103,8 +115,12 @@ export default function Home() {
       } else {
         newHeight = mainCanvasConfig.maxHeight;
       }
-
       newWidth = newHeight * ratio;
+
+      if (newWidth > windowDimensions.width) {
+        newWidth = windowDimensions.width;
+        newHeight = newWidth / ratio;
+      }
     }
 
     return { newWidth, newHeight };
@@ -598,13 +614,17 @@ export default function Home() {
                 onDragLeave={handleDragLeave}
               >
                 <div className="drop-title-group">
-                  <span className="drop-title">Drop files here</span>
+                  <span className="drop-title unselectable">
+                    Drop files here
+                  </span>
                   <br />
                   <br />
-                  <span className="drop-title">or</span>
+                  <span className="drop-title unselectable">or</span>
                   <br />
                   <br />
-                  <span className="drop-title">click / tap to upload</span>
+                  <span className="drop-title unselectable">
+                    click / tap to upload
+                  </span>
                   <br />
                 </div>
                 <input
