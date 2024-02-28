@@ -465,9 +465,9 @@
    #section__mobile {
      display: flex;
      flex-direction: column;
-/*      height: fit-content;
+     /*      height: fit-content;
      min-height: 100%; */
-     overflow-y: auto;
+     /*  overflow-y: auto; */
    }
 
    /*    #section__image {
