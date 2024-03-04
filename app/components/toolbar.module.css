@@ -1,0 +1,83 @@
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.border__row {
+  gap: 0.5rem
+}
+
+.border__row input[type="Color"] {
+  min-width: 60px;
+  max-width: 60px;
+  /*  height: 100%; */
+  min-height: 35px;
+
+  border-radius: 5px;
+  padding: 0.2rem;
+  border: 1px solid rgb(128 128 128 / 50%);
+
+  width: 100%;
+}
+
+.border__row input[type="text"] {
+  width: 80px;
+  /*     height: 100%; */
+  min-height: 30px;
+
+  border-radius: 5px;
+  padding: 0.2rem 0.4rem;
+  font-size: inherit;
+  border: 1px solid rgb(128 128 128 / 50%);
+  text-align: right;
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+.border__row input[type="Number"] {
+  width: 70px;
+  /*     height: 100%; */
+  min-height: 30px;
+
+  border-radius: 5px;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.9rem;
+  border: 1px solid rgb(128 128 128 / 50%);
+  text-align: right;
+  font-family: monospace;
+
+}
+
+.border__row input[type="Range"] {
+  width: auto;
+  /*     height: 100%; */
+  min-height: 30px;
+
+  accent-color: deeppink;
+  margin-left: 0.5rem;
+
+}
+
+.buttonWithIcon {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  /* padding: 0rem; */
+}
+
+.buttonWithIcon:hover {
+  /* outline: 1px solid rgb(0, 183, 255);
+  border: 1px solid rgb(0, 183, 255); */
+}
+
+.borderRanges {
+
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr 70px auto;
+  gap: 0.4rem;
+}
