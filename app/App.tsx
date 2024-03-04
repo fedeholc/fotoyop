@@ -7,7 +7,8 @@ import {
   drawImageB64OnCanvas,
   imageB64ToImageData,
 } from "./imageProcessing";
-import { BottomToolbar, SideToolbar } from "./components/toolbar";
+import { BottomToolbar } from "./components/toolbar";
+import { SideToolbar } from "./components/sideToolbar";
 import { ImageContext } from "./ImageProvider";
 import { ProcessContext } from "./ProcessProvider";
 import { useContext } from "react";
