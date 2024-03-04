@@ -445,9 +445,7 @@
      height: auto;
    }
 
-   #canvas-small {
-     /* max-height: 60vh; */
-   }
+
 
    #section__toolbar {
      display: none;

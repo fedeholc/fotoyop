@@ -15,6 +15,8 @@ import {
   applyProcessFunction,
   drawImageDataOnCanvas,
   imgAddBorder,
+  imgToBW,
+  processToNewImageData,
   processImgToCanvas,
 } from "./imageProcessing";
 
@@ -22,6 +24,8 @@ export const ToolbarContext = createContext({
   handleDownload: () => {},
   handleUndo: () => {},
   handleNewImage: () => {},
+  handleToGrayscale: () => {},
+  
 });
 
 export default function ToolbarProvider({
@@ -49,25 +53,46 @@ export default function ToolbarProvider({
     setCurrentProcess,
   } = useContext(ProcessContext);
 
-   const {
-     inputBorderColor,
-     setInputBorderColor,
-     inputBorderPixels,
-     setInputBorderPixels,
-     inputBorderPercent,
-     setInputBorderPercent,
-     handleInputBorderColor,
-     handleInputBorderPixelsRange,
-     handleBorderChange,
-     handleInputBorderPixelsRangeMouseUp,
-     handleInputBorderPixelsText,
-     handleInputBorderPercentText,
-     handleInputBorderPercent,
-     handleInputBorderPercentRangeMouseUp,
-     handleApplyBorder,
-     handleDiscardBorder,
-   } = useContext(BorderContext);
+  const {
+    inputBorderColor,
+    setInputBorderColor,
+    inputBorderPixels,
+    setInputBorderPixels,
+    inputBorderPercent,
+    setInputBorderPercent,
+    handleInputBorderColor,
+    handleInputBorderPixelsRange,
+    handleBorderChange,
+    handleInputBorderPixelsRangeMouseUp,
+    handleInputBorderPixelsText,
+    handleInputBorderPercentText,
+    handleInputBorderPercent,
+    handleInputBorderPercentRangeMouseUp,
+    handleApplyBorder,
+    handleDiscardBorder,
+  } = useContext(BorderContext);
 
+  /**
+   * Handler del click en convertir a blanco y negro.
+   */
+  function handleToGrayscale() {
+    if (!originalFile) {
+      return;
+    }
+
+    if (currentProcess === ImageProcess.Border) {
+      handleApplyBorder();
+      setCurrentProcess(null);
+    }
+
+    applyProcessFunction(smallCanvasRef.current, imgToBW);
+    setProcessList([...processList, imgToBW]);
+
+    let newImageData = processToNewImageData(smallCanvasRef.current, imgToBW);
+
+    let newUndoImageList = [...undoImageList, newImageData];
+    setUndoImageList(newUndoImageList);
+  }
 
   /**
    * Handler del botón New Image. Vuelve al estado inicial.
@@ -130,7 +155,9 @@ export default function ToolbarProvider({
   }
 
   return (
-    <ToolbarContext.Provider value={{ handleDownload, handleUndo, handleNewImage }}>
+    <ToolbarContext.Provider
+      value={{ handleDownload, handleUndo, handleNewImage, handleToGrayscale }}
+    >
       {children}
     </ToolbarContext.Provider>
   );

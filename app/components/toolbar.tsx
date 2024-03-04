@@ -240,30 +240,8 @@ export function SideToolbar() {
     setCurrentProcess,
   } = useContext(ProcessContext);
 
-  const { handleDownload, handleUndo, handleNewImage } =
+  const { handleDownload, handleUndo, handleNewImage, handleToGrayscale } =
     useContext(ToolbarContext);
-
-  /**
-   * Handler del click en convertir a blanco y negro.
-   */
-  function handleToGrayscale() {
-    if (!originalFile) {
-      return;
-    }
-
-    if (currentProcess === ImageProcess.Border) {
-      handleApplyBorder();
-      setCurrentProcess(null);
-    }
-
-    applyProcessFunction(smallCanvasRef.current, imgToBW);
-    setProcessList([...processList, imgToBW]);
-
-    let newImageData = processToNewImageData(smallCanvasRef.current, imgToBW);
-
-    let newUndoImageList = [...undoImageList, newImageData];
-    setUndoImageList(newUndoImageList);
-  }
 
   return (
     <>
