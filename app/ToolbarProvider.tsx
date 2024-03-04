@@ -7,6 +7,7 @@ import {
 } from "react";
 import { ImageContext } from "./ImageProvider";
 import { ProcessContext } from "./ProcessProvider";
+import { BorderContext } from "./BorderProvider";
 import { ProcessOptionsType } from "./types";
 import { mainCanvasConfig } from "./App";
 import { ImageProcess } from "./types";
@@ -20,6 +21,7 @@ import {
 export const ToolbarContext = createContext({
   handleDownload: () => {},
   handleUndo: () => {},
+  handleNewImage: () => {},
 });
 
 export default function ToolbarProvider({
@@ -33,6 +35,9 @@ export default function ToolbarProvider({
     setOriginalFile,
     setOriginalImg,
     smallCanvasRef,
+    imagenPreviewRef,
+    displays,
+    setDisplays,
   } = useContext(ImageContext);
 
   const {
@@ -44,7 +49,44 @@ export default function ToolbarProvider({
     setCurrentProcess,
   } = useContext(ProcessContext);
 
-  
+   const {
+     inputBorderColor,
+     setInputBorderColor,
+     inputBorderPixels,
+     setInputBorderPixels,
+     inputBorderPercent,
+     setInputBorderPercent,
+     handleInputBorderColor,
+     handleInputBorderPixelsRange,
+     handleBorderChange,
+     handleInputBorderPixelsRangeMouseUp,
+     handleInputBorderPixelsText,
+     handleInputBorderPercentText,
+     handleInputBorderPercent,
+     handleInputBorderPercentRangeMouseUp,
+     handleApplyBorder,
+     handleDiscardBorder,
+   } = useContext(BorderContext);
+
+
+  /**
+   * Handler del botón New Image. Vuelve al estado inicial.
+   */
+  function handleNewImage() {
+    setDisplays((prev) => {
+      return { canvas: false, form: true };
+    });
+    setOriginalFile(null);
+    setOriginalImg(null);
+    setProcessList([]);
+    setUndoImageList([]);
+    setCurrentProcess(null);
+    setInputBorderPixels("0");
+    setInputBorderPercent("0");
+    setInputBorderColor("#ffffff");
+    imagenPreviewRef.current!.src = "";
+  }
+
   /**
    * Procedimiento para generar la imagen procesada y enviarla como descarga.
    */
@@ -88,7 +130,7 @@ export default function ToolbarProvider({
   }
 
   return (
-    <ToolbarContext.Provider value={{ handleDownload, handleUndo }}>
+    <ToolbarContext.Provider value={{ handleDownload, handleUndo, handleNewImage }}>
       {children}
     </ToolbarContext.Provider>
   );

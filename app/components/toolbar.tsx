@@ -65,7 +65,8 @@ export function BottomToolbar() {
     setCurrentProcess,
   } = useContext(ProcessContext);
 
-  const { handleDownload } = useContext(ToolbarContext);
+  const { handleDownload, handleNewImage, handleUndo } =
+    useContext(ToolbarContext);
 
   return (
     <>
@@ -177,7 +178,7 @@ export function BottomToolbar() {
       {toolbarDisplay.mainMenu && (
         <ToolbarRow>
           <button onClick={handleDownload}>Download</button>
-          <button>New Image</button>
+          <button onClick={handleNewImage}>New Image</button>
           <button>Undo</button>
           <button
             onClick={() =>
@@ -239,24 +240,8 @@ export function SideToolbar() {
     setCurrentProcess,
   } = useContext(ProcessContext);
 
-  const { handleDownload, handleUndo } = useContext(ToolbarContext);
-  /**
-   * Handler del botón New Image. Vuelve al estado inicial.
-   */
-  function handleNewImage() {
-    setDisplays((prev) => {
-      return { canvas: false, form: true };
-    });
-    setOriginalFile(null);
-    setOriginalImg(null);
-    setProcessList([]);
-    setUndoImageList([]);
-    setCurrentProcess(null);
-    setInputBorderPixels("0");
-    setInputBorderPercent("0");
-    setInputBorderColor("#ffffff");
-    imagenPreviewRef.current!.src = "";
-  }
+  const { handleDownload, handleUndo, handleNewImage } =
+    useContext(ToolbarContext);
 
   /**
    * Handler del click en convertir a blanco y negro.
