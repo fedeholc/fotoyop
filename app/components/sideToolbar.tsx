@@ -1,21 +1,8 @@
-import { useState, useRef, useContext } from "react";
-import toolbar from "./toolbar.module.css";
-import { ArrowLeft } from "lucide-react";
+import { useRef, useContext } from "react";
 import { ImageContext } from "../providers/ImageProvider";
 import { ProcessContext } from "../providers/ProcessProvider";
 import { ToolbarContext } from "../providers/ToolbarProvider";
-import { ProcessOptionsType } from "../types";
-import { mainCanvasConfig } from "../App";
-import { ImageProcess } from "../types";
-import {
-  applyProcessFunction,
-  drawImageDataOnCanvas,
-  imgAddBorder,
-  imageDataToBase64,
-  processImgToCanvas,
-  processToNewImageData,
-  imgToBW,
-} from "../imageProcessing";
+import { imageDataToBase64 } from "../imageProcessing";
 import { BorderContext } from "../providers/BorderProvider";
 
 export function SideToolbar() {
@@ -23,14 +10,10 @@ export function SideToolbar() {
 
   const {
     inputBorderColor,
-    setInputBorderColor,
     inputBorderPixels,
-    setInputBorderPixels,
     inputBorderPercent,
-    setInputBorderPercent,
     handleInputBorderColor,
     handleInputBorderPixelsRange,
-    handleBorderChange,
     handleInputBorderPixelsRangeMouseUp,
     handleInputBorderPixelsText,
     handleInputBorderPercentText,
@@ -40,25 +23,10 @@ export function SideToolbar() {
     handleDiscardBorder,
   } = useContext(BorderContext);
 
-  const {
-    originalFile,
-    originalImg,
-    setOriginalFile,
-    setOriginalImg,
-    imagenPreviewRef,
-    displays,
-    setDisplays,
-    smallCanvasRef,
-  } = useContext(ImageContext);
+  const { originalFile, originalImg, imagenPreviewRef } =
+    useContext(ImageContext);
 
-  const {
-    processList,
-    setProcessList,
-    undoImageList,
-    setUndoImageList,
-    currentProcess,
-    setCurrentProcess,
-  } = useContext(ProcessContext);
+  const { undoImageList } = useContext(ProcessContext);
 
   const { handleDownload, handleUndo, handleNewImage, handleToGrayscale } =
     useContext(ToolbarContext);

@@ -39,7 +39,6 @@ export default function ToolbarProvider({
     setOriginalImg,
     smallCanvasRef,
     imagenPreviewRef,
-    displays,
     setDisplays,
   } = useContext(ImageContext);
 

@@ -1,21 +1,7 @@
 import { useState, useRef, useContext } from "react";
 import toolbar from "./toolbar.module.css";
 import { ArrowLeft } from "lucide-react";
-import { ImageContext } from "../providers/ImageProvider";
-import { ProcessContext } from "../providers/ProcessProvider";
 import { ToolbarContext } from "../providers/ToolbarProvider";
-import { ProcessOptionsType } from "../types";
-import { mainCanvasConfig } from "../App";
-import { ImageProcess } from "../types";
-import {
-  applyProcessFunction,
-  drawImageDataOnCanvas,
-  imgAddBorder,
-  imageDataToBase64,
-  processImgToCanvas,
-  processToNewImageData,
-  imgToBW,
-} from "../imageProcessing";
 import { BorderContext } from "../providers/BorderProvider";
 
 export function ToolbarRow({
@@ -41,29 +27,12 @@ export function BottomToolbar() {
 
   const {
     inputBorderColor,
-    setInputBorderColor,
     inputBorderPixels,
-    setInputBorderPixels,
-    inputBorderPercent,
-    setInputBorderPercent,
     handleInputBorderColor,
     handleInputBorderPixelsRange,
-    handleBorderChange,
     handleInputBorderPixelsRangeMouseUp,
     handleInputBorderPixelsText,
   } = useContext(BorderContext);
-
-  const { originalFile, originalImg, setOriginalFile, setOriginalImg } =
-    useContext(ImageContext);
-
-  const {
-    processList,
-    setProcessList,
-    undoImageList,
-    setUndoImageList,
-    currentProcess,
-    setCurrentProcess,
-  } = useContext(ProcessContext);
 
   const { handleDownload, handleNewImage, handleUndo } =
     useContext(ToolbarContext);
