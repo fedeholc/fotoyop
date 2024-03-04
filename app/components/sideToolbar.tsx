@@ -4,6 +4,7 @@ import { ProcessContext } from "../providers/ProcessProvider";
 import { ToolbarContext } from "../providers/ToolbarProvider";
 import { imageDataToBase64 } from "../imageProcessing";
 import { BorderContext } from "../providers/BorderProvider";
+import sideToolbar from "./sideToolbar.module.css";
 
 export function SideToolbar() {
   const inputBorderPixelsRef = useRef<HTMLInputElement | null>(null);
@@ -33,7 +34,7 @@ export function SideToolbar() {
 
   return (
     <>
-      <div className="toolbar__top">
+      <div className={sideToolbar.toolbar__top}>
         <button id="btnUndo" onClick={handleUndo}>
           Undo
         </button>
@@ -43,11 +44,11 @@ export function SideToolbar() {
           Download
         </button>
       </div>
-      <div className="toolbar__group-container">
-        <details className="toolbar__details">
-          <summary className="toolbar__summary">Image Information</summary>
-          <div className="toolbar-row">
-            <div className="toolbar__image-info">
+      <div className={sideToolbar.groupContainer}>
+        <details>
+          <summary>Image Information</summary>
+          <div className={sideToolbar.toolbarRow}>
+            <div className={sideToolbar.imageInfoGroup}>
               <div>
                 <strong>{originalFile?.name}</strong>
               </div>
@@ -69,10 +70,10 @@ export function SideToolbar() {
             </div>
           </div>
         </details>
-        <details className="toolbar__details">
-          <summary className="toolbar__summary">Grayscale</summary>
-          <div className="toolbar-row">
-            <div className="toolbar-row__buttons">
+        <details>
+          <summary>Grayscale</summary>
+          <div className={sideToolbar.toolbarRow}>
+            <div className={sideToolbar.rowButtons}>
               <button
                 type="button"
                 id="btnToBN"
@@ -83,12 +84,12 @@ export function SideToolbar() {
             </div>
           </div>
         </details>
-        <details className="toolbar__details">
-          <summary className="toolbar__summary">Borders</summary>
-          <div className="toolbar__borders">
-            <div className="toolbar-row ">
-              <div className="toolbar-row__title">Color</div>
-              <div className="toolbar-row__border-color">
+        <details>
+          <summary>Borders</summary>
+          <div className={sideToolbar.bordersGroup}>
+            <div className={sideToolbar.toolbarRow}>
+              <div className={sideToolbar.rowTitle}>Color</div>
+              <div className={sideToolbar.borderColorRow}>
                 <input
                   id="inputBorderColor"
                   type="color"
@@ -106,9 +107,9 @@ export function SideToolbar() {
                 ></input>
               </div>
             </div>
-            <div className="toolbar-row ">
-              <div className="toolbar-row__title">Border in percent</div>
-              <div className="toolbar-row__border-ranges">
+            <div className={sideToolbar.toolbarRow}>
+              <div className={sideToolbar.rowTitle}>Border in percent</div>
+              <div className={sideToolbar.borderRangesRow}>
                 <input
                   type="number"
                   id="inputBorderPercentN"
@@ -118,7 +119,7 @@ export function SideToolbar() {
                   onKeyUp={handleInputBorderPercentText}
                   onChange={handleInputBorderPercentText}
                 ></input>
-                <div className="toolbar_row__units">%</div>
+                <div>%</div>
                 <input
                   type="range"
                   id="inputBorderPercent"
@@ -132,9 +133,9 @@ export function SideToolbar() {
                 ></input>
               </div>
             </div>
-            <div className="toolbar-row">
-              <div className="toolbar-row__title">Border in pixels</div>
-              <div className="toolbar-row__border-ranges">
+            <div className={sideToolbar.toolbarRow}>
+              <div className={sideToolbar.rowTitle}>Border in pixels</div>
+              <div className={sideToolbar.borderRangesRow}>
                 <input
                   type="number"
                   id="inputBorderPixelsN"
@@ -144,7 +145,7 @@ export function SideToolbar() {
                   onKeyUp={handleInputBorderPixelsText}
                   onChange={handleInputBorderPixelsText}
                 ></input>
-                <div className="toolbar_row__units">px</div>
+                <div>px</div>
                 <input
                   type="range"
                   id="inputBorderPixels"
@@ -158,8 +159,8 @@ export function SideToolbar() {
                 ></input>
               </div>
             </div>
-            <div className="toolbar-row">
-              <div className="toolbar-row__buttons">
+            <div className={sideToolbar.toolbarRow}>
+              <div className={sideToolbar.rowButtons}>
                 <button
                   type="button"
                   id="btnApplyBorder"
@@ -178,11 +179,13 @@ export function SideToolbar() {
             </div>
           </div>
         </details>
-        <details className="toolbar__details">
-          <summary className="toolbar__summary">Changes history</summary>
-          <div className="toolbar-row toolbar-undo-list">
+        <details>
+          <summary>Changes history</summary>
+          <div
+            className={`${sideToolbar.changesGroup} ${sideToolbar.toolbarRow}`}
+          >
             {undoImageList && (
-              <div className="undo-list">
+              <div className={sideToolbar.changesList}>
                 {undoImageList.toReversed().map((img, index) => {
                   return (
                     <span key={index}>
