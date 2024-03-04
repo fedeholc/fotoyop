@@ -43,11 +43,9 @@ export default function App() {
   const [inputBorderPixels, setInputBorderPixels] = useState<string>("0");
   const [inputBorderPercent, setInputBorderPercent] = useState<string>("0");
   const [inputBorderColor, setInputBorderColor] = useState<string>("#ffffff");
+ 
 
-  /*   const [originalFile, setOriginalFile] = useState<File | null>(null);
-  const [originalImg, setOriginalImg] = useState<HTMLImageElement | null>(null); */
-
-  const { originalFile, originalImg, setOriginalFile, setOriginalImg } =
+  const { originalFile, originalImg, setOriginalFile, setOriginalImg, smallCanvasRef } =
     useContext(ImageContext);
 
   const [windowDimensions, setWindowDimensions] = useState({
@@ -57,13 +55,7 @@ export default function App() {
     mobileToolbarWidth: 0,
   });
 
-  /*  const [processList, setProcessList] = useState<ProcessFunction[]>([]);
-
-  const [undoImageList, setUndoImageList] = useState<ImageData[]>([]);
-
-  const [currentProcess, setCurrentProcess] = useState<ImageProcess | null>(
-    null
-  ); */
+ 
   const {
     processList,
     setProcessList,
@@ -76,8 +68,8 @@ export default function App() {
   const inputUploadRef = useRef<HTMLInputElement | null>(null);
   const smallCanvasCtxRef = useRef<CanvasRenderingContext2D | null>(null);
   const imagenPreviewRef = useRef<HTMLImageElement | null>(null);
-  const smallCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const inputBorderPixelsRef = useRef<HTMLInputElement | null>(null);
+/*   const smallCanvasRef = useRef<HTMLCanvasElement | null>(null);
+ */  const inputBorderPixelsRef = useRef<HTMLInputElement | null>(null);
 
   /**
    * Función que calcula un nuevo tamaño para la imagen del small canvas teniendo en cuenta el tamaño de la ventana.

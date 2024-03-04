@@ -1,4 +1,4 @@
-import { createContext, useState, Dispatch, SetStateAction } from "react";
+import { createContext, useState, Dispatch, SetStateAction, useRef,createRef } from "react";
 
 export const ImageContext = createContext({
   originalImg: null as HTMLImageElement | null,
@@ -7,6 +7,7 @@ export const ImageContext = createContext({
     SetStateAction<HTMLImageElement | null>
   >,
   setOriginalFile: (() => {}) as Dispatch<SetStateAction<File | null>>,
+  smallCanvasRef: createRef<HTMLCanvasElement>(),
 });
 
 export default function ImageProvider({
@@ -16,10 +17,11 @@ export default function ImageProvider({
 }) {
   const [originalImg, setOriginalImg] = useState<HTMLImageElement | null>(null);
   const [originalFile, setOriginalFile] = useState<File | null>(null);
+  const smallCanvasRef = useRef<HTMLCanvasElement>(null);
 
   return (
     <ImageContext.Provider
-      value={{ originalImg, originalFile, setOriginalImg, setOriginalFile }}
+      value={{ originalImg, originalFile, setOriginalImg, setOriginalFile, smallCanvasRef }}
     >
       {children}
     </ImageContext.Provider>
