@@ -8,9 +8,9 @@ export default function Home() {
   return (
     <ImageProvider>
       <ProcessProvider>
-        <BorderProvider>
+     
           <App /> 
-        </BorderProvider>
+ 
       </ProcessProvider>
     </ImageProvider>
   );

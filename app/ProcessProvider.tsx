@@ -4,16 +4,14 @@ export const ProcessContext = createContext({
   processList: [] as ProcessFunction[],
   undoImageList: [] as ImageData[],
   currentProcess: null as ImageProcess | null,
-  setProcessList: (() => {}) as Dispatch<
-    SetStateAction<ProcessFunction[] >
-  >,
+  setProcessList: (() => {}) as Dispatch<SetStateAction<ProcessFunction[]>>,
   setUndoImageList: (() => {}) as Dispatch<SetStateAction<ImageData[]>>,
   setCurrentProcess: (() => {}) as Dispatch<
     SetStateAction<ImageProcess | null>
   >,
 });
 
-export default function ImageProvider({
+export default function ProcessProvider({
   children,
 }: {
   children: React.ReactNode;

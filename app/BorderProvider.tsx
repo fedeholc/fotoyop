@@ -39,6 +39,17 @@ export const BorderContext = createContext({
       | React.ChangeEvent<HTMLInputElement>
       | React.KeyboardEvent<HTMLInputElement>
   ) => void,
+  handleInputBorderPercent: (() => {}) as (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => void,
+  handleInputBorderPercentText: (() => {}) as (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.KeyboardEvent<HTMLInputElement>
+  ) => void,
+  handleInputBorderPercentRangeMouseUp: (() => {}) as () => void,
+  handleApplyBorder: () => {},
+  handleDiscardBorder: () => {},
 });
 
 export default function BorderProvider({
@@ -66,6 +77,33 @@ export default function BorderProvider({
     currentProcess,
     setCurrentProcess,
   } = useContext(ProcessContext);
+
+  /**
+   * Handler del Mouse Up del input de rango de borde en porcentaje.
+   *
+   */
+  function handleInputBorderPercentRangeMouseUp() {
+    setInputBorderPixels("0");
+    handleBorderChange(
+      {
+        BorderColor: inputBorderColor,
+        BorderPixels: "0",
+        BorderPercent: inputBorderPercent,
+      },
+      smallCanvasRef
+    );
+  }
+
+  /**
+   *
+   * @param event - evento del input de rango de borde en porcentaje
+   */
+  function handleInputBorderPercent(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    setInputBorderPixels("0");
+    setInputBorderPercent(event.target.value);
+  }
 
   function handleInputBorderColor(e: React.ChangeEvent<HTMLInputElement>) {
     setInputBorderColor(e.target.value);
@@ -99,6 +137,27 @@ export default function BorderProvider({
   ) {
     setInputBorderPercent("0");
     setInputBorderPixels(event.target.value);
+  }
+
+  /**
+   *
+   * @param event - evento del input box de borde en porcentaje
+   */
+  function handleInputBorderPercentText(
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.KeyboardEvent<HTMLInputElement>
+  ) {
+    setInputBorderPixels("0");
+    setInputBorderPercent((event.target as HTMLInputElement).value);
+    handleBorderChange(
+      {
+        BorderColor: inputBorderColor,
+        BorderPixels: "0",
+        BorderPercent: (event.target as HTMLInputElement).value,
+      },
+      smallCanvasRef
+    );
   }
 
   /**
@@ -184,6 +243,42 @@ export default function BorderProvider({
     }
   }
 
+  /**
+   * Handler del click en aplicar borde.
+   */
+  function handleApplyBorder() {
+    setInputBorderColor("#ffffff");
+    setInputBorderPercent("0");
+    setInputBorderPixels("0");
+    setCurrentProcess(null);
+  }
+
+  /**
+   * Handler del botón descartar borde. Descarta las últimas modificaciones recuperando el snapshot anterior.
+   */
+  function handleDiscardBorder() {
+    const newUndoImageList = [...undoImageList];
+    if (currentProcess === ImageProcess.Border && undoImageList.length > 1) {
+      newUndoImageList.pop();
+      setUndoImageList(newUndoImageList);
+
+      drawImageDataOnCanvas(
+        newUndoImageList[newUndoImageList.length - 1],
+        smallCanvasRef.current!
+      );
+
+      const newProcessList = [...processList];
+      newProcessList.pop();
+
+      setProcessList(newProcessList);
+    }
+
+    setInputBorderColor("#ffffff");
+    setInputBorderPercent("0");
+    setInputBorderPixels("0");
+    setCurrentProcess(null);
+  }
+
   return (
     <BorderContext.Provider
       value={{
@@ -198,6 +293,11 @@ export default function BorderProvider({
         handleBorderChange,
         handleInputBorderPixelsRangeMouseUp,
         handleInputBorderPixelsText,
+        handleInputBorderPercent,
+        handleInputBorderPercentText,
+        handleInputBorderPercentRangeMouseUp,
+        handleApplyBorder,
+        handleDiscardBorder,
       }}
     >
       {children}
