@@ -28,16 +28,17 @@ import { ImageContext } from "./ImageProvider";
 import { ProcessContext } from "./ProcessProvider";
 import { useContext } from "react";
 
+export const mainCanvasConfig: CanvasConfig = {
+  maxWidth: 600,
+  maxHeight: 600,
+};
+
 export default function App() {
   const [displays, setDisplays] = useState<DisplaySections>({
     canvas: false,
     form: true,
   });
 
-  const mainCanvasConfig: CanvasConfig = {
-    maxWidth: 600,
-    maxHeight: 600,
-  };
 
   const [inputBorderPixels, setInputBorderPixels] = useState<string>("0");
   const [inputBorderPercent, setInputBorderPercent] = useState<string>("0");
@@ -810,89 +811,9 @@ export default function App() {
           <br />
         </section>
         <section id="section__mobile">
-          {/* 
-          {toolbarsDisplay.borderPixels && (
-            <div className="toolbar__borders toolbar-row__border-ranges">
-              <input
-                type="range"
-                id="inputBorderPixels"
-                name="inputBorderPixels"
-                min="0"
-                ref={inputBorderPixelsRef}
-                value={inputBorderPixels}
-                onChange={handleInputBorderPixelsRange}
-                onMouseUp={handleInputBorderPixelsRangeMouseUp}
-                onTouchEnd={handleInputBorderPixelsRangeMouseUp}
-              ></input>
-              <input
-                type="number"
-                id="inputBorderPixelsN"
-                name="inputBorderPixelsN"
-                min="0"
-                value={inputBorderPixels}
-                onKeyUp={handleInputBorderPixelsText}
-                onChange={handleInputBorderPixelsText}
-              ></input>
-              <div className="toolbar_row__units">px</div>
-            </div>
-          )}
-          {toolbarsDisplay.border && (
-            <div className="toolbar__borders ">
-              <input
-                id="inputBorderColor"
-                type="color"
-                list="true"
-                value={inputBorderColor}
-                onChange={handleInputBorderColor}
-              />
-             
-              <input
-                id="inputBorderColorText"
-                type="Text"
-                min="0"
-                value={inputBorderColor}
-                onChange={handleInputBorderColor}
-              ></input>
-              <button>%</button>
-              <button
-                onClick={() =>
-                  setToolbarsDisplay({
-                    border: true,
-                    borderPixels: true,
-                    gray: false,
-                  })
-                }
-              >
-                px
-              </button>
-            </div>
-          )}
-    {toolbarsDisplay.gray && (
-            <div className="toolbar__gray">
-              <button>G</button>
-            </div>
-          )}  
+          
 
-   
-
-       <div className="row1">
-            <button id="btnUndo2" onClick={handleUndo}>
-              Undo
-            </button>
-            <button onClick={handleNewImage}>New Image</button>
-            <button type="button" id="btnDescargar2" onClick={handleDownload}>
-              Download
-            </button>
-            <button onClick={handleToolbarBorder}>Borde</button>
-            <button onClick={handleToolbarGray}>Gris</button>
-          </div> */}
-
-          {/*     {toolbar.get("gris") && <ToolbarRow1transGris />}
-          {toolbar.get("borde") && <ToolbarRow1transBorde />}
-          {toolbar.get("trans") && <ToolbarRow1trans />}
-          <ToolbarRow1 /> */}
-
-          <BottomToolbar></BottomToolbar>
+          <BottomToolbar smallCanvasRef={smallCanvasRef}></BottomToolbar>
         </section>
       </main>
     </div>
