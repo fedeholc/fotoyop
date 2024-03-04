@@ -9,11 +9,11 @@ import {
 } from "./imageProcessing";
 import { BottomToolbar } from "./components/toolbar";
 import { SideToolbar } from "./components/sideToolbar";
-import { ImageContext } from "./ImageProvider";
-import { ProcessContext } from "./ProcessProvider";
+import { ImageContext } from "./providers/ImageProvider";
+import { ProcessContext } from "./providers/ProcessProvider";
 import { useContext } from "react";
-import BorderProvider from "./BorderProvider";
-import ToolbarProvider from "./ToolbarProvider";
+import BorderProvider from "./providers/BorderProvider";
+import ToolbarProvider from "./providers/ToolbarProvider";
 
 export const mainCanvasConfig: CanvasConfig = {
   maxWidth: 600,

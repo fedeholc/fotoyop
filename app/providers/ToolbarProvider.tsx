@@ -8,9 +8,9 @@ import {
 import { ImageContext } from "./ImageProvider";
 import { ProcessContext } from "./ProcessProvider";
 import { BorderContext } from "./BorderProvider";
-import { ProcessOptionsType } from "./types";
-import { mainCanvasConfig } from "./App";
-import { ImageProcess } from "./types";
+import { ProcessOptionsType } from "../types";
+import { mainCanvasConfig } from "../App";
+import { ImageProcess } from "../types";
 import {
   applyProcessFunction,
   drawImageDataOnCanvas,
@@ -18,14 +18,13 @@ import {
   imgToBW,
   processToNewImageData,
   processImgToCanvas,
-} from "./imageProcessing";
+} from "../imageProcessing";
 
 export const ToolbarContext = createContext({
   handleDownload: () => {},
   handleUndo: () => {},
   handleNewImage: () => {},
   handleToGrayscale: () => {},
-  
 });
 
 export default function ToolbarProvider({

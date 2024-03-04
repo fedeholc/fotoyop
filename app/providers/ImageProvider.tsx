@@ -6,7 +6,7 @@ import {
   useRef,
   createRef,
 } from "react";
-import { DisplaySections } from "./types";
+import { DisplaySections } from "../types";
 
 export const ImageContext = createContext({
   originalImg: null as HTMLImageElement | null,
@@ -30,10 +30,10 @@ export default function ImageProvider({
   const [originalFile, setOriginalFile] = useState<File | null>(null);
   const smallCanvasRef = useRef<HTMLCanvasElement>(null);
   const imagenPreviewRef = useRef<HTMLImageElement>(null);
-   const [displays, setDisplays] = useState<DisplaySections>({
-     canvas: false,
-     form: true,
-   });
+  const [displays, setDisplays] = useState<DisplaySections>({
+    canvas: false,
+    form: true,
+  });
 
   return (
     <ImageContext.Provider

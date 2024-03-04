@@ -1,5 +1,5 @@
 import { createContext, useState, Dispatch, SetStateAction } from "react";
-import { ProcessFunction, ImageProcess } from "./types";
+import { ProcessFunction, ImageProcess } from "../types";
 export const ProcessContext = createContext({
   processList: [] as ProcessFunction[],
   undoImageList: [] as ImageData[],

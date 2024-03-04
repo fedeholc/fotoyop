@@ -1,9 +1,9 @@
 import { useState, useRef, useContext } from "react";
 import toolbar from "./toolbar.module.css";
 import { ArrowLeft } from "lucide-react";
-import { ImageContext } from "../ImageProvider";
-import { ProcessContext } from "../ProcessProvider";
-import { ToolbarContext } from "../ToolbarProvider";
+import { ImageContext } from "../providers/ImageProvider";
+import { ProcessContext } from "../providers/ProcessProvider";
+import { ToolbarContext } from "../providers/ToolbarProvider";
 import { ProcessOptionsType } from "../types";
 import { mainCanvasConfig } from "../App";
 import { ImageProcess } from "../types";
@@ -16,7 +16,7 @@ import {
   processToNewImageData,
   imgToBW,
 } from "../imageProcessing";
-import { BorderContext } from "../BorderProvider";
+import { BorderContext } from "../providers/BorderProvider";
 
 export function SideToolbar() {
   const inputBorderPixelsRef = useRef<HTMLInputElement | null>(null);

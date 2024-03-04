@@ -7,14 +7,14 @@ import {
 } from "react";
 import { ImageContext } from "./ImageProvider";
 import { ProcessContext } from "./ProcessProvider";
-import { ProcessOptionsType } from "./types";
-import { mainCanvasConfig } from "./App";
-import { ImageProcess } from "./types";
+import { ProcessOptionsType } from "../types";
+import { mainCanvasConfig } from "../App";
+import { ImageProcess } from "../types";
 import {
   applyProcessFunction,
   drawImageDataOnCanvas,
   imgAddBorder,
-} from "./imageProcessing";
+} from "../imageProcessing";
 
 export const BorderContext = createContext({
   inputBorderPixels: "0",
