@@ -25,10 +25,11 @@ export function ToolbarRow({
 
 export function BottomToolbar() {
   const iconSize = 16;
-  /* const iconColor = "rgb(216, 155, 0)"; */
-  const iconColor = window
+  const iconColor = "rgb(216, 155, 0)";
+  /*   const iconColor = window
     .getComputedStyle(document.body)
-    .getPropertyValue("--buttonIconColor");
+    .getPropertyValue("--buttonIconColor"); */
+  //FIXME: da error incluso si pongo el use client, tal vez haya que hacer que lo lea en useeffect.
 
   const [toolbarDisplay, setToolbarDisplay] = useState({
     mainMenu: true,
