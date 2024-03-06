@@ -211,7 +211,7 @@ export function BottomToolbar() {
             onChange={handleInputBorderColor}
           />
           <button
-            className={toolbar.buttonWithIcon}
+            className={toolbar.buttonOnlyIcon}
             onClick={() =>
               setToolbarDisplay({
                 mainMenu: true,
@@ -225,7 +225,7 @@ export function BottomToolbar() {
             %
           </button>
           <button
-            className={toolbar.buttonWithIcon}
+            className={toolbar.buttonOnlyIcon}
             onClick={() =>
               setToolbarDisplay({
                 mainMenu: true,
