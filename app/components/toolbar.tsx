@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { ToolbarContext } from "../providers/ToolbarProvider";
 import { BorderContext } from "../providers/BorderProvider";
+import { ImageContext } from "../providers/ImageProvider";
 import { useEffect } from "react";
 
 export function ToolbarRow({
@@ -54,8 +55,20 @@ export function BottomToolbar() {
     handleDiscardBorder,
   } = useContext(BorderContext);
 
+  const { originalImg } = useContext(ImageContext);
   const { handleDownload, handleNewImage, handleUndo } =
     useContext(ToolbarContext);
+
+  // hace que el selector de ancho de borde tenga como máximo la mitad del tamaño de la imagen
+  useEffect(() => {
+    if (originalImg && inputBorderPixelsRef.current) {
+      if (originalImg.width > originalImg.height) {
+        inputBorderPixelsRef.current!.max = (originalImg.width / 2).toString();
+      } else {
+        inputBorderPixelsRef.current!.max = (originalImg.width / 2).toString();
+      }
+    }
+  }, [originalImg, inputBorderPixelsRef.current]);
 
   return (
     <>
