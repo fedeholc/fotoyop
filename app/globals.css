@@ -181,7 +181,7 @@
    border-radius: 5px;
    border: var(--buttonBorder);
    background-color: var(--buttonBg);
-   color: var(--lightFont);
+
    cursor: pointer;
    font-size: 0.9rem;
    box-shadow: var(--buttonBoxShadow);

@@ -1,4 +1,4 @@
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, use } from "react";
 import toolbar from "./toolbar.module.css";
 import {
   ArrowLeft,
@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { ToolbarContext } from "../providers/ToolbarProvider";
 import { BorderContext } from "../providers/BorderProvider";
+import { useEffect } from "react";
 
 export function ToolbarRow({
   className = "",
@@ -25,10 +26,7 @@ export function ToolbarRow({
 
 export function BottomToolbar() {
   const iconSize = 16;
-  const iconColor = "rgb(216, 155, 0)";
-  /*   const iconColor = window
-    .getComputedStyle(document.body)
-    .getPropertyValue("--buttonIconColor"); */
+
   //FIXME: da error incluso si pongo el use client, tal vez haya que hacer que lo lea en useeffect.
 
   const [toolbarDisplay, setToolbarDisplay] = useState({
@@ -75,7 +73,7 @@ export function BottomToolbar() {
             }
             className={toolbar.buttonOnlyIcon}
           >
-            <ArrowLeft size={iconSize} color="rgb(0, 183, 255)"></ArrowLeft>
+            <ArrowLeft size={iconSize}></ArrowLeft>
           </button>
 
           <div className={toolbar.borderRanges}>
@@ -102,7 +100,7 @@ export function BottomToolbar() {
             <div className="toolbar_row__units">px</div>{" "}
           </div>
           <button
-            className={toolbar.buttonWithIcon}
+            className={toolbar.buttonOnlyIcon}
             type="button"
             id="btnApplyBorder"
             onClick={handleApplyBorder}
@@ -110,7 +108,7 @@ export function BottomToolbar() {
             <Check size={iconSize}></Check>
           </button>
           <button
-            className={toolbar.buttonWithIcon}
+            className={toolbar.buttonOnlyIcon}
             type="button"
             id="btnDiscardBorder"
             onClick={handleDiscardBorder}
@@ -134,7 +132,7 @@ export function BottomToolbar() {
             }
             className={toolbar.buttonOnlyIcon}
           >
-            <ArrowLeft size={iconSize} color="rgb(0, 183, 255)"></ArrowLeft>
+            <ArrowLeft size={iconSize}></ArrowLeft>
           </button>
 
           <div className={toolbar.borderRanges}>
@@ -161,7 +159,7 @@ export function BottomToolbar() {
             <div className="toolbar_row__units">px</div>
           </div>
           <button
-            className={toolbar.buttonWithIcon}
+            className={toolbar.buttonOnlyIcon}
             type="button"
             id="btnApplyBorder"
             onClick={handleApplyBorder}
@@ -169,7 +167,7 @@ export function BottomToolbar() {
             <Check size={iconSize}></Check>
           </button>
           <button
-            className={toolbar.buttonWithIcon}
+            className={toolbar.buttonOnlyIcon}
             type="button"
             id="btnDiscardBorder"
             onClick={handleDiscardBorder}
@@ -182,7 +180,7 @@ export function BottomToolbar() {
       {toolbarDisplay.border && (
         <ToolbarRow className={toolbar.border__row}>
           <button
-            className={toolbar.buttonWithIcon}
+            className={toolbar.buttonOnlyIcon}
             onClick={() =>
               setToolbarDisplay({
                 mainMenu: true,
@@ -193,7 +191,7 @@ export function BottomToolbar() {
               })
             }
           >
-            <ArrowLeft size={iconSize} color="rgb(0, 183, 255)"></ArrowLeft>
+            <ArrowLeft size={iconSize}></ArrowLeft>
           </button>
           <input
             id="inputBorderColorText"
@@ -263,13 +261,16 @@ export function BottomToolbar() {
       {toolbarDisplay.mainMenu && (
         <ToolbarRow>
           <button className={toolbar.buttonWithIcon} onClick={handleDownload}>
-            <Download size={iconSize} color={iconColor}></Download>Download
+            <Download size={iconSize}></Download>
+            <span>Download</span>
           </button>
           <button className={toolbar.buttonWithIcon} onClick={handleNewImage}>
-            <FilePlus size={iconSize} color={iconColor}></FilePlus>New
+            <FilePlus size={iconSize}></FilePlus>
+            <span>New</span>
           </button>
           <button className={toolbar.buttonWithIcon} onClick={handleUndo}>
-            <Undo size={iconSize} color={iconColor}></Undo>Undo
+            <Undo size={iconSize}></Undo>
+            <span>Undo</span>
           </button>
           <button
             className={toolbar.buttonWithIcon}
@@ -283,8 +284,8 @@ export function BottomToolbar() {
               })
             }
           >
-            <Pencil size={iconSize} color={iconColor}></Pencil>
-            Edit
+            <Pencil size={iconSize}></Pencil>
+            <span>Edit</span>
           </button>
         </ToolbarRow>
       )}
