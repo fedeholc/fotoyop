@@ -13,6 +13,7 @@
    --buttonBoxShadow: 1px 1px 2px 1px rgb(12, 12, 12);
    --buttonHoverColor: rgb(128, 128, 128);
    --buttonIconColor: rgb(216, 155, 0);
+   --buttonIconColorHover: rgb(255, 183, 0);
  }
 
  *,
@@ -193,13 +194,18 @@
  }
 
 
- #section__toolbar button:hover,
- #section__mobile button:hover {
-   /*    background-color: #252525;
- */
+ #section__toolbar button:hover {
+
    color: white;
    outline: 1px solid var(--buttonHoverColor);
    border: 1px solid var(--buttonHoverColor);
+ }
+
+ #section__mobile button:hover {
+
+   outline: 1px solid var(--bgMiddleGray);
+   border: 1px solid var(--bgMiddleGray);
+   color: var(--buttonIconColorHover)
  }
 
  #section__toolbar input,
