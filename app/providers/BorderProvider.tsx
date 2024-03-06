@@ -29,6 +29,9 @@ export const BorderContext = createContext({
   handleInputBorderPixelsRange: (() => {}) as (
     e: React.ChangeEvent<HTMLInputElement>
   ) => void,
+  handleInputBorderPercentRange: (() => {}) as (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => void,
   handleBorderChange: (() => {}) as (
     borderOptions: ProcessOptionsType,
     smallCanvasRef: React.RefObject<HTMLCanvasElement>
@@ -106,6 +109,7 @@ export default function BorderProvider({
   }
 
   function handleInputBorderColor(e: React.ChangeEvent<HTMLInputElement>) {
+    console.log("handleInputBorderColor:", e.target.value);
     setInputBorderColor(e.target.value);
   }
   /**
@@ -137,6 +141,13 @@ export default function BorderProvider({
   ) {
     setInputBorderPercent("0");
     setInputBorderPixels(event.target.value);
+  }
+
+  function handleInputBorderPercentRange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    setInputBorderPixels("0");
+    setInputBorderPercent(event.target.value);
   }
 
   /**
@@ -290,6 +301,7 @@ export default function BorderProvider({
         setInputBorderColor,
         handleInputBorderColor,
         handleInputBorderPixelsRange,
+        handleInputBorderPercentRange,
         handleBorderChange,
         handleInputBorderPixelsRangeMouseUp,
         handleInputBorderPixelsText,
