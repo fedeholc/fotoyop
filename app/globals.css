@@ -218,7 +218,7 @@
    grid-area: section-mobile;
    display: none;
    background-color: var(--toolbarBg);
-   padding: 1rem;
+   padding: 0.7rem 0.5rem 0.8rem 0.5rem;
    gap: 1rem;
  }
 

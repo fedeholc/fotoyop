@@ -59,7 +59,7 @@ export function BottomToolbar() {
   const { handleDownload, handleNewImage, handleUndo } =
     useContext(ToolbarContext);
 
-  // hace que el selector de ancho de borde tenga como máximo la mitad del tamaño de la imagen
+  // hace que el selector de ancho de borde tenga como máximo la mitad del tamaño de la imagenn
   useEffect(() => {
     if (originalImg && inputBorderPixelsRef.current) {
       if (originalImg.width > originalImg.height) {
