@@ -1,3 +1,10 @@
+export enum toolbarRow {
+  mainMenu = "mainMenu",
+  transform = "transform",
+  border = "border",
+  borderPx = "borderPx",
+  borderPc = "borderPc",
+}
 
 export enum ImageProcess {
   Border = "Border",

@@ -13,6 +13,7 @@ import { ToolbarContext } from "../providers/ToolbarProvider";
 import { BorderContext } from "../providers/BorderProvider";
 import { ImageContext } from "../providers/ImageProvider";
 import { useEffect } from "react";
+import { toolbarRow } from "../types";
 
 export function ToolbarRow({
   className = "",
@@ -29,6 +30,19 @@ export function BottomToolbar() {
   const iconSize = 16;
 
   //FIXME: da error incluso si pongo el use client, tal vez haya que hacer que lo lea en useeffect.
+
+  //todo: armar toolbar type.
+  function showToolbarRow(row: toolbarRow) {
+    let toolbar = {
+      mainMenu: true,
+      transform: false,
+      border: false,
+      borderPx: false,
+      borderPc: false,
+    };
+    toolbar[row] = true;
+    setToolbarDisplay(toolbar);
+  }
 
   const [toolbarDisplay, setToolbarDisplay] = useState({
     mainMenu: true,
@@ -75,15 +89,7 @@ export function BottomToolbar() {
       {toolbarDisplay.borderPx && (
         <ToolbarRow className={toolbar.border__row}>
           <button
-            onClick={() =>
-              setToolbarDisplay({
-                mainMenu: true,
-                border: true,
-                transform: false,
-                borderPx: false,
-                borderPc: false,
-              })
-            }
+            onClick={() => showToolbarRow(toolbarRow.border)}
             className={toolbar.buttonOnlyIcon}
           >
             <ArrowLeft size={iconSize}></ArrowLeft>
@@ -134,15 +140,7 @@ export function BottomToolbar() {
       {toolbarDisplay.borderPc && (
         <ToolbarRow className={toolbar.border__row}>
           <button
-            onClick={() =>
-              setToolbarDisplay({
-                mainMenu: true,
-                border: true,
-                transform: false,
-                borderPx: false,
-                borderPc: false,
-              })
-            }
+            onClick={() => showToolbarRow(toolbarRow.border)}
             className={toolbar.buttonOnlyIcon}
           >
             <ArrowLeft size={iconSize}></ArrowLeft>
@@ -194,15 +192,7 @@ export function BottomToolbar() {
         <ToolbarRow className={toolbar.border__row}>
           <button
             className={toolbar.buttonOnlyIcon}
-            onClick={() =>
-              setToolbarDisplay({
-                mainMenu: true,
-                border: false,
-                transform: true,
-                borderPx: false,
-                borderPc: false,
-              })
-            }
+            onClick={() => showToolbarRow(toolbarRow.transform)}
           >
             <ArrowLeft size={iconSize}></ArrowLeft>
           </button>
@@ -224,29 +214,13 @@ export function BottomToolbar() {
           />
           <button
             className={toolbar.buttonOnlyIcon}
-            onClick={() =>
-              setToolbarDisplay({
-                mainMenu: true,
-                border: false,
-                transform: false,
-                borderPx: false,
-                borderPc: true,
-              })
-            }
+            onClick={() => showToolbarRow(toolbarRow.borderPc)}
           >
             %
           </button>
           <button
             className={toolbar.buttonOnlyIcon}
-            onClick={() =>
-              setToolbarDisplay({
-                mainMenu: true,
-                border: false,
-                transform: false,
-                borderPx: true,
-                borderPc: false,
-              })
-            }
+            onClick={() => showToolbarRow(toolbarRow.borderPx)}
           >
             px
           </button>
@@ -256,15 +230,7 @@ export function BottomToolbar() {
         <ToolbarRow>
           <button
             className={toolbar.buttonText}
-            onClick={() =>
-              setToolbarDisplay({
-                mainMenu: true,
-                border: true,
-                transform: false,
-                borderPx: false,
-                borderPc: false,
-              })
-            }
+            onClick={() => showToolbarRow(toolbarRow.border)}
           >
             Border
           </button>
@@ -287,15 +253,7 @@ export function BottomToolbar() {
           </button>
           <button
             className={toolbar.buttonWithIcon}
-            onClick={() =>
-              setToolbarDisplay({
-                border: false,
-                mainMenu: true,
-                transform: true,
-                borderPx: false,
-                borderPc: false,
-              })
-            }
+            onClick={() => showToolbarRow(toolbarRow.transform)}
           >
             <Pencil size={iconSize}></Pencil>
             <span>Edit</span>
