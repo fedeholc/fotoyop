@@ -209,7 +209,8 @@ export function BottomToolbar() {
             list="true"
             value={
               inputBorderColor
-            } /* FIXME: ojo, cambiar el color via texto no afecta al selector de color, viceversa si */
+            }
+            
             onChange={handleInputBorderColor}
           />
           <button
