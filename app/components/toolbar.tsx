@@ -15,6 +15,7 @@ import { ImageContext } from "../providers/ImageProvider";
 import { useEffect } from "react";
 import { toolbarRow } from "../types";
 import sideToolbar from "./sideToolbar.module.css";
+import ButtonUndo from "./buttons/buttonUndo";
 
 export function ToolbarRow({
   className = "",
@@ -250,10 +251,11 @@ export function BottomToolbar() {
             <FilePlus size={iconSize}></FilePlus>
             <span>New</span>
           </button>
-          <button className={toolbar.buttonWithIcon} onClick={handleUndo}>
+          {/*  <button className={toolbar.buttonWithIcon} onClick={handleUndo}>
             <Undo size={iconSize}></Undo>
             <span>Undo</span>
-          </button>
+          </button> */}
+          <ButtonUndo></ButtonUndo>
           <button
             className={toolbar.buttonWithIcon}
             onClick={() => showToolbarRow(toolbarRow.transform)}
