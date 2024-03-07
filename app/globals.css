@@ -222,6 +222,8 @@
    gap: 1rem;
  }
 
+ 
+
  .unselectable {
    user-select: none;
  }

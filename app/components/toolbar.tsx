@@ -14,6 +14,7 @@ import { BorderContext } from "../providers/BorderProvider";
 import { ImageContext } from "../providers/ImageProvider";
 import { useEffect } from "react";
 import { toolbarRow } from "../types";
+import sideToolbar from "./sideToolbar.module.css";
 
 export function ToolbarRow({
   className = "",
@@ -27,11 +28,8 @@ export function ToolbarRow({
 }
 
 export function BottomToolbar() {
-  const iconSize = 16;
+  const iconSize = 16; //FIXME: debería ser variable de mainconfig? o de css?
 
-  //FIXME: da error incluso si pongo el use client, tal vez haya que hacer que lo lea en useeffect.
-
-  //todo: armar toolbar type.
   function showToolbarRow(row: toolbarRow) {
     let toolbar = {
       mainMenu: true,
@@ -69,7 +67,9 @@ export function BottomToolbar() {
     handleDiscardBorder,
   } = useContext(BorderContext);
 
-  const { originalImg } = useContext(ImageContext);
+  const { originalFile, originalImg, imagenPreviewRef } =
+    useContext(ImageContext);
+
   const { handleDownload, handleNewImage, handleUndo } =
     useContext(ToolbarContext);
 
@@ -207,10 +207,7 @@ export function BottomToolbar() {
             id="inputBorderColor"
             type="color"
             list="true"
-            value={
-              inputBorderColor
-            }
-            
+            value={inputBorderColor}
             onChange={handleInputBorderColor}
           />
           <button
@@ -238,9 +235,14 @@ export function BottomToolbar() {
           <button className={toolbar.buttonText}>GrayScale</button>
         </ToolbarRow>
       )}
+      {/* {toolbarDisplay.mainMenu && originalImg?.src && ( */}
       {toolbarDisplay.mainMenu && (
         <ToolbarRow>
-          <button className={toolbar.buttonWithIcon} onClick={handleDownload}>
+          <button
+            title="Download file"
+            className={toolbar.buttonWithIcon}
+            onClick={handleDownload}
+          >
             <Download size={iconSize}></Download>
             <span>Download</span>
           </button>
@@ -259,6 +261,36 @@ export function BottomToolbar() {
             <Pencil size={iconSize}></Pencil>
             <span>Edit</span>
           </button>
+          {/* TODO: no funciona la ubicacion del popover justo arriba del boton */}
+          {/* @ts-ignore */}
+          <button className={toolbar.popoverButton} popovertarget="my-popover">
+            Open Popover
+          </button>
+          {/* @ts-ignore */}
+          <div id="my-popover" className={toolbar.popoverInfo} popover="auto">
+            <div className={sideToolbar.toolbarRow}>
+              <div className={sideToolbar.imageInfoGroup}>
+                <div>
+                  <strong>{originalFile?.name}</strong>
+                </div>
+                {originalFile && (
+                  <div>
+                    {originalImg?.width} x {originalImg?.height} pixels
+                  </div>
+                )}
+                {originalFile && (
+                  <div>
+                    {Math.floor(originalFile.size / 1000).toString()} Kbytes
+                  </div>
+                )}
+                <img
+                  id="imagenPreview"
+                  style={{ maxWidth: "150px", maxHeight: "150px" }}
+                  ref={imagenPreviewRef}
+                ></img>
+              </div>
+            </div>
+          </div>
         </ToolbarRow>
       )}
     </>

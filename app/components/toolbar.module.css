@@ -111,3 +111,24 @@
   padding: 0rem 0.5rem;
   color: var(--lightFont)
 }
+
+
+.popoverButton {
+  position: relative;
+}
+
+.popoverInfo {
+  background: #333;
+  color: white;
+  border: 2px solid rgb(204, 204, 204);
+  font-weight: 400;
+  padding: 1rem;
+  max-width: 200px; 
+  position: fixed;
+  top: 50%;
+  /* Coloca el popover justo encima del borde superior del botón */
+  left: 50%;
+  /* Centra el popover horizontalmente */
+  transform: translateX(-50%);
+  border-radius: 10px;
+}
