@@ -8,6 +8,10 @@ import sideToolbar from "./sideToolbar.module.css";
 import ButtonUndo from "./buttons/buttonUndo";
 import ButtonNew from "./buttons/buttonNew";
 import ButtonDownload from "./buttons/buttonDownload";
+import ButtonApply from "./buttons/buttonApply";
+import ButtonDiscard from "./buttons/buttonDiscard";
+import ButtonBorder from "./buttons/buttonBorder";
+import ButtonGrayscale from "./buttons/buttonGrayscale";
 
 export function SideToolbar() {
   const inputBorderPixelsRef = useRef<HTMLInputElement | null>(null);
@@ -32,8 +36,7 @@ export function SideToolbar() {
 
   const { undoImageList } = useContext(ProcessContext);
 
-  const { handleDownload, handleUndo, handleNewImage, handleToGrayscale } =
-    useContext(ToolbarContext);
+  const { handleToGrayscale } = useContext(ToolbarContext);
 
   return (
     <>
@@ -72,13 +75,7 @@ export function SideToolbar() {
           <summary>Grayscale</summary>
           <div className={sideToolbar.toolbarRow}>
             <div className={sideToolbar.rowButtons}>
-              <button
-                type="button"
-                id="btnToBN"
-                onClick={() => handleToGrayscale()}
-              >
-                Convert to Grayscale
-              </button>
+              <ButtonGrayscale onClick={handleToGrayscale}></ButtonGrayscale>
             </div>
           </div>
         </details>
@@ -159,20 +156,8 @@ export function SideToolbar() {
             </div>
             <div className={sideToolbar.toolbarRow}>
               <div className={sideToolbar.rowButtons}>
-                <button
-                  type="button"
-                  id="btnApplyBorder"
-                  onClick={handleApplyBorder}
-                >
-                  Apply
-                </button>
-                <button
-                  type="button"
-                  id="btnDiscardBorder"
-                  onClick={handleDiscardBorder}
-                >
-                  Discard
-                </button>
+                <ButtonApply onClick={handleApplyBorder}></ButtonApply>
+                <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
               </div>
             </div>
           </div>

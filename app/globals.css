@@ -190,10 +190,10 @@
    font-weight: 400;
  }
 
- #section__toolbar button {
+ /* #section__toolbar button {
    padding: 0.5rem 1rem;
  }
-
+ */
 
  #section__toolbar button:hover {
 

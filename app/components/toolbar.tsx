@@ -2,8 +2,8 @@ import { useState, useRef, useContext, useEffect } from "react";
 import toolbar from "./toolbar.module.css";
 import { BorderContext } from "../providers/BorderProvider";
 import { ImageContext } from "../providers/ImageProvider";
+import { ToolbarContext } from "../providers/ToolbarProvider";
 import { toolbarRow } from "../types";
-import sideToolbar from "./sideToolbar.module.css";
 import ButtonUndo from "./buttons/buttonUndo";
 import ButtonEdit from "./buttons/buttonEdit";
 import ButtonNew from "./buttons/buttonNew";
@@ -14,6 +14,7 @@ import ButtonDiscard from "./buttons/buttonDiscard";
 import ButtonBorder from "./buttons/buttonBorder";
 import ButtonBorderPx from "./buttons/buttonBorderPx";
 import ButtonBorderPc from "./buttons/buttonBorderPc";
+import ButtonGrayscale from "./buttons/buttonGrayscale";
 
 export function ToolbarRow({
   className = "",
@@ -67,6 +68,8 @@ export function BottomToolbar() {
 
   const { originalFile, originalImg, imagenPreviewRef } =
     useContext(ImageContext);
+
+  const { handleToGrayscale } = useContext(ToolbarContext);
 
   // hace que el selector de ancho de borde tenga como máximo la mitad del tamaño de la imagenn
   useEffect(() => {
@@ -192,7 +195,8 @@ export function BottomToolbar() {
           <ButtonBorder
             onClick={() => showToolbarRow(toolbarRow.border)}
           ></ButtonBorder>
-          <button className={toolbar.buttonText}>GrayScale</button>
+
+          <ButtonGrayscale onClick={handleToGrayscale}></ButtonGrayscale>
         </ToolbarRow>
       )}
 
@@ -209,9 +213,9 @@ export function BottomToolbar() {
 
           {/* TODO: no funciona la ubicacion del popover justo arriba del boton */}
           {/* @ts-ignore */}
-          <button className={toolbar.popoverButton} popovertarget="my-popover">
+          {/*  <button className={toolbar.popoverButton} popovertarget="my-popover">
             Open Popover
-          </button>
+          </button> */}
           {/* @ts-ignore */}
           {/* <div id="my-popover" className={toolbar.popoverInfo} popover="auto">
             <div className={sideToolbar.toolbarRow}>
@@ -239,14 +243,11 @@ export function BottomToolbar() {
           </div> */}
           {originalFile && (
             <div className={toolbar.imageInfo}>
-              <span>{originalFile?.name} </span>
               <span>
-                {originalImg?.width} x {originalImg?.height} pixels{" "}
+                {originalImg?.width} x {originalImg?.height} px
               </span>
-
-              <span>
-                {Math.floor(originalFile.size / 1000).toString()} Kbytes
-              </span>
+              <span>{Math.floor(originalFile.size / 1000).toString()} Kb</span>
+              <span>{originalFile?.name}</span>
             </div>
           )}
         </ToolbarRow>
