@@ -4,8 +4,23 @@
   flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
+  padding: 0.5rem
 }
 
+.mainMenu {
+  border-top: 1px solid var(--toolbarBorderColor);
+  padding: 0.5rem 0.5rem 0.7rem 0.5rem
+}
+
+.imageInfo {
+  color: var(--lightFont);
+  font-size: 0.8rem;
+  
+  font-weight: 400;
+
+
+
+}
 .border__row {
   gap: 0.5rem;
   color: var(--lightFont);
@@ -82,11 +97,14 @@
   gap: 0.3rem;
   align-items: center;
   justify-content: center;
-  padding: 0rem 0.4rem;
+  padding: 0rem 0.6rem 0rem 0.4rem;
   height: 2rem;
   color: var(--buttonIconColor);
+}
 
-
+.buttonWithIcon svg,
+.buttonOnlyIcon svg {
+  height: var(--buttonIconSize);
 }
 
 .buttonWithIcon span {
@@ -123,7 +141,7 @@
   border: 2px solid rgb(204, 204, 204);
   font-weight: 400;
   padding: 1rem;
-  max-width: 200px; 
+  max-width: 200px;
   position: fixed;
   top: 50%;
   /* Coloca el popover justo encima del borde superior del botón */

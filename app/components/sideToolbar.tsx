@@ -5,6 +5,9 @@ import { ToolbarContext } from "../providers/ToolbarProvider";
 import { imageDataToBase64 } from "../imageProcessing";
 import { BorderContext } from "../providers/BorderProvider";
 import sideToolbar from "./sideToolbar.module.css";
+import ButtonUndo from "./buttons/buttonUndo";
+import ButtonNew from "./buttons/buttonNew";
+import ButtonDownload from "./buttons/buttonDownload";
 
 export function SideToolbar() {
   const inputBorderPixelsRef = useRef<HTMLInputElement | null>(null);
@@ -35,14 +38,9 @@ export function SideToolbar() {
   return (
     <>
       <div className={sideToolbar.toolbar__top}>
-        <button id="btnUndo" onClick={handleUndo}>
-          Undo
-        </button>
-        <button onClick={handleNewImage}>New Image</button>
-
-        <button type="button" id="btnDescargar" onClick={handleDownload}>
-          Download
-        </button>
+        <ButtonUndo></ButtonUndo>
+        <ButtonNew></ButtonNew>
+        <ButtonDownload></ButtonDownload>
       </div>
       <div className={sideToolbar.groupContainer}>
         <details>

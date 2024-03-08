@@ -1,21 +1,19 @@
-import { useState, useRef, useContext, use } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import toolbar from "./toolbar.module.css";
-import {
-  ArrowLeft,
-  Check,
-  X,
-  Pencil,
-  Undo,
-  FilePlus,
-  Download,
-} from "lucide-react";
-import { ToolbarContext } from "../providers/ToolbarProvider";
 import { BorderContext } from "../providers/BorderProvider";
 import { ImageContext } from "../providers/ImageProvider";
-import { useEffect } from "react";
 import { toolbarRow } from "../types";
 import sideToolbar from "./sideToolbar.module.css";
 import ButtonUndo from "./buttons/buttonUndo";
+import ButtonEdit from "./buttons/buttonEdit";
+import ButtonNew from "./buttons/buttonNew";
+import ButtonDownload from "./buttons/buttonDownload";
+import ButtonBack from "./buttons/buttonBack";
+import ButtonApply from "./buttons/buttonApply";
+import ButtonDiscard from "./buttons/buttonDiscard";
+import ButtonBorder from "./buttons/buttonBorder";
+import ButtonBorderPx from "./buttons/buttonBorderPx";
+import ButtonBorderPc from "./buttons/buttonBorderPc";
 
 export function ToolbarRow({
   className = "",
@@ -29,8 +27,6 @@ export function ToolbarRow({
 }
 
 export function BottomToolbar() {
-  const iconSize = 16; //FIXME: debería ser variable de mainconfig? o de css?
-
   function showToolbarRow(row: toolbarRow) {
     let toolbar = {
       mainMenu: true,
@@ -39,7 +35,8 @@ export function BottomToolbar() {
       borderPx: false,
       borderPc: false,
     };
-    toolbar[row] = true;
+    // funciona como toggle, si se vuelve a hacer click en el mismo boton, se oculta (por ahora solo para Edit)
+    toolbar[row] = toolbarDisplay[row] === true ? false : true;
     setToolbarDisplay(toolbar);
   }
 
@@ -71,9 +68,6 @@ export function BottomToolbar() {
   const { originalFile, originalImg, imagenPreviewRef } =
     useContext(ImageContext);
 
-  const { handleDownload, handleNewImage, handleUndo } =
-    useContext(ToolbarContext);
-
   // hace que el selector de ancho de borde tenga como máximo la mitad del tamaño de la imagenn
   useEffect(() => {
     if (originalImg && inputBorderPixelsRef.current) {
@@ -85,191 +79,141 @@ export function BottomToolbar() {
     }
   }, [originalImg, inputBorderPixelsRef.current]);
 
+  const BorderPixelInputs = () => (
+    <div className={toolbar.borderRanges}>
+      <input
+        type="range"
+        id="inputBorderPixels"
+        name="inputBorderPixels"
+        min="0"
+        ref={inputBorderPixelsRef}
+        value={inputBorderPixels}
+        onChange={handleInputBorderPixelsRange}
+        onMouseUp={handleInputBorderPixelsRangeMouseUp}
+        onTouchEnd={handleInputBorderPixelsRangeMouseUp}
+      ></input>
+      <input
+        type="number"
+        id="inputBorderPixelsN"
+        name="inputBorderPixelsN"
+        min="0"
+        value={inputBorderPixels}
+        onKeyUp={handleInputBorderPixelsText}
+        onChange={handleInputBorderPixelsText}
+      ></input>{" "}
+      <div className="toolbar_row__units">px</div>{" "}
+    </div>
+  );
+  const BorderPercentInputs = () => (
+    <div className={toolbar.borderRanges}>
+      <input
+        type="range"
+        id="inputBorderPercent"
+        name="inputBorderPercent"
+        min="0"
+        ref={inputBorderPercentRef}
+        value={inputBorderPercent}
+        onChange={handleInputBorderPercentRange}
+        onMouseUp={handleInputBorderPercentRangeMouseUp}
+        onTouchEnd={handleInputBorderPercentRangeMouseUp}
+      ></input>
+      <input
+        type="number"
+        id="inputBorderPercentN"
+        name="inputBorderPercentN"
+        min="0"
+        value={inputBorderPercent}
+        onKeyUp={handleInputBorderPercentText}
+        onChange={handleInputBorderPercentText}
+      ></input>
+      <div className="toolbar_row__units">%</div>
+    </div>
+  );
+
+  const BorderColorInputs = () => (
+    <>
+      <input
+        id="inputBorderColorText"
+        type="Text"
+        min="0"
+        value={inputBorderColor}
+        onChange={handleInputBorderColor}
+      />
+      <input
+        id="inputBorderColor"
+        type="color"
+        list="true"
+        value={inputBorderColor}
+        onChange={handleInputBorderColor}
+      />
+    </>
+  );
+
   return (
     <>
       {toolbarDisplay.borderPx && (
         <ToolbarRow className={toolbar.border__row}>
-          <button
+          <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.border)}
-            className={toolbar.buttonOnlyIcon}
-          >
-            <ArrowLeft size={iconSize}></ArrowLeft>
-          </button>
-
-          <div className={toolbar.borderRanges}>
-            <input
-              type="range"
-              id="inputBorderPixels"
-              name="inputBorderPixels"
-              min="0"
-              ref={inputBorderPixelsRef}
-              value={inputBorderPixels}
-              onChange={handleInputBorderPixelsRange}
-              onMouseUp={handleInputBorderPixelsRangeMouseUp}
-              onTouchEnd={handleInputBorderPixelsRangeMouseUp}
-            ></input>
-            <input
-              type="number"
-              id="inputBorderPixelsN"
-              name="inputBorderPixelsN"
-              min="0"
-              value={inputBorderPixels}
-              onKeyUp={handleInputBorderPixelsText}
-              onChange={handleInputBorderPixelsText}
-            ></input>{" "}
-            <div className="toolbar_row__units">px</div>{" "}
-          </div>
-          <button
-            className={toolbar.buttonOnlyIcon}
-            type="button"
-            id="btnApplyBorder"
-            onClick={handleApplyBorder}
-          >
-            <Check size={iconSize}></Check>
-          </button>
-          <button
-            className={toolbar.buttonOnlyIcon}
-            type="button"
-            id="btnDiscardBorder"
-            onClick={handleDiscardBorder}
-          >
-            <X size={iconSize}></X>
-          </button>
+          ></ButtonBack>
+          <BorderPixelInputs></BorderPixelInputs>
+          <ButtonApply onClick={handleApplyBorder}></ButtonApply>
+          <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
         </ToolbarRow>
       )}
 
       {toolbarDisplay.borderPc && (
         <ToolbarRow className={toolbar.border__row}>
-          <button
+          <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.border)}
-            className={toolbar.buttonOnlyIcon}
-          >
-            <ArrowLeft size={iconSize}></ArrowLeft>
-          </button>
-
-          <div className={toolbar.borderRanges}>
-            <input
-              type="range"
-              id="inputBorderPercent"
-              name="inputBorderPercent"
-              min="0"
-              ref={inputBorderPercentRef}
-              value={inputBorderPercent}
-              onChange={handleInputBorderPercentRange}
-              onMouseUp={handleInputBorderPercentRangeMouseUp}
-              onTouchEnd={handleInputBorderPercentRangeMouseUp}
-            ></input>
-            <input
-              type="number"
-              id="inputBorderPercentN"
-              name="inputBorderPercentN"
-              min="0"
-              value={inputBorderPercent}
-              onKeyUp={handleInputBorderPercentText}
-              onChange={handleInputBorderPercentText}
-            ></input>
-            <div className="toolbar_row__units">px</div>
-          </div>
-          <button
-            className={toolbar.buttonOnlyIcon}
-            type="button"
-            id="btnApplyBorder"
-            onClick={handleApplyBorder}
-          >
-            <Check size={iconSize}></Check>
-          </button>
-          <button
-            className={toolbar.buttonOnlyIcon}
-            type="button"
-            id="btnDiscardBorder"
-            onClick={handleDiscardBorder}
-          >
-            <X size={iconSize}></X>
-          </button>
+          ></ButtonBack>
+          <BorderPercentInputs></BorderPercentInputs>
+          <ButtonApply onClick={handleApplyBorder}></ButtonApply>
+          <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
         </ToolbarRow>
       )}
 
       {toolbarDisplay.border && (
         <ToolbarRow className={toolbar.border__row}>
-          <button
-            className={toolbar.buttonOnlyIcon}
+          <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.transform)}
-          >
-            <ArrowLeft size={iconSize}></ArrowLeft>
-          </button>
-          <input
-            id="inputBorderColorText"
-            type="Text"
-            min="0"
-            value={inputBorderColor}
-            onChange={handleInputBorderColor}
-          />
-          <input
-            id="inputBorderColor"
-            type="color"
-            list="true"
-            value={inputBorderColor}
-            onChange={handleInputBorderColor}
-          />
-          <button
-            className={toolbar.buttonOnlyIcon}
+          ></ButtonBack>
+          <BorderColorInputs></BorderColorInputs>
+          <ButtonBorderPc
             onClick={() => showToolbarRow(toolbarRow.borderPc)}
-          >
-            %
-          </button>
-          <button
-            className={toolbar.buttonOnlyIcon}
+          ></ButtonBorderPc>
+          <ButtonBorderPx
             onClick={() => showToolbarRow(toolbarRow.borderPx)}
-          >
-            px
-          </button>
+          ></ButtonBorderPx>
         </ToolbarRow>
       )}
       {toolbarDisplay.transform && (
         <ToolbarRow>
-          <button
-            className={toolbar.buttonText}
+          <ButtonBorder
             onClick={() => showToolbarRow(toolbarRow.border)}
-          >
-            Border
-          </button>
+          ></ButtonBorder>
           <button className={toolbar.buttonText}>GrayScale</button>
         </ToolbarRow>
       )}
+
+      {/* FIXME activar linea de abajo para versión de uso */}
       {/* {toolbarDisplay.mainMenu && originalImg?.src && ( */}
       {toolbarDisplay.mainMenu && (
-        <ToolbarRow>
-          <button
-            title="Download file"
-            className={toolbar.buttonWithIcon}
-            onClick={handleDownload}
-          >
-            <Download size={iconSize}></Download>
-            <span>Download</span>
-          </button>
-          <button className={toolbar.buttonWithIcon} onClick={handleNewImage}>
-            <FilePlus size={iconSize}></FilePlus>
-            <span>New</span>
-          </button>
-          {/*  <button className={toolbar.buttonWithIcon} onClick={handleUndo}>
-            <Undo size={iconSize}></Undo>
-            <span>Undo</span>
-          </button> */}
+        <ToolbarRow className={toolbar.mainMenu}>
+          <ButtonDownload></ButtonDownload>
+          <ButtonNew></ButtonNew>
           <ButtonUndo></ButtonUndo>
-          <button
-            className={toolbar.buttonWithIcon}
+          <ButtonEdit
             onClick={() => showToolbarRow(toolbarRow.transform)}
-          >
-            <Pencil size={iconSize}></Pencil>
-            <span>Edit</span>
-          </button>
+          ></ButtonEdit>
+
           {/* TODO: no funciona la ubicacion del popover justo arriba del boton */}
           {/* @ts-ignore */}
           <button className={toolbar.popoverButton} popovertarget="my-popover">
             Open Popover
           </button>
           {/* @ts-ignore */}
-          <div id="my-popover" className={toolbar.popoverInfo} popover="auto">
+          {/* <div id="my-popover" className={toolbar.popoverInfo} popover="auto">
             <div className={sideToolbar.toolbarRow}>
               <div className={sideToolbar.imageInfoGroup}>
                 <div>
@@ -292,7 +236,19 @@ export function BottomToolbar() {
                 ></img>
               </div>
             </div>
-          </div>
+          </div> */}
+          {originalFile && (
+            <div className={toolbar.imageInfo}>
+              <span>{originalFile?.name} </span>
+              <span>
+                {originalImg?.width} x {originalImg?.height} pixels{" "}
+              </span>
+
+              <span>
+                {Math.floor(originalFile.size / 1000).toString()} Kbytes
+              </span>
+            </div>
+          )}
         </ToolbarRow>
       )}
     </>

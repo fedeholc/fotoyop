@@ -6,8 +6,12 @@ import toolbar from "../toolbar.module.css";
 export default function ButtonUndo() {
   const { handleUndo } = useContext(ToolbarContext);
   return (
-    <button className={toolbar.buttonWithIcon} onClick={handleUndo}>
-      <Undo size={16}></Undo>
+    <button
+      title="Undo last change"
+      className={toolbar.buttonWithIcon}
+      onClick={handleUndo}
+    >
+      <Undo></Undo>
       <span>Undo</span>
     </button>
   );
