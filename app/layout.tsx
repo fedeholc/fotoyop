@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 
 import type { ReactNode } from "react";
 import "./globals.css";
-const APP_NAME = "Serwist example";
-const APP_DESCRIPTION = "This is an example of using Serwist with Next.js";
+const APP_NAME = "OffCanvas v0.1 demo";
+const APP_DESCRIPTION = "Image editor. OffCanvas v0.1 demo. Work in progress";
 
 export const metadata: Metadata = {
   applicationName: APP_NAME,

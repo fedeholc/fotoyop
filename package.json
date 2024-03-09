@@ -1,6 +1,6 @@
 {
-  "name": "canvas-n",
-  "version": "0.1.0",
+  "name": "offcanvas",
+  "version": "0.1",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3011",
