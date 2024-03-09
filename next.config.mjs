@@ -12,7 +12,6 @@ const nextConfig = {
   reactStrictMode: true,
 };
 
-/* export default withSerwist(nextConfig);
- */
+export default withSerwist(nextConfig);
 
-export default nextConfig;
+/* export default nextConfig; */ // Para cuando no se quiere usar serwist (pwa)
