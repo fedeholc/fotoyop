@@ -106,7 +106,7 @@
    flex-direction: column;
    justify-content: center;
    align-items: center;
-   padding: 1rem 1rem;
+   padding: 1rem 8rem;
    border-radius: 10px;
    border: 2px dashed black;
    color: black;
@@ -219,11 +219,11 @@
    grid-area: section-mobile;
    display: none;
    background-color: var(--toolbarBg);
-/*    padding: 0.7rem 0.5rem 0.8rem 0.5rem;
+   /*    padding: 0.7rem 0.5rem 0.8rem 0.5rem;
    gap: 1rem; */
  }
 
- 
+
 
  .unselectable {
    user-select: none;
@@ -239,6 +239,7 @@
    .drop-container {
      /*  height: 60vh;   */
      height: auto;
+     padding: 1rem 1rem;
    }
 
    #section__toolbar {
