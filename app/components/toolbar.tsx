@@ -55,6 +55,7 @@ export function BottomToolbar() {
     inputBorderColor,
     inputBorderPixels,
     inputBorderPercent,
+    setInputBorderPercent,
     handleInputBorderColor,
     handleInputBorderPixelsRange,
     handleInputBorderPixelsRangeMouseUp,
@@ -82,7 +83,9 @@ export function BottomToolbar() {
     }
   }, [originalImg, inputBorderPixelsRef.current]);
 
-  const BorderPixelInputs = () => (
+  //TODO: esto lo tenía como componente pero no funcionaba bien, al mover el slider no dejaba deslizarlo mas que un punto, y tampoco funcionaba el touchEnd, creo yo que por el re-renderizado del componente al actualizar el inputBorderPixels que viene del provider.
+  //FIXME: habría que buscar en el curso de josh, que había una explicación para evitar ese re-renderizado, creo que era con memo o algo así, o sino ver si es necesario que el valor venga del provider, o si se puede manejar localmente y pasar el valor a la funcion que hace el cambio de borde.
+  const BorderPixelInputs = (
     <div className={toolbar.borderRanges}>
       <input
         type="range"
@@ -107,7 +110,8 @@ export function BottomToolbar() {
       <div className="toolbar_row__units">px</div>{" "}
     </div>
   );
-  const BorderPercentInputs = () => (
+
+  const BorderPercentInputs = (
     <div className={toolbar.borderRanges}>
       <input
         type="range"
@@ -116,8 +120,8 @@ export function BottomToolbar() {
         min="0"
         ref={inputBorderPercentRef}
         value={inputBorderPercent}
-        onChange={handleInputBorderPercentRange}
         onMouseUp={handleInputBorderPercentRangeMouseUp}
+        onChange={handleInputBorderPercentRange}
         onTouchEnd={handleInputBorderPercentRangeMouseUp}
       ></input>
       <input
@@ -133,7 +137,7 @@ export function BottomToolbar() {
     </div>
   );
 
-  const BorderColorInputs = () => (
+  const BorderColorInputs = (
     <>
       <input
         id="inputBorderColorText"
@@ -159,7 +163,7 @@ export function BottomToolbar() {
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.border)}
           ></ButtonBack>
-          <BorderPixelInputs></BorderPixelInputs>
+          {BorderPixelInputs}
           <ButtonApply onClick={handleApplyBorder}></ButtonApply>
           <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
         </ToolbarRow>
@@ -170,8 +174,15 @@ export function BottomToolbar() {
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.border)}
           ></ButtonBack>
-          <BorderPercentInputs></BorderPercentInputs>
-          <ButtonApply onClick={handleApplyBorder}></ButtonApply>
+
+          {BorderPercentInputs}
+
+          <ButtonApply
+            onClick={() => {
+              handleInputBorderPercentRangeMouseUp();
+              handleApplyBorder();
+            }}
+          ></ButtonApply>
           <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
         </ToolbarRow>
       )}
@@ -181,7 +192,7 @@ export function BottomToolbar() {
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.transform)}
           ></ButtonBack>
-          <BorderColorInputs></BorderColorInputs>
+          {BorderColorInputs}
           <ButtonBorderPc
             onClick={() => showToolbarRow(toolbarRow.borderPc)}
           ></ButtonBorderPc>
@@ -241,7 +252,10 @@ export function BottomToolbar() {
               </div>
             </div>
           </div> */}
-          {originalFile && (
+
+
+          {/* TODO: barra de info, hacerla popover */}
+         {/*  {originalFile && (
             <div className={toolbar.imageInfo}>
               <span>
                 {originalImg?.width} x {originalImg?.height} px
@@ -249,7 +263,7 @@ export function BottomToolbar() {
               <span>{Math.floor(originalFile.size / 1000).toString()} Kb</span>
               <span>{originalFile?.name}</span>
             </div>
-          )}
+          )} */}
         </ToolbarRow>
       )}
     </>

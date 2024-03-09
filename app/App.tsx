@@ -57,34 +57,38 @@ export default function App() {
     let newWidth = 0;
     let newHeight = 0;
 
+    console.log("imageWidth: ", imageWidth);
+    console.log("imageHeight: ", imageHeight);
+    console.log("windowDimensions: ", windowDimensions);
+    console.log("ratio: ", ratio);
     // horizontal
     if (ratio > 1) {
-      if (windowDimensions.width < mainCanvasConfig.maxWidth) {
-        newWidth = windowDimensions.width;
+      if (windowDimensions.width < mainCanvasConfig.maxWidth + 32) {
+        newWidth = windowDimensions.width - 32;
       } else {
-        newWidth = mainCanvasConfig.maxWidth;
+        newWidth = mainCanvasConfig.maxWidth - 32;
       }
       newHeight = newWidth / ratio;
 
       if (
         newHeight >
-        windowDimensions.height - windowDimensions.mobileToolbarHeight
+        windowDimensions.height - windowDimensions.mobileToolbarHeight - 32
       ) {
         newHeight =
-          windowDimensions.height - windowDimensions.mobileToolbarHeight;
+          windowDimensions.height - windowDimensions.mobileToolbarHeight - 32; // 32 por el margin 1rem del canvas container
         newWidth = newHeight * ratio;
       }
     }
     // vertical
     else {
       if (
-        windowDimensions.height - windowDimensions.mobileToolbarHeight <
+        windowDimensions.height - windowDimensions.mobileToolbarHeight - 32 <
         mainCanvasConfig.maxHeight
       ) {
         newHeight =
-          windowDimensions.height - windowDimensions.mobileToolbarHeight;
+          windowDimensions.height - windowDimensions.mobileToolbarHeight - 32;
       } else {
-        newHeight = mainCanvasConfig.maxHeight;
+        newHeight = mainCanvasConfig.maxHeight - 32;
       }
       newWidth = newHeight * ratio;
 
@@ -93,6 +97,8 @@ export default function App() {
         newHeight = newWidth / ratio;
       }
     }
+    console.log("newWidth: ", newWidth);
+    console.log("newHeight: ", newHeight);
 
     return { newWidth, newHeight };
   }

@@ -86,6 +86,7 @@ export default function BorderProvider({
    *
    */
   function handleInputBorderPercentRangeMouseUp() {
+    console.log("Percent range mouseup: ", inputBorderPercent);
     setInputBorderPixels("0");
     handleBorderChange(
       {
@@ -148,6 +149,7 @@ export default function BorderProvider({
   ) {
     setInputBorderPixels("0");
     setInputBorderPercent(event.target.value);
+    console.log("handle input border percent range: ", event.target.value);
   }
 
   /**
