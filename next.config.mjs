@@ -1,6 +1,8 @@
 // @ts-check
 import withSerwistInit from "@serwist/next";
 
+const USE_PWA = true;
+
 const withSerwist = withSerwistInit({
   cacheOnFrontEndNav: true,
   swSrc: "app/sw.ts",
@@ -12,6 +14,10 @@ const nextConfig = {
   reactStrictMode: true,
 };
 
-export default withSerwist(nextConfig);
+let config = nextConfig;
 
-/* export default nextConfig; */ // Para cuando no se quiere usar serwist (pwa)
+if (USE_PWA) {
+  config = withSerwist(nextConfig);
+}
+
+export default config;

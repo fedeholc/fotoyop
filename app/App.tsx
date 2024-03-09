@@ -326,6 +326,7 @@ export default function App() {
             </form>
           )}
         </section>
+
         <ToolbarProvider>
           <BorderProvider>
             <section id="section__toolbar">

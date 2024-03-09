@@ -212,8 +212,8 @@ export function BottomToolbar() {
       )}
 
       {/* FIXME activar linea de abajo para versión de uso */}
-      {/* {toolbarDisplay.mainMenu && originalImg?.src && ( */}
-      {toolbarDisplay.mainMenu && (
+      {/* {originalImg?.src && ( */}
+      {toolbarDisplay.mainMenu && originalImg?.src && (
         <ToolbarRow className={toolbar.mainMenu}>
           <ButtonDownload></ButtonDownload>
           <ButtonNew></ButtonNew>
@@ -253,9 +253,8 @@ export function BottomToolbar() {
             </div>
           </div> */}
 
-
           {/* TODO: barra de info, hacerla popover */}
-         {/*  {originalFile && (
+          {/*  {originalFile && (
             <div className={toolbar.imageInfo}>
               <span>
                 {originalImg?.width} x {originalImg?.height} px
