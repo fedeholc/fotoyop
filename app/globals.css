@@ -195,19 +195,6 @@
  }
  */
 
- #section__toolbar button:hover {
-
-   color: white;
-   outline: 1px solid var(--buttonHoverColor);
-   border: 1px solid var(--buttonHoverColor);
- }
-
- #section__mobile button:hover {
-
-   outline: 1px solid var(--bgMiddleGray);
-   border: 1px solid var(--bgMiddleGray);
-   color: var(--buttonIconColorHover)
- }
 
  #section__toolbar input,
  #section__mobile input {
@@ -227,6 +214,22 @@
 
  .unselectable {
    user-select: none;
+ }
+
+ @media (hover:hover) {
+   #section__toolbar button:hover {
+
+     color: white;
+     outline: 1px solid var(--buttonHoverColor);
+     border: 1px solid var(--buttonHoverColor);
+   }
+
+   #section__mobile button:hover {
+
+     outline: 1px solid var(--bgMiddleGray);
+     border: 1px solid var(--bgMiddleGray);
+     color: var(--buttonIconColorHover)
+   }
  }
 
  @media screen and (max-width: 1050px) {
