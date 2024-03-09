@@ -1,6 +1,6 @@
 {
-  "name": "Serwist + Next",
-  "short_name": "SerwistNext",
+  "name": "offCanvas",
+  "short_name": "offCanvas",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#FFFFFF",
