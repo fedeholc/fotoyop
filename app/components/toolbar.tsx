@@ -158,7 +158,7 @@ export function BottomToolbar() {
 
   return (
     <>
-      {toolbarDisplay.borderPx && (
+      {toolbarDisplay.borderPx && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.border)}
@@ -169,7 +169,7 @@ export function BottomToolbar() {
         </ToolbarRow>
       )}
 
-      {toolbarDisplay.borderPc && (
+      {toolbarDisplay.borderPc && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.border)}
@@ -187,7 +187,7 @@ export function BottomToolbar() {
         </ToolbarRow>
       )}
 
-      {toolbarDisplay.border && (
+      {toolbarDisplay.border && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.transform)}
@@ -201,7 +201,7 @@ export function BottomToolbar() {
           ></ButtonBorderPx>
         </ToolbarRow>
       )}
-      {toolbarDisplay.transform && (
+      {toolbarDisplay.transform && originalImg?.src && (
         <ToolbarRow>
           <ButtonBorder
             onClick={() => showToolbarRow(toolbarRow.border)}
@@ -211,8 +211,6 @@ export function BottomToolbar() {
         </ToolbarRow>
       )}
 
-      {/* FIXME activar linea de abajo para versión de uso */}
-      {/* {originalImg?.src && ( */}
       {toolbarDisplay.mainMenu && originalImg?.src && (
         <ToolbarRow className={toolbar.mainMenu}>
           <ButtonDownload></ButtonDownload>
