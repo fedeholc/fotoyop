@@ -1,22 +1,22 @@
 # fotoYOP 🎨 - v0.1
 
-[![es](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/fedeholc/fotoyop/blob/main/README.es.md)
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/fedeholc/fotoyop/blob/main/README.md)
 
-Application that allows you to transform images in a simple and fast way, without the need to register or upload files to a server. It is also a PWA that can be installed on the phone and used offline.
+Aplicación que permite transformar imágenes de manera sencilla y rápida, sin necesidad de registrarse ni de subir archivos a un servidor. Es también una PWA que se puede instalar en el teléfono y usar offline.
 
 Online: [https://fotoyopdemo.fedeholc.ar/](https://fotoyopdemo.fedeholc.ar/)
 
-## Libraries and resources
+## Librerías y recursos utilizados
 
-This project uses the following libraries and resources:
+Este proyecto utiliza las siguientes librerías y recursos:
 
 - [Serwist](https://serwist.pages.dev/)
 - [Lucide Icons](https://lucide.dev/)
 
-## License
+## Licencia
 
 - [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/) Este proyecto está bajo la Licencia GPL v3 - vea el archivo [LICENSE.md](LICENSE.md) para más detalles.
 
-## Author
+### Autor
 
 👤 **Federico Holc** [@fedeholc](https://github.com/fedeholc)
