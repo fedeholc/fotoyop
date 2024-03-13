@@ -15,6 +15,7 @@ import ButtonBorder from "./buttons/buttonBorder";
 import ButtonBorderPx from "./buttons/buttonBorderPx";
 import ButtonBorderPc from "./buttons/buttonBorderPc";
 import ButtonGrayscale from "./buttons/buttonGrayscale";
+import ButtonCanvas from "./buttons/buttonCanvas";
 
 export function ToolbarRow({
   className = "",
@@ -35,6 +36,7 @@ export function BottomToolbar() {
       border: false,
       borderPx: false,
       borderPc: false,
+      canvas: false,
     };
     // funciona como toggle, si se vuelve a hacer click en el mismo boton, se oculta (por ahora solo para Edit)
     toolbar[row] = toolbarDisplay[row] === true ? false : true;
@@ -47,6 +49,7 @@ export function BottomToolbar() {
     border: false,
     borderPx: false,
     borderPc: false,
+    canvas: false,
   });
 
   const inputBorderPixelsRef = useRef<HTMLInputElement | null>(null);
@@ -55,6 +58,10 @@ export function BottomToolbar() {
     inputBorderColor,
     inputBorderPixels,
     inputBorderPercent,
+    inputAspectRatioX,
+    inputAspectRatioY,
+    handleInputAspectRatioX,
+    handleInputAspectRatioY,
     setInputBorderPercent,
     handleInputBorderColor,
     handleInputBorderPixelsRange,
@@ -65,6 +72,7 @@ export function BottomToolbar() {
     handleInputBorderPercentText,
     handleApplyBorder,
     handleDiscardBorder,
+    handleApplyCanvas,
   } = useContext(BorderContext);
 
   const { originalFile, originalImg, imagenPreviewRef } =
@@ -137,6 +145,28 @@ export function BottomToolbar() {
     </div>
   );
 
+  const AspectRatioInputs = (
+    <div className={toolbar.borderRanges}>
+      <input
+        type="number"
+        name="inputAspectRatioX"
+        min="0"
+        value={inputAspectRatioX}
+        onKeyUp={handleInputAspectRatioX}
+        onChange={handleInputAspectRatioX}
+      ></input>
+
+      <input
+        type="number"
+        name="inputAspectRatioY"
+        min="0"
+        value={inputAspectRatioY}
+        onKeyUp={handleInputAspectRatioY}
+        onChange={handleInputAspectRatioY}
+      ></input>
+    </div>
+  );
+
   const BorderColorInputs = (
     <>
       <input
@@ -201,6 +231,27 @@ export function BottomToolbar() {
           ></ButtonBorderPx>
         </ToolbarRow>
       )}
+      {toolbarDisplay.canvas && originalImg?.src && (
+        <ToolbarRow className={toolbar.border__row}>
+          <ButtonBack
+            onClick={() => showToolbarRow(toolbarRow.transform)}
+          ></ButtonBack>
+          {BorderColorInputs}
+          {AspectRatioInputs}
+          <button onClick={() => handleApplyCanvas()}>test</button>
+          {/*      <ButtonBack
+            onClick={() => showToolbarRow(toolbarRow.transform)}
+          ></ButtonBack>
+          {BorderColorInputs}
+          <ButtonBorderPc
+            onClick={() => showToolbarRow(toolbarRow.borderPc)}
+          ></ButtonBorderPc>
+          <ButtonBorderPx
+            onClick={() => showToolbarRow(toolbarRow.borderPx)}
+          ></ButtonBorderPx> */}
+        </ToolbarRow>
+      )}
+
       {toolbarDisplay.transform && originalImg?.src && (
         <ToolbarRow>
           <ButtonBorder
@@ -208,6 +259,9 @@ export function BottomToolbar() {
           ></ButtonBorder>
 
           <ButtonGrayscale onClick={handleToGrayscale}></ButtonGrayscale>
+          <ButtonCanvas
+            onClick={() => showToolbarRow(toolbarRow.canvas)}
+          ></ButtonCanvas>
         </ToolbarRow>
       )}
 

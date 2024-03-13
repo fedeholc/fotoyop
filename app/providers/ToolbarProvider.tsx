@@ -8,7 +8,7 @@ import {
 import { ImageContext } from "./ImageProvider";
 import { ProcessContext } from "./ProcessProvider";
 import { BorderContext } from "./BorderProvider";
-import { ProcessOptionsType } from "../types";
+import { BorderOptionsType } from "../types";
 import { mainCanvasConfig } from "../App";
 import { ImageProcess } from "../types";
 import {

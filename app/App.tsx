@@ -39,7 +39,7 @@ export default function App() {
     mobileToolbarWidth: 0,
   });
 
-  const { setUndoImageList } = useContext(ProcessContext);
+  const { setUndoImageList, undoImageList } = useContext(ProcessContext);
 
   const inputUploadRef = useRef<HTMLInputElement | null>(null);
 
@@ -124,17 +124,17 @@ export default function App() {
 
   // resize
   useEffect(() => {
-    if (smallCanvasRef.current && originalImg) {
+    if (smallCanvasRef.current && originalImg && undoImageList.length > 0) {
       const { newWidth, newHeight } = calcResize(
-        originalImg.width,
-        originalImg.height
+        undoImageList[undoImageList.length - 1].width,
+        undoImageList[undoImageList.length - 1].height
       );
 
       document
         .querySelector(".canvas__container")
         ?.setAttribute("style", `width: ${newWidth}px; height: ${newHeight}px`); //todo: usar una ref?
     }
-  }, [windowDimensions, originalImg]);
+  }, [windowDimensions, undoImageList]);
 
   useEffect(() => {
     function handleResize() {

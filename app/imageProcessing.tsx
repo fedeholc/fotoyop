@@ -1,4 +1,4 @@
-import { ProcessFunction, ProcessOptionsType } from "./types";
+import { ProcessFunction, BorderOptionsType, BorderXYOptions } from "./types";
 
 export {
   imgToBW,
@@ -90,7 +90,7 @@ function processImgToCanvas(
  */
 function imgAddBorder(
   imageData: ImageData,
-  options?: ProcessOptionsType
+  options?: BorderOptionsType
 ): ImageData {
   let borderSize = 0,
     borderHeight = 0,
@@ -130,6 +130,71 @@ function imgAddBorder(
 
   ctxTemp.putImageData(imageData, borderWidth / 2, borderHeight / 2);
 
+  console.log(canvasTemp.width, canvasTemp.height);
+
+  const resultImageData = ctxTemp?.getImageData(
+    0,
+    0,
+    imageData.width + borderWidth,
+    imageData.height + borderHeight
+  ) as ImageData;
+  return resultImageData;
+}
+
+/**
+ * Función que agrega un borde a una imagen.
+ * @param imageData - datos de la imagen
+ * @param options - opciones de bordes para el proceso
+ * @returns - datos de la imagen con el borde agregado
+ */
+export function imgAddBorderXY(
+  imageData: ImageData,
+  options?: BorderOptionsType | BorderXYOptions
+): ImageData {
+  let borderSize = 0,
+    borderHeight = 0,
+    borderWidth = 0;
+
+  let borderColor = "#ffffff";
+
+  if (options && "BorderX" in options) {
+    borderWidth = options?.BorderX * 2;
+    borderHeight = options?.BorderY * 2;
+  } else if (options && "BorderPixels" in options) {
+    if (options?.BorderPixels && parseInt(options?.BorderPixels) > 0) {
+      borderSize = parseInt(options.BorderPixels) * 2;
+      borderWidth = borderSize;
+      borderHeight = borderSize;
+    } else {
+      if (options?.BorderPercent) {
+        borderSize = parseInt(options.BorderPercent);
+        borderWidth = (imageData.width * borderSize) / 100;
+        borderHeight = (imageData.height * borderSize) / 100;
+      }
+    }
+  }
+  if (options?.BorderColor) {
+    borderColor = options.BorderColor;
+  }
+
+  const canvasTemp = new OffscreenCanvas(
+    imageData.width + borderWidth,
+    imageData.height + borderHeight
+  );
+  const ctxTemp = canvasTemp.getContext("2d", {
+    willReadFrequently: true,
+  }) as OffscreenCanvasRenderingContext2D;
+
+  canvasTemp.width = imageData.width + borderWidth;
+  canvasTemp.height = imageData.height + borderHeight;
+
+  ctxTemp.fillStyle = borderColor;
+  ctxTemp.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
+
+  ctxTemp.putImageData(imageData, borderWidth / 2, borderHeight / 2);
+
+  console.log(canvasTemp.width, canvasTemp.height);
+
   const resultImageData = ctxTemp?.getImageData(
     0,
     0,
@@ -148,7 +213,7 @@ function imgAddBorder(
 function applyProcessFunction(
   canvas: OffscreenCanvas | HTMLCanvasElement | null,
   processFunction: ProcessFunction,
-  options?: ProcessOptionsType
+  options?: BorderOptionsType | BorderXYOptions
 ): ImageData {
   const ctx = canvas?.getContext("2d", {
     willReadFrequently: true,
@@ -178,7 +243,7 @@ function applyProcessFunctionWithSize(
   processFunction: ProcessFunction,
   width: number,
   height: number,
-  options?: ProcessOptionsType
+  options?: BorderOptionsType
 ): ImageData {
   const ctx = canvas?.getContext("2d", {
     willReadFrequently: true,
@@ -213,7 +278,7 @@ function applyProcessFunctionWithSize(
 function processToNewImageData(
   canvas: OffscreenCanvas | HTMLCanvasElement | null,
   processFunction: ProcessFunction,
-  options?: ProcessOptionsType
+  options?: BorderOptionsType
 ): ImageData {
   const ctx = canvas?.getContext("2d", {
     willReadFrequently: true,
