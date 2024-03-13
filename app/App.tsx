@@ -56,11 +56,7 @@ export default function App() {
     let ratio = imageWidth / imageHeight;
     let newWidth = 0;
     let newHeight = 0;
-    console.log("-------------");
-    console.log("imageWidth: ", imageWidth);
-    console.log("imageHeight: ", imageHeight);
-    console.log("windowDimensions: ", windowDimensions);
-    console.log("ratio: ", ratio);
+
     // horizontal
     if (ratio > 1) {
       if (windowDimensions.width < mainCanvasConfig.maxWidth + 32) {
@@ -93,12 +89,11 @@ export default function App() {
       newWidth = newHeight * ratio;
 
       if (newWidth > windowDimensions.width) {
-        newWidth = windowDimensions.width-32;
+        newWidth = windowDimensions.width - 32;
         newHeight = newWidth / ratio;
       }
     }
-    console.log("newWidth: ", newWidth);
-    console.log("newHeight: ", newHeight);
+ 
 
     return { newWidth, newHeight };
   }

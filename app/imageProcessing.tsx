@@ -130,8 +130,7 @@ function imgAddBorder(
 
   ctxTemp.putImageData(imageData, borderWidth / 2, borderHeight / 2);
 
-  console.log(canvasTemp.width, canvasTemp.height);
-
+ 
   const resultImageData = ctxTemp?.getImageData(
     0,
     0,
@@ -177,15 +176,7 @@ export function imgAddCanvas(
   let borderHeight = newBorderY * 2,
     borderWidth = newBorderX * 2;
 
-  console.log("CANVAS: ar, newAr: ", AR, newAR);
-  console.log("imageData: ", imageData.width, imageData.height);
-  console.log("borderWidth: ", borderWidth);
-  console.log("borderHeight: ", borderHeight);
-  console.log(
-    "new canvas size: ",
-    imageData.width + borderWidth,
-    imageData.height + borderHeight
-  );
+ 
 
   let borderColor = options.CanvasColor;
 
@@ -205,11 +196,7 @@ export function imgAddCanvas(
 
   ctxTemp.putImageData(imageData, borderWidth / 2, borderHeight / 2);
 
-  console.log("imageData: ", imageData.width, imageData.height);
-  console.log("borderWidth: ", borderWidth);
-  console.log("borderHeight: ", borderHeight);
-  console.log("new canvas size: ", canvasTemp.width, canvasTemp.height);
-
+ 
   const resultImageData = ctxTemp?.getImageData(
     0,
     0,

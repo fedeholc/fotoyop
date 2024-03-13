@@ -1,4 +1,4 @@
-import { Square } from "lucide-react";
+import { Ratio } from "lucide-react";
 import toolbar from "../toolbar.module.css";
 
 export default function ButtonCanvas({ onClick }: { onClick: () => void }) {
@@ -8,7 +8,7 @@ export default function ButtonCanvas({ onClick }: { onClick: () => void }) {
       className={toolbar.buttonWithIcon}
       onClick={onClick}
     >
-      <Square></Square>
+      <Ratio />
       <span>Canvas</span>
     </button>
   );

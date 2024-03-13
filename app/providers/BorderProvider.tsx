@@ -109,7 +109,6 @@ export default function BorderProvider({
    *
    */
   function handleInputBorderPercentRangeMouseUp() {
-    console.log("Percent range mouseup: ", inputBorderPercent);
     setInputBorderPixels("0");
     handleBorderChange(
       {
@@ -133,7 +132,6 @@ export default function BorderProvider({
   }
 
   function handleInputBorderColor(e: React.ChangeEvent<HTMLInputElement>) {
-    console.log("handleInputBorderColor:", e.target.value);
     setInputBorderColor(e.target.value);
   }
 
@@ -189,7 +187,6 @@ export default function BorderProvider({
   ) {
     setInputBorderPixels("0");
     setInputBorderPercent(event.target.value);
-    console.log("handle input border percent range: ", event.target.value);
   }
 
   /**
@@ -296,8 +293,6 @@ export default function BorderProvider({
     }
   }
 
-  
-
   function handleCanvasChange(
     options: CanvasOptions,
     smallCanvasRef: React.RefObject<HTMLCanvasElement>
@@ -360,19 +355,6 @@ export default function BorderProvider({
   }
 
   function handleApplyCanvas() {
-    //TODO: problema: estamos calculando el tamaño a partir del tamaño de la ultima imagen en undoimagelist que no es la original tiene un tamaño reducido, pero tampoco la podemos calcular sobre la original porque podría haber cambiado su aspect ratio o tamaño.
-    //FIXME: posible solución...? calcular el tamaño aplicando los procesos previos, lo cual podría ser lento, o tratar de calcularlo sin aplicar los procesos.
-    //? ojo, además puede producirse un problema, si en el process list del canvas se guarda el agregado en pixel pero en procesos previos cambia el tamaño, va a fallar, en el process deberia guardarse el aspect ratio deseado y que ahí se calcule el tamaño.
-
-    /*   console.log("Apply Canvas.");
-    console.log(
-      "actual size:",
-      undoImageList[undoImageList.length - 1].width,
-      undoImageList[undoImageList.length - 1].height
-    ); */
-
-    /*     console.log("new size:", newWidth, newHeight);
-    console.log("new border:", newBorderX, newBorderY); */
     handleCanvasChange(
       {
         CanvasColor: inputBorderColor,
