@@ -14,7 +14,7 @@ import { ProcessContext } from "./providers/ProcessProvider";
 import { useContext } from "react";
 import BorderProvider from "./providers/BorderProvider";
 import ToolbarProvider from "./providers/ToolbarProvider";
-
+import useWindowsSize from "./components/hooks/useWindowsSize";
 export const mainCanvasConfig: CanvasConfig = {
   maxWidth: 600,
   maxHeight: 600,
@@ -22,7 +22,6 @@ export const mainCanvasConfig: CanvasConfig = {
 
 export default function App() {
   const {
-    originalFile,
     originalImg,
     setOriginalFile,
     setOriginalImg,
@@ -32,12 +31,7 @@ export default function App() {
     setDisplays,
   } = useContext(ImageContext);
 
-  const [windowDimensions, setWindowDimensions] = useState({
-    width: 0,
-    height: 0,
-    mobileToolbarHeight: 0,
-    mobileToolbarWidth: 0,
-  });
+  const windowDimensions = useWindowsSize(displays);
 
   const { setUndoImageList, undoImageList } = useContext(ProcessContext);
 
@@ -93,7 +87,6 @@ export default function App() {
         newHeight = newWidth / ratio;
       }
     }
- 
 
     return { newWidth, newHeight };
   }
@@ -105,15 +98,6 @@ export default function App() {
         willReadFrequently: true,
       });
     }
-
-    setWindowDimensions({
-      width: window.innerWidth,
-      height: window.innerHeight,
-      mobileToolbarHeight:
-        document.querySelector("#section__mobile")?.clientHeight || 0,
-      mobileToolbarWidth:
-        document.querySelector("#section__mobile")?.clientWidth || 0,
-    });
   }, [displays]);
   //el useEffect depende de displays porque oculta/muestra el canvas
 
@@ -131,7 +115,7 @@ export default function App() {
     }
   }, [windowDimensions, undoImageList]);
 
-  useEffect(() => {
+  /*   useEffect(() => {
     function handleResize() {
       setWindowDimensions({
         width: window.innerWidth,
@@ -145,7 +129,7 @@ export default function App() {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, []); */
 
   /**
    * Pasos a seguir cuando se carga un archivo de imagen.
@@ -172,8 +156,6 @@ export default function App() {
       const newImageElement = new window.Image();
       newImageElement.src = originalImageB64;
       newImageElement.onload = () => {
-
-
         const { newWidth, newHeight } = calcResize(
           newImageElement.width,
           newImageElement.height
