@@ -370,15 +370,54 @@ export default function BorderProvider({
   }
 
   function handleApplyCanvas() {
-    console.log("canvas", inputAspectRatioX, inputAspectRatioY);
+    //TODO: problema: estamos calculando el tamaño a partir del tamaño de la ultima imagen en undoimagelist que no es la original tiene un tamaño reducido, pero tampoco la podemos calcular sobre la original porque podría haber cambiado su aspect ratio o tamaño.
+    //FIXME: posible solución...? calcular el tamaño aplicando los procesos previos, lo cual podría ser lento, o tratar de calcularlo sin aplicar los procesos.
+    //? ojo, además puede producirse un problema, si en el process list del canvas se guarda el agregado en pixel pero en procesos previos cambia el tamaño, va a fallar, en el process deberia guardarse el aspect ratio deseado y que ahí se calcule el tamaño.
+
+    console.log("Apply Canvas.");
+    console.log(
+      "actual size:",
+      undoImageList[undoImageList.length - 1].width,
+      undoImageList[undoImageList.length - 1].height
+    );
+
+    let AR =
+      undoImageList[undoImageList.length - 1].width /
+      undoImageList[undoImageList.length - 1].height;
+    let newAR = inputAspectRatioX / inputAspectRatioY;
+    let newWidth = 0,
+      newHeight = 0,
+      newBorderX = 0,
+      newBorderY = 0;
+
+    if (newAR === AR) {
+      return;
+    }
+    if (newAR < AR) {
+      newWidth = undoImageList[undoImageList.length - 1].width;
+      newHeight = newWidth / newAR;
+      newBorderX = 0;
+      newBorderY =
+        (newHeight - undoImageList[undoImageList.length - 1].height) / 2;
+    }
+    if (newAR > AR) {
+      newHeight = undoImageList[undoImageList.length - 1].height;
+      newWidth = newHeight * newAR;
+      newBorderY = 0;
+      newBorderX =
+        (newWidth - undoImageList[undoImageList.length - 1].width) / 2;
+    }
+    console.log("new size:", newWidth, newHeight);
+    console.log("new border:", newBorderX, newBorderY);
     handleCanvasChange(
       {
-        BorderColor: "ffffff",
-        BorderX: inputAspectRatioX,
-        BorderY: inputAspectRatioY,
+        BorderColor: inputBorderColor,
+        BorderX: newBorderX,
+        BorderY: newBorderY,
       },
       smallCanvasRef
     );
+
     setCurrentProcess(null);
   }
 

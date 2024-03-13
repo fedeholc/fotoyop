@@ -197,7 +197,7 @@
 
 
  #section__toolbar input,
- #section__mobile input {
+ #section__mobile input, #section__mobile select {
    color: var(--lightFont);
    background-color: var(--toolbarBg);
  }

@@ -193,7 +193,10 @@ export function imgAddBorderXY(
 
   ctxTemp.putImageData(imageData, borderWidth / 2, borderHeight / 2);
 
-  console.log(canvasTemp.width, canvasTemp.height);
+  console.log("imageData: ", imageData.width, imageData.height);
+  console.log("borderWidth: ", borderWidth);
+  console.log("borderHeight: ", borderHeight);
+  console.log("new canvas size: ", canvasTemp.width, canvasTemp.height);
 
   const resultImageData = ctxTemp?.getImageData(
     0,

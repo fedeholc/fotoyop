@@ -146,7 +146,8 @@ export function BottomToolbar() {
   );
 
   const AspectRatioInputs = (
-    <div className={toolbar.borderRanges}>
+    <div className={toolbar.canvasInputs}>
+      <span>Custom</span>
       <input
         type="number"
         name="inputAspectRatioX"
@@ -155,7 +156,7 @@ export function BottomToolbar() {
         onKeyUp={handleInputAspectRatioX}
         onChange={handleInputAspectRatioX}
       ></input>
-
+      <span>: </span>
       <input
         type="number"
         name="inputAspectRatioY"
@@ -164,6 +165,19 @@ export function BottomToolbar() {
         onKeyUp={handleInputAspectRatioY}
         onChange={handleInputAspectRatioY}
       ></input>
+    </div>
+  );
+  const AspectRatioPresets = (
+    <div className={toolbar.canvasInputs}>
+      <span>AR</span>
+      <select id="aspectRatioPresets" name="aspectRatioPresets">
+        <option value="16:9">16:9</option>
+        <option value="4:3">4:3</option>
+        <option value="1:1">1:1</option>
+        <option value="3:4">3:4</option>
+        <option value="9:16">9:16</option>
+        <option value="">Custom</option>
+      </select>
     </div>
   );
 
@@ -237,18 +251,17 @@ export function BottomToolbar() {
             onClick={() => showToolbarRow(toolbarRow.transform)}
           ></ButtonBack>
           {BorderColorInputs}
+          {AspectRatioPresets}
           {AspectRatioInputs}
-          <button onClick={() => handleApplyCanvas()}>test</button>
-          {/*      <ButtonBack
-            onClick={() => showToolbarRow(toolbarRow.transform)}
-          ></ButtonBack>
-          {BorderColorInputs}
-          <ButtonBorderPc
-            onClick={() => showToolbarRow(toolbarRow.borderPc)}
-          ></ButtonBorderPc>
-          <ButtonBorderPx
-            onClick={() => showToolbarRow(toolbarRow.borderPx)}
-          ></ButtonBorderPx> */}
+
+          <ButtonApply
+            onClick={() => {
+              /*               handleInputBorderPercentRangeMouseUp();
+               */ handleApplyCanvas();
+            }}
+          ></ButtonApply>
+          <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
+          {/* TODO: discard canvas */}
         </ToolbarRow>
       )}
 
