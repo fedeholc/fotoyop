@@ -62,7 +62,6 @@ export function BottomToolbar() {
     inputAspectRatioY,
     handleInputAspectRatioX,
     handleInputAspectRatioY,
-    setInputBorderPercent,
     handleInputBorderColor,
     handleInputBorderPixelsRange,
     handleInputBorderPixelsRangeMouseUp,
@@ -73,9 +72,14 @@ export function BottomToolbar() {
     handleApplyBorder,
     handleDiscardBorder,
     handleApplyCanvas,
+    handleDiscardCanvas,
+    selectAspectRatio,
+    handleSelectAspectRatio,
   } = useContext(BorderContext);
 
-  const { originalFile, originalImg, imagenPreviewRef } =
+  //todo: pasar lo que es de canvas a un canvas context
+
+  const { originalImg } =
     useContext(ImageContext);
 
   const { handleToGrayscale } = useContext(ToolbarContext);
@@ -170,10 +174,10 @@ export function BottomToolbar() {
   const AspectRatioPresets = (
     <div className={toolbar.canvasInputs}>
       <span>AR</span>
-      <select id="aspectRatioPresets" name="aspectRatioPresets">
+      <select value={selectAspectRatio} id="aspectRatioPresets" name="aspectRatioPresets" onChange={handleSelectAspectRatio}>
+        <option value="1:1">1:1</option>
         <option value="16:9">16:9</option>
         <option value="4:3">4:3</option>
-        <option value="1:1">1:1</option>
         <option value="3:4">3:4</option>
         <option value="9:16">9:16</option>
         <option value="">Custom</option>
@@ -256,11 +260,10 @@ export function BottomToolbar() {
 
           <ButtonApply
             onClick={() => {
-              /*               handleInputBorderPercentRangeMouseUp();
-               */ handleApplyCanvas();
+              handleApplyCanvas();
             }}
           ></ButtonApply>
-          <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
+          <ButtonDiscard onClick={handleDiscardCanvas}></ButtonDiscard>
           {/* TODO: discard canvas */}
         </ToolbarRow>
       )}

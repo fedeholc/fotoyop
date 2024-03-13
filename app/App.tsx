@@ -172,11 +172,7 @@ export default function App() {
       const newImageElement = new window.Image();
       newImageElement.src = originalImageB64;
       newImageElement.onload = () => {
-        /*      if (newImageElement.width > newImageElement.height) {
-          inputBorderPixelsRef.current!.max = newImageElement.width.toString();
-        } else {
-          inputBorderPixelsRef.current!.max = newImageElement.height.toString();
-        } */ //TODO: esto hay que pasarlo al useEffect de la toolbar
+
 
         const { newWidth, newHeight } = calcResize(
           newImageElement.width,

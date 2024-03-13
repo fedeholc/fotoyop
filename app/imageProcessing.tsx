@@ -130,7 +130,6 @@ function imgAddBorder(
 
   ctxTemp.putImageData(imageData, borderWidth / 2, borderHeight / 2);
 
- 
   const resultImageData = ctxTemp?.getImageData(
     0,
     0,
@@ -150,6 +149,10 @@ export function imgAddCanvas(
   imageData: ImageData,
   options: CanvasOptions
 ): ImageData {
+  if (options.ratioX === 0 || options.ratioY === 0) {
+    return imageData;
+  }
+
   let AR = imageData.width / imageData.height;
   let newAR = options.ratioX / options.ratioY;
   let newWidth = 0,
@@ -176,8 +179,6 @@ export function imgAddCanvas(
   let borderHeight = newBorderY * 2,
     borderWidth = newBorderX * 2;
 
- 
-
   let borderColor = options.CanvasColor;
 
   const canvasTemp = new OffscreenCanvas(
@@ -196,7 +197,6 @@ export function imgAddCanvas(
 
   ctxTemp.putImageData(imageData, borderWidth / 2, borderHeight / 2);
 
- 
   const resultImageData = ctxTemp?.getImageData(
     0,
     0,

@@ -23,6 +23,11 @@ export const BorderContext = createContext({
   inputBorderColor: "#ffffff",
   inputAspectRatioX: 0,
   inputAspectRatioY: 0,
+  selectAspectRatio: "",
+  setSelectAspectRatio: (() => {}) as Dispatch<SetStateAction<string>>,
+  handleSelectAspectRatio: (() => {}) as (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => void,
   setInputAspectRatioX: (() => {}) as Dispatch<SetStateAction<number>>,
   setInputAspectRatioY: (() => {}) as Dispatch<SetStateAction<number>>,
   setInputBorderPixels: (() => {}) as Dispatch<SetStateAction<string>>,
@@ -68,8 +73,9 @@ export const BorderContext = createContext({
   handleInputBorderPercentRangeMouseUp: (() => {}) as () => void,
   handleApplyBorder: () => {},
   handleDiscardBorder: () => {},
+  handleDiscardCanvas: () => {},
   handleCanvasChange: (() => {}) as (
-    borderXYOptions: CanvasOptions,
+    options: CanvasOptions,
     smallCanvasRef: React.RefObject<HTMLCanvasElement>
   ) => void,
   handleApplyCanvas: () => {},
@@ -86,6 +92,8 @@ export default function BorderProvider({
 
   const [inputAspectRatioX, setInputAspectRatioX] = useState<number>(0);
   const [inputAspectRatioY, setInputAspectRatioY] = useState<number>(0);
+
+  const [selectAspectRatio, setSelectAspectRatio] = useState<string>("1:1");
 
   const {
     originalFile,
@@ -104,6 +112,11 @@ export default function BorderProvider({
     setCurrentProcess,
   } = useContext(ProcessContext);
 
+  function handleSelectAspectRatio(e: React.ChangeEvent<HTMLSelectElement>) {
+    setSelectAspectRatio(e.target.value);
+    setInputAspectRatioX(0);
+    setInputAspectRatioY(0);
+  }
   /**
    * Handler del Mouse Up del input de rango de borde en porcentaje.
    *
@@ -140,6 +153,7 @@ export default function BorderProvider({
       | React.ChangeEvent<HTMLInputElement>
       | React.KeyboardEvent<HTMLInputElement>
   ) {
+    setSelectAspectRatio("");
     setInputAspectRatioX(parseInt((e.target as HTMLInputElement).value));
   }
 
@@ -148,6 +162,8 @@ export default function BorderProvider({
       | React.ChangeEvent<HTMLInputElement>
       | React.KeyboardEvent<HTMLInputElement>
   ) {
+    setSelectAspectRatio("");
+
     setInputAspectRatioY(parseInt((e.target as HTMLInputElement).value));
   }
 
@@ -355,18 +371,45 @@ export default function BorderProvider({
   }
 
   function handleApplyCanvas() {
-    handleCanvasChange(
-      {
-        CanvasColor: inputBorderColor,
-        ratioX: inputAspectRatioX,
-        ratioY: inputAspectRatioY,
-      },
-      smallCanvasRef
-    );
+    if (
+      selectAspectRatio === "" &&
+      inputAspectRatioX > 0 &&
+      inputAspectRatioY > 0
+    ) {
+      handleCanvasChange(
+        {
+          CanvasColor: inputBorderColor,
+          ratioX: inputAspectRatioX,
+          ratioY: inputAspectRatioY,
+        },
+        smallCanvasRef
+      );
+    } else {
+      let arX = parseInt(selectAspectRatio.split(":")[0]);
+      let arY = parseInt(selectAspectRatio.split(":")[1]);
+
+      if (arX > 0 && arY > 0) {
+        handleCanvasChange(
+          {
+            CanvasColor: inputBorderColor,
+            ratioX: arX,
+            ratioY: arY,
+          },
+          smallCanvasRef
+        );
+      }
+    }
 
     setCurrentProcess(null);
   }
 
+  function handleDiscardCanvas() {
+    setInputBorderColor("#ffffff");
+    setSelectAspectRatio("1:1");
+    setInputAspectRatioX(0);
+    setInputAspectRatioY(0);
+    setCurrentProcess(null);
+  }
   /**
    * Handler del botón descartar borde. Descarta las últimas modificaciones recuperando el snapshot anterior.
    */
@@ -401,6 +444,9 @@ export default function BorderProvider({
         inputBorderColor,
         inputAspectRatioX,
         inputAspectRatioY,
+        selectAspectRatio,
+        setSelectAspectRatio,
+        handleSelectAspectRatio,
         setInputAspectRatioX,
         setInputAspectRatioY,
         handleInputAspectRatioX,
@@ -420,6 +466,7 @@ export default function BorderProvider({
         handleApplyBorder,
         handleDiscardBorder,
         handleApplyCanvas,
+        handleDiscardCanvas,
         handleCanvasChange,
       }}
     >
