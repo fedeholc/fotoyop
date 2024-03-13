@@ -1,4 +1,4 @@
-import { ProcessFunction, BorderOptionsType, BorderXYOptions } from "./types";
+import { ProcessFunction, BorderOptionsType, CanvasOptions } from "./types";
 
 export {
   imgToBW,
@@ -147,35 +147,47 @@ function imgAddBorder(
  * @param options - opciones de bordes para el proceso
  * @returns - datos de la imagen con el borde agregado
  */
-export function imgAddBorderXY(
+export function imgAddCanvas(
   imageData: ImageData,
-  options?: BorderOptionsType | BorderXYOptions
+  options: CanvasOptions
 ): ImageData {
-  let borderSize = 0,
-    borderHeight = 0,
-    borderWidth = 0;
+  let AR = imageData.width / imageData.height;
+  let newAR = options.ratioX / options.ratioY;
+  let newWidth = 0,
+    newHeight = 0,
+    newBorderX = 0,
+    newBorderY = 0;
 
-  let borderColor = "#ffffff";
+  if (newAR === AR) {
+    return imageData;
+  }
+  if (newAR < AR) {
+    newWidth = imageData.width;
+    newHeight = newWidth / newAR;
+    newBorderX = 0;
+    newBorderY = (newHeight - imageData.height) / 2;
+  }
+  if (newAR > AR) {
+    newHeight = imageData.height;
+    newWidth = newHeight * newAR;
+    newBorderY = 0;
+    newBorderX = (newWidth - imageData.width) / 2;
+  }
 
-  if (options && "BorderX" in options) {
-    borderWidth = options?.BorderX * 2;
-    borderHeight = options?.BorderY * 2;
-  } else if (options && "BorderPixels" in options) {
-    if (options?.BorderPixels && parseInt(options?.BorderPixels) > 0) {
-      borderSize = parseInt(options.BorderPixels) * 2;
-      borderWidth = borderSize;
-      borderHeight = borderSize;
-    } else {
-      if (options?.BorderPercent) {
-        borderSize = parseInt(options.BorderPercent);
-        borderWidth = (imageData.width * borderSize) / 100;
-        borderHeight = (imageData.height * borderSize) / 100;
-      }
-    }
-  }
-  if (options?.BorderColor) {
-    borderColor = options.BorderColor;
-  }
+  let borderHeight = newBorderY * 2,
+    borderWidth = newBorderX * 2;
+
+  console.log("CANVAS: ar, newAr: ", AR, newAR);
+  console.log("imageData: ", imageData.width, imageData.height);
+  console.log("borderWidth: ", borderWidth);
+  console.log("borderHeight: ", borderHeight);
+  console.log(
+    "new canvas size: ",
+    imageData.width + borderWidth,
+    imageData.height + borderHeight
+  );
+
+  let borderColor = options.CanvasColor;
 
   const canvasTemp = new OffscreenCanvas(
     imageData.width + borderWidth,
@@ -216,7 +228,7 @@ export function imgAddBorderXY(
 function applyProcessFunction(
   canvas: OffscreenCanvas | HTMLCanvasElement | null,
   processFunction: ProcessFunction,
-  options?: BorderOptionsType | BorderXYOptions
+  options?: BorderOptionsType | CanvasOptions
 ): ImageData {
   const ctx = canvas?.getContext("2d", {
     willReadFrequently: true,

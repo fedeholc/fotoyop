@@ -56,7 +56,7 @@ export default function App() {
     let ratio = imageWidth / imageHeight;
     let newWidth = 0;
     let newHeight = 0;
-
+    console.log("-------------");
     console.log("imageWidth: ", imageWidth);
     console.log("imageHeight: ", imageHeight);
     console.log("windowDimensions: ", windowDimensions);
@@ -93,7 +93,7 @@ export default function App() {
       newWidth = newHeight * ratio;
 
       if (newWidth > windowDimensions.width) {
-        newWidth = windowDimensions.width;
+        newWidth = windowDimensions.width-32;
         newHeight = newWidth / ratio;
       }
     }

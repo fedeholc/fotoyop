@@ -7,14 +7,14 @@ import {
 } from "react";
 import { ImageContext } from "./ImageProvider";
 import { ProcessContext } from "./ProcessProvider";
-import { BorderOptionsType, BorderXYOptions } from "../types";
+import { BorderOptionsType, CanvasOptions, ProcessFunction } from "../types";
 import { mainCanvasConfig } from "../App";
 import { ImageProcess } from "../types";
 import {
   applyProcessFunction,
   drawImageDataOnCanvas,
   imgAddBorder,
-  imgAddBorderXY,
+  imgAddCanvas,
 } from "../imageProcessing";
 
 export const BorderContext = createContext({
@@ -69,7 +69,7 @@ export const BorderContext = createContext({
   handleApplyBorder: () => {},
   handleDiscardBorder: () => {},
   handleCanvasChange: (() => {}) as (
-    borderXYOptions: BorderXYOptions,
+    borderXYOptions: CanvasOptions,
     smallCanvasRef: React.RefObject<HTMLCanvasElement>
   ) => void,
   handleApplyCanvas: () => {},
@@ -259,7 +259,7 @@ export default function BorderProvider({
       setCurrentProcess(ImageProcess.Border);
       let newImageData = applyProcessFunction(
         smallCanvasRef.current,
-        imgAddBorder,
+        imgAddBorder as ProcessFunction,
         smallCanvasBorderOptions
       );
       setUndoImageList([...undoImageList, newImageData]);
@@ -281,7 +281,7 @@ export default function BorderProvider({
       //version sin hacer resize (no genera flickeo)
       let newImageData = applyProcessFunction(
         smallCanvasRef.current,
-        imgAddBorder,
+        imgAddBorder as ProcessFunction,
         smallCanvasBorderOptions
       );
 
@@ -296,43 +296,33 @@ export default function BorderProvider({
     }
   }
 
+  
+
   function handleCanvasChange(
-    borderXYOptions: BorderXYOptions,
+    options: CanvasOptions,
     smallCanvasRef: React.RefObject<HTMLCanvasElement>
   ) {
     if (!originalFile) {
       return;
     }
-    // El borderOptions como viene lo uso para guardar en processList, ya que el borde en pixels se aplica tal cual a la imagen final con la resolución original. Pero para el small canvas, que es el que se muestra, el borde en pixels se tiene que ajustar a la resolución del canvas.
-    /*  let smallCanvasBorderOptions = { ...borderOptions }; */
-    let smallCanvasBorderXYOptions = { ...borderXYOptions };
 
-    smallCanvasBorderXYOptions.BorderX =
-      (borderXYOptions.BorderX * mainCanvasConfig.maxWidth) /
-      originalImg!.width;
-    smallCanvasBorderXYOptions.BorderY =
-      (borderXYOptions.BorderY * mainCanvasConfig.maxHeight) /
-      originalImg!.height;
-
-    // Puede pasar que el cambio de borde se haga por primera vez o que ya se esté trabajando en eso y no sea la primera modificación. La idea es que si ya se hicieron modificaciones y se vuelve a modificar, se descarta la última modificación y se agrega la nueva, de forma tal que no se acumulen bordes. Por ejemplo, si se aplica un borde de 10 pixel y luego se mueve el rango a 20, se descarta el de 10 y se aplica el de 20. Todo esto hasta que se haga click en Apply.
-
-    // Si es primera modificación del borde, se agrega el proceso a processList y se guarda el snapshot de la imagen en undoImageList.
+    // Si es primera modificación del canvas, se agrega el proceso a processList y se guarda el snapshot de la imagen en undoImageList.
     if (currentProcess === null || undoImageList.length <= 1) {
       setCurrentProcess(ImageProcess.Canvas);
       let newImageData = applyProcessFunction(
         smallCanvasRef.current,
-        imgAddBorderXY,
-        smallCanvasBorderXYOptions
+        imgAddCanvas as ProcessFunction,
+        options
       );
       setUndoImageList([...undoImageList, newImageData]);
       setProcessList([
         ...processList,
-        /*         (imageData) => imgAddBorder(imageData, borderOptions),
-         */ (imageData) => imgAddBorderXY(imageData, borderXYOptions),
+        (imageData) => imgAddCanvas(imageData, options),
       ]);
     }
 
-    // Si ya se vienen haciendo modificaciones al borde (aún no aplicadas) se descarta la última modificación y se agrega la nueva.
+    // Si ya se vienen haciendo modificaciones al canvas (aún no aplicadas) se descarta la última modificación y se agrega la nueva.
+    //todo: ver, esto no se va a aplicar creo, no va a haber modificaciones sin aplicar como en borde
     if (currentProcess === ImageProcess.Border && undoImageList.length > 1) {
       const newUndoImageList = [...undoImageList];
       newUndoImageList.pop();
@@ -344,8 +334,8 @@ export default function BorderProvider({
       //version sin hacer resize (no genera flickeo)
       let newImageData = applyProcessFunction(
         smallCanvasRef.current,
-        imgAddBorderXY,
-        smallCanvasBorderXYOptions
+        imgAddCanvas as ProcessFunction,
+        options
       );
 
       setUndoImageList([...newUndoImageList, newImageData]);
@@ -354,7 +344,7 @@ export default function BorderProvider({
       tempProcessList.pop();
       setProcessList([
         ...tempProcessList,
-        (imageData) => imgAddBorderXY(imageData, borderXYOptions),
+        (imageData) => imgAddCanvas(imageData, options),
       ]);
     }
   }
@@ -374,46 +364,20 @@ export default function BorderProvider({
     //FIXME: posible solución...? calcular el tamaño aplicando los procesos previos, lo cual podría ser lento, o tratar de calcularlo sin aplicar los procesos.
     //? ojo, además puede producirse un problema, si en el process list del canvas se guarda el agregado en pixel pero en procesos previos cambia el tamaño, va a fallar, en el process deberia guardarse el aspect ratio deseado y que ahí se calcule el tamaño.
 
-    console.log("Apply Canvas.");
+    /*   console.log("Apply Canvas.");
     console.log(
       "actual size:",
       undoImageList[undoImageList.length - 1].width,
       undoImageList[undoImageList.length - 1].height
-    );
+    ); */
 
-    let AR =
-      undoImageList[undoImageList.length - 1].width /
-      undoImageList[undoImageList.length - 1].height;
-    let newAR = inputAspectRatioX / inputAspectRatioY;
-    let newWidth = 0,
-      newHeight = 0,
-      newBorderX = 0,
-      newBorderY = 0;
-
-    if (newAR === AR) {
-      return;
-    }
-    if (newAR < AR) {
-      newWidth = undoImageList[undoImageList.length - 1].width;
-      newHeight = newWidth / newAR;
-      newBorderX = 0;
-      newBorderY =
-        (newHeight - undoImageList[undoImageList.length - 1].height) / 2;
-    }
-    if (newAR > AR) {
-      newHeight = undoImageList[undoImageList.length - 1].height;
-      newWidth = newHeight * newAR;
-      newBorderY = 0;
-      newBorderX =
-        (newWidth - undoImageList[undoImageList.length - 1].width) / 2;
-    }
-    console.log("new size:", newWidth, newHeight);
-    console.log("new border:", newBorderX, newBorderY);
+    /*     console.log("new size:", newWidth, newHeight);
+    console.log("new border:", newBorderX, newBorderY); */
     handleCanvasChange(
       {
-        BorderColor: inputBorderColor,
-        BorderX: newBorderX,
-        BorderY: newBorderY,
+        CanvasColor: inputBorderColor,
+        ratioX: inputAspectRatioX,
+        ratioY: inputAspectRatioY,
       },
       smallCanvasRef
     );

@@ -38,14 +38,14 @@ export type BorderOptionsType = {
   [key in BorderOptionsKeysType]?: string;
 };
 
-export type BorderXYOptions = { BorderColor: string, BorderX: number, BorderY: number };
+export type CanvasOptions = { CanvasColor: string, ratioX: number, ratioY: number };
 
 /**
  * Tipo de función que toma un ImageData y devuelve otro ImageData transformado.
  */
 export type ProcessFunction = (
   inputImageData: ImageData,
-  options?: BorderOptionsType
+  options?: BorderOptionsType | CanvasOptions
 ) => ImageData;
 
 /**
