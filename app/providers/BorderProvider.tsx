@@ -70,7 +70,7 @@ export const BorderContext = createContext({
       | React.ChangeEvent<HTMLInputElement>
       | React.KeyboardEvent<HTMLInputElement>
   ) => void,
-  handleInputBorderPercentRangeMouseUp: (() => {}) as () => void,
+  handleInputBorderPercentRangeMouseUp: (() => {}) as (valor: string) => void,
   handleApplyBorder: () => {},
   handleDiscardBorder: () => {},
   handleDiscardCanvas: () => {},
@@ -121,13 +121,14 @@ export default function BorderProvider({
    * Handler del Mouse Up del input de rango de borde en porcentaje.
    *
    */
-  function handleInputBorderPercentRangeMouseUp() {
+  function handleInputBorderPercentRangeMouseUp(valor: string) {
     setInputBorderPixels("0");
+    setInputBorderPercent(valor);
     handleBorderChange(
       {
         BorderColor: inputBorderColor,
         BorderPixels: "0",
-        BorderPercent: inputBorderPercent,
+        BorderPercent: valor,
       },
       smallCanvasRef
     );
@@ -364,6 +365,15 @@ export default function BorderProvider({
    * Handler del click en aplicar borde.
    */
   function handleApplyBorder() {
+    handleBorderChange(
+      {
+        BorderColor: inputBorderColor,
+        BorderPixels: inputBorderPixels,
+        BorderPercent: inputBorderPercent,
+      },
+      smallCanvasRef
+    );
+
     setInputBorderColor("#ffffff");
     setInputBorderPercent("0");
     setInputBorderPixels("0");

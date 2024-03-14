@@ -123,7 +123,7 @@ export function BottomToolbar() {
     </div>
   );
 
-  const BorderPercentInputs = (
+  /*   const BorderPercentInputs = (
     <div className={toolbar.borderRanges}>
       <input
         type="range"
@@ -132,9 +132,9 @@ export function BottomToolbar() {
         min="0"
         ref={inputBorderPercentRef}
         value={inputBorderPercent}
-        onMouseUp={handleInputBorderPercentRangeMouseUp}
+    onMouseUp={handleInputBorderPercentRangeMouseUp}
         onChange={handleInputBorderPercentRange}
-        onTouchEnd={handleInputBorderPercentRangeMouseUp}
+        onTouchEnd={handleInputBorderPercentRangeMouseUp}  
       ></input>
       <input
         type="number"
@@ -147,7 +147,68 @@ export function BottomToolbar() {
       ></input>
       <div className="toolbar_row__units">%</div>
     </div>
-  );
+  ); */
+  /* const BorderPercentInputsTest = () => {
+    console.log("RENDER test!");
+    return (
+      <div className={toolbar.borderRanges}>
+        <input
+          type="range"
+          id="inputBorderPercent"
+          name="inputBorderPercent"
+          min="0"
+          ref={inputBorderPercentRef}
+          value={inputBorderPercent}
+             onMouseUp={handleInputBorderPercentRangeMouseUp}
+          onChange={handleInputBorderPercentRange}
+          onTouchEnd={handleInputBorderPercentRangeMouseUp} 
+        ></input>
+        <input
+          type="number"
+          id="inputBorderPercentN"
+          name="inputBorderPercentN"
+          min="0"
+          value={inputBorderPercent}
+          onKeyUp={handleInputBorderPercentText}
+          onChange={handleInputBorderPercentText}
+        ></input>
+        <div className="toolbar_row__units">%</div>
+      </div>
+    );
+  }; */
+  const BorderPercentInputs = () => {
+    console.log("RENDER test!2");
+    const [inputBorderPercentTest, setInputBorderPercentTest] =
+      useState(inputBorderPercent);
+    return (
+      <div className={toolbar.borderRanges}>
+        <input
+          type="range"
+          id="inputBorderPercent"
+          name="inputBorderPercent"
+          min="0"
+          /*              ref={inputBorderPercentRef}*/ /* enlentece bastante */
+          //TODO: lo saco porque no se usa pero cuando haga lo mismo con el pixel inputs ahí lo usaba para calcular según tamaño de imagen el rango, lo voy a tener que dejar o ver de hacerlo de otro modo.
+          //?ahora que funciona esto componentizado podría hacer lo de las labels en componente.
+          value={inputBorderPercentTest}
+          onMouseUp={() =>
+            handleInputBorderPercentRangeMouseUp(inputBorderPercentTest)
+          }
+          onChange={(e) => setInputBorderPercentTest(e.target.value)}
+        ></input>
+        <input
+          type="number"
+          id="inputBorderPercentN"
+          name="inputBorderPercentN"
+          min="0"
+          value={inputBorderPercentTest}
+          onKeyUp={handleInputBorderPercentText}
+          onChange={handleInputBorderPercentText}
+        ></input>
+        <div className="toolbar_row__units">%</div>
+      </div>
+    );
+  };
 
   const AspectRatioInputs = (
     <div className={toolbar.canvasInputs}>
@@ -213,7 +274,7 @@ export function BottomToolbar() {
       />
     </>
   );
-
+  console.log("RENDER TOOLBAR");
   return (
     <>
       {toolbarDisplay.borderPx && originalImg?.src && (
@@ -229,19 +290,14 @@ export function BottomToolbar() {
 
       {toolbarDisplay.borderPc && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
-          <ButtonBack
-            onClick={() => showToolbarRow(toolbarRow.border)}
-          ></ButtonBack>
-
-          {BorderPercentInputs}
-
+          <ButtonBack onClick={() => showToolbarRow(toolbarRow.border)} />
+          <BorderPercentInputs />
           <ButtonApply
             onClick={() => {
-              handleInputBorderPercentRangeMouseUp();
               handleApplyBorder();
             }}
-          ></ButtonApply>
-          <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
+          />
+          <ButtonDiscard onClick={handleDiscardBorder} />
         </ToolbarRow>
       )}
 
