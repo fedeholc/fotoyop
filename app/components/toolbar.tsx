@@ -122,7 +122,7 @@ export function BottomToolbar() {
       <div className="toolbar_row__units">px</div>{" "}
     </div>
   );
- 
+
   const BorderPercentInputs = () => {
     console.log("RENDER test!2");
     const [inputBorderPercentTest, setInputBorderPercentTest] =
@@ -135,9 +135,9 @@ export function BottomToolbar() {
           name="inputBorderPercent"
           min="0"
           /*              ref={inputBorderPercentRef}*/ /* enlentece bastante */
-          //TODO: lo saco porque no se usa pero cuando haga lo mismo con el pixel inputs ahí lo usaba para calcular según tamaño de imagen el rango, lo voy a tener que dejar o ver de hacerlo de otro modo.
-          //?ahora que funciona esto componentizado podría hacer lo de las labels en componente.
-          // y hacer lo mismo con la side toolbar
+          //TODO: lo saco porque no se usa pero cuando haga lo mismo con el pixel inputs ahí lo usaba para calcular según tamaño de imagen el rango, lo voy a tener que dejar o ver de hacerlo de otro modo. Tal vez se puede hacer si se le pasa el valor del max al componente via props directo al input o para ser puesto con useeffect pero con una ref generada ahí mismo
+          //? ahora que funciona esto componentizado podría hacer lo de las labels en componente.
+          //   y hacer lo mismo con la side toolbar
           value={inputBorderPercentTest}
           onMouseUp={() =>
             handleInputBorderPercentRangeMouseUp(inputBorderPercentTest)
