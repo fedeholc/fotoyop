@@ -190,8 +190,12 @@ export function BottomToolbar() {
           /*              ref={inputBorderPercentRef}*/ /* enlentece bastante */
           //TODO: lo saco porque no se usa pero cuando haga lo mismo con el pixel inputs ahí lo usaba para calcular según tamaño de imagen el rango, lo voy a tener que dejar o ver de hacerlo de otro modo.
           //?ahora que funciona esto componentizado podría hacer lo de las labels en componente.
+          // y hacer lo mismo con la side toolbar
           value={inputBorderPercentTest}
           onMouseUp={() =>
+            handleInputBorderPercentRangeMouseUp(inputBorderPercentTest)
+          }
+          onTouchEnd={() =>
             handleInputBorderPercentRangeMouseUp(inputBorderPercentTest)
           }
           onChange={(e) => setInputBorderPercentTest(e.target.value)}

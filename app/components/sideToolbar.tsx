@@ -123,8 +123,12 @@ export function SideToolbar() {
                   max="100"
                   value={inputBorderPercent}
                   onChange={handleInputBorderPercent}
-                  onMouseUp={handleInputBorderPercentRangeMouseUp}
-                  onTouchEnd={handleInputBorderPercentRangeMouseUp}
+                  onMouseUp={() =>
+                    handleInputBorderPercentRangeMouseUp(inputBorderPercent)
+                  }
+                  onTouchEnd={() =>
+                    handleInputBorderPercentRangeMouseUp(inputBorderPercent)
+                  }
                 ></input>
               </div>
             </div>
