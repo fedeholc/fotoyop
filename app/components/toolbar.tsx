@@ -52,12 +52,10 @@ export function BottomToolbar() {
     canvas: false,
   });
 
-  const inputBorderPixelsRef = useRef<HTMLInputElement | null>(null);
-  const inputBorderPercentRef = useRef<HTMLInputElement | null>(null);
   const {
     inputBorderColor,
-    inputBorderPixels,
-    inputBorderPercent,
+    BorderPixels,
+    BorderPercent,
     inputAspectRatioX,
     inputAspectRatioY,
     handleInputAspectRatioX,
@@ -83,83 +81,74 @@ export function BottomToolbar() {
 
   const { handleToGrayscale } = useContext(ToolbarContext);
 
-  // hace que el selector de ancho de borde tenga como máximo la mitad del tamaño de la imagenn
-  useEffect(() => {
-    if (originalImg && inputBorderPixelsRef.current) {
-      if (originalImg.width > originalImg.height) {
-        inputBorderPixelsRef.current!.max = (originalImg.width / 2).toString();
-      } else {
-        inputBorderPixelsRef.current!.max = (originalImg.width / 2).toString();
-      }
-    }
-  }, [originalImg, inputBorderPixelsRef.current]);
-
-  //TODO: esto lo tenía como componente pero no funcionaba bien, al mover el slider no dejaba deslizarlo mas que un punto, y tampoco funcionaba el touchEnd, creo yo que por el re-renderizado del componente al actualizar el inputBorderPixels que viene del provider.
-  //FIXME: habría que buscar en el curso de josh, que había una explicación para evitar ese re-renderizado, creo que era con memo o algo así, o sino ver si es necesario que el valor venga del provider, o si se puede manejar localmente y pasar el valor a la funcion que hace el cambio de borde.
   //!sería bueno poder ponerlo en componente para poder armarlo con una label y usando useId, de modo de no repetir el id en el html (no en este caso que creo que no se repite pero en el input de color sí... aunque habría que ver si el input de color no debería modificar un state distinto según donde se use)
-  const BorderPixelInputs = (
-    <div className={toolbar.borderRanges}>
-      <input
-        type="range"
-        id="inputBorderPixels"
-        name="inputBorderPixels"
-        min="0"
-        ref={inputBorderPixelsRef}
-        value={inputBorderPixels}
-        onChange={handleInputBorderPixelsRange}
-        onMouseUp={handleInputBorderPixelsRangeMouseUp}
-        onTouchEnd={handleInputBorderPixelsRangeMouseUp}
-      ></input>
-      <input
-        type="number"
-        id="inputBorderPixelsN"
-        name="inputBorderPixelsN"
-        min="0"
-        value={inputBorderPixels}
-        onKeyUp={handleInputBorderPixelsText}
-        onChange={handleInputBorderPixelsText}
-      ></input>{" "}
-      <div className="toolbar_row__units">px</div>{" "}
-    </div>
-  );
 
-  const BorderPercentInputs = () => {
-    console.log("RENDER test!2");
-    const [inputBorderPercentTest, setInputBorderPercentTest] =
-      useState(inputBorderPercent);
+  function BorderPixelInputs({ maxRange }: { maxRange: string }) {
+    const [inputBorderPixels, setInputBorderPixelsTest] =
+      useState(BorderPixels);
+    return (
+      <div className={toolbar.borderRanges}>
+        <input
+          type="range"
+          id="inputBorderPixels"
+          name="inputBorderPixels"
+          min="0"
+          max={maxRange}
+          value={inputBorderPixels}
+          onChange={(e) => setInputBorderPixelsTest(e.target.value)}
+          onMouseUp={() =>
+            handleInputBorderPixelsRangeMouseUp(inputBorderPixels)
+          }
+          onTouchEnd={() =>
+            handleInputBorderPixelsRangeMouseUp(inputBorderPixels)
+          }
+        ></input>
+        <input
+          type="number"
+          id="inputBorderPixelsN"
+          name="inputBorderPixelsN"
+          min="0"
+          value={inputBorderPixels}
+          onKeyUp={handleInputBorderPixelsText}
+          onChange={handleInputBorderPixelsText}
+        ></input>{" "}
+        <div className="toolbar_row__units">px</div>{" "}
+      </div>
+    );
+  }
+
+  //!TODO: ahora que funciona esto componentizado podría hacer lo de las labels en componente con useID
+  //!   y hacer lo mismo con la side toolbar
+  function BorderPercentInputs() {
+    const [inputBorderPercent, setInputBorderPercentTest] =
+      useState(BorderPercent);
     return (
       <div className={toolbar.borderRanges}>
         <input
           type="range"
           id="inputBorderPercent"
-          name="inputBorderPercent"
           min="0"
-          /*              ref={inputBorderPercentRef}*/ /* enlentece bastante */
-          //TODO: lo saco porque no se usa pero cuando haga lo mismo con el pixel inputs ahí lo usaba para calcular según tamaño de imagen el rango, lo voy a tener que dejar o ver de hacerlo de otro modo. Tal vez se puede hacer si se le pasa el valor del max al componente via props directo al input o para ser puesto con useeffect pero con una ref generada ahí mismo
-          //? ahora que funciona esto componentizado podría hacer lo de las labels en componente.
-          //   y hacer lo mismo con la side toolbar
-          value={inputBorderPercentTest}
+          value={inputBorderPercent}
           onMouseUp={() =>
-            handleInputBorderPercentRangeMouseUp(inputBorderPercentTest)
+            handleInputBorderPercentRangeMouseUp(inputBorderPercent)
           }
           onTouchEnd={() =>
-            handleInputBorderPercentRangeMouseUp(inputBorderPercentTest)
+            handleInputBorderPercentRangeMouseUp(inputBorderPercent)
           }
           onChange={(e) => setInputBorderPercentTest(e.target.value)}
         ></input>
         <input
           type="number"
           id="inputBorderPercentN"
-          name="inputBorderPercentN"
           min="0"
-          value={inputBorderPercentTest}
+          value={inputBorderPercent}
           onKeyUp={handleInputBorderPercentText}
           onChange={handleInputBorderPercentText}
         ></input>
         <div className="toolbar_row__units">%</div>
       </div>
     );
-  };
+  }
 
   const AspectRatioInputs = (
     <div className={toolbar.canvasInputs}>
@@ -225,7 +214,6 @@ export function BottomToolbar() {
       />
     </>
   );
-  console.log("RENDER TOOLBAR");
   return (
     <>
       {toolbarDisplay.borderPx && originalImg?.src && (
@@ -233,7 +221,8 @@ export function BottomToolbar() {
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.border)}
           ></ButtonBack>
-          {BorderPixelInputs}
+          {/*  {BorderPixelInputs} */}
+          <BorderPixelInputs maxRange={(originalImg.width / 2).toString()} />
           <ButtonApply onClick={handleApplyBorder}></ButtonApply>
           <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
         </ToolbarRow>

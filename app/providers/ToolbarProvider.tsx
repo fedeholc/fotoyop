@@ -54,10 +54,10 @@ export default function ToolbarProvider({
   const {
     inputBorderColor,
     setInputBorderColor,
-    inputBorderPixels,
-    setInputBorderPixels,
-    inputBorderPercent,
-    setInputBorderPercent,
+    BorderPixels,
+    setBorderPixels,
+    BorderPercent,
+    setBorderPercent,
     handleInputBorderColor,
     handleInputBorderPixelsRange,
     handleBorderChange,
@@ -104,8 +104,8 @@ export default function ToolbarProvider({
     setProcessList([]);
     setUndoImageList([]);
     setCurrentProcess(null);
-    setInputBorderPixels("0");
-    setInputBorderPercent("0");
+    setBorderPixels("0");
+    setBorderPercent("0");
     setInputBorderColor("#ffffff");
     imagenPreviewRef.current!.src = "";
   }

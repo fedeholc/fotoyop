@@ -18,8 +18,8 @@ import {
 } from "../imageProcessing";
 
 export const BorderContext = createContext({
-  inputBorderPixels: "0",
-  inputBorderPercent: "0",
+  BorderPixels: "0",
+  BorderPercent: "0",
   inputBorderColor: "#ffffff",
   inputAspectRatioX: 0,
   inputAspectRatioY: 0,
@@ -30,8 +30,8 @@ export const BorderContext = createContext({
   ) => void,
   setInputAspectRatioX: (() => {}) as Dispatch<SetStateAction<number>>,
   setInputAspectRatioY: (() => {}) as Dispatch<SetStateAction<number>>,
-  setInputBorderPixels: (() => {}) as Dispatch<SetStateAction<string>>,
-  setInputBorderPercent: (() => {}) as Dispatch<SetStateAction<string>>,
+  setBorderPixels: (() => {}) as Dispatch<SetStateAction<string>>,
+  setBorderPercent: (() => {}) as Dispatch<SetStateAction<string>>,
   setInputBorderColor: (() => {}) as Dispatch<SetStateAction<string>>,
   handleInputAspectRatioX: (() => {}) as (
     e:
@@ -56,7 +56,8 @@ export const BorderContext = createContext({
     borderOptions: BorderOptionsType,
     smallCanvasRef: React.RefObject<HTMLCanvasElement>
   ) => void,
-  handleInputBorderPixelsRangeMouseUp: (() => {}) as () => void,
+  handleInputBorderPixelsRangeMouseUp: (() => {}) as (valor: string) => void,
+  handleInputBorderPercentRangeMouseUp: (() => {}) as (valor: string) => void,
   handleInputBorderPixelsText: (() => {}) as (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -70,7 +71,6 @@ export const BorderContext = createContext({
       | React.ChangeEvent<HTMLInputElement>
       | React.KeyboardEvent<HTMLInputElement>
   ) => void,
-  handleInputBorderPercentRangeMouseUp: (() => {}) as (valor: string) => void,
   handleApplyBorder: () => {},
   handleDiscardBorder: () => {},
   handleDiscardCanvas: () => {},
@@ -86,8 +86,8 @@ export default function BorderProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [inputBorderPixels, setInputBorderPixels] = useState<string>("0");
-  const [inputBorderPercent, setInputBorderPercent] = useState<string>("0");
+  const [BorderPixels, setBorderPixels] = useState<string>("0");
+  const [BorderPercent, setBorderPercent] = useState<string>("0");
   const [inputBorderColor, setInputBorderColor] = useState<string>("#ffffff");
 
   const [inputAspectRatioX, setInputAspectRatioX] = useState<number>(0);
@@ -122,8 +122,8 @@ export default function BorderProvider({
    *
    */
   function handleInputBorderPercentRangeMouseUp(valor: string) {
-    setInputBorderPixels("0");
-    setInputBorderPercent(valor);
+    setBorderPixels("0");
+    setBorderPercent(valor);
     handleBorderChange(
       {
         BorderColor: inputBorderColor,
@@ -141,8 +141,8 @@ export default function BorderProvider({
   function handleInputBorderPercent(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
-    setInputBorderPixels("0");
-    setInputBorderPercent(event.target.value);
+    setBorderPixels("0");
+    setBorderPercent(event.target.value);
   }
 
   function handleInputBorderColor(e: React.ChangeEvent<HTMLInputElement>) {
@@ -177,8 +177,8 @@ export default function BorderProvider({
       | React.ChangeEvent<HTMLInputElement>
       | React.KeyboardEvent<HTMLInputElement>
   ) {
-    setInputBorderPercent("0");
-    setInputBorderPixels((event.target as HTMLInputElement).value);
+    setBorderPercent("0");
+    setBorderPixels((event.target as HTMLInputElement).value);
     handleBorderChange(
       {
         BorderColor: inputBorderColor,
@@ -195,15 +195,15 @@ export default function BorderProvider({
   function handleInputBorderPixelsRange(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
-    setInputBorderPercent("0");
-    setInputBorderPixels(event.target.value);
+    setBorderPercent("0");
+    setBorderPixels(event.target.value);
   }
 
   function handleInputBorderPercentRange(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
-    setInputBorderPixels("0");
-    setInputBorderPercent(event.target.value);
+    setBorderPixels("0");
+    setBorderPercent(event.target.value);
   }
 
   /**
@@ -215,8 +215,8 @@ export default function BorderProvider({
       | React.ChangeEvent<HTMLInputElement>
       | React.KeyboardEvent<HTMLInputElement>
   ) {
-    setInputBorderPixels("0");
-    setInputBorderPercent((event.target as HTMLInputElement).value);
+    setBorderPixels("0");
+    setBorderPercent((event.target as HTMLInputElement).value);
     handleBorderChange(
       {
         BorderColor: inputBorderColor,
@@ -231,12 +231,14 @@ export default function BorderProvider({
    * Handler del Mouse Up del input de rango de borde en pixels.
    * Al mover el range, cuando se suelta el botón del mouse, se aplica el borde.
    */
-  function handleInputBorderPixelsRangeMouseUp() {
-    setInputBorderPercent("0");
+  function handleInputBorderPixelsRangeMouseUp(valor: string) {
+    setBorderPercent("0");
+    setBorderPixels(valor);
+    console.log("LLAMO A HANDLE BORDER CHANGE", valor);
     handleBorderChange(
       {
         BorderColor: inputBorderColor,
-        BorderPixels: inputBorderPixels,
+        BorderPixels: valor,
         BorderPercent: "0",
       },
       smallCanvasRef
@@ -252,15 +254,16 @@ export default function BorderProvider({
     }
     // El borderOptions como viene lo uso para guardar en processList, ya que el borde en pixels se aplica tal cual a la imagen final con la resolución original. Pero para el small canvas, que es el que se muestra, el borde en pixels se tiene que ajustar a la resolución del canvas.
     let smallCanvasBorderOptions = { ...borderOptions };
+
     let newBorderPixels = 0;
-    if (parseInt(inputBorderPixels) > 0) {
+    if (parseInt(borderOptions.BorderPixels!) > 0) {
       if (undoImageList[0].width > undoImageList[0].height) {
         newBorderPixels =
-          (parseInt(inputBorderPixels) * mainCanvasConfig.maxWidth) /
+          (parseInt(borderOptions.BorderPixels!) * mainCanvasConfig.maxWidth) /
           originalImg!.width;
       } else {
         newBorderPixels =
-          (parseInt(inputBorderPixels) * mainCanvasConfig.maxHeight) /
+          (parseInt(borderOptions.BorderPixels!) * mainCanvasConfig.maxHeight) /
           originalImg!.height;
       }
     }
@@ -368,15 +371,15 @@ export default function BorderProvider({
     handleBorderChange(
       {
         BorderColor: inputBorderColor,
-        BorderPixels: inputBorderPixels,
-        BorderPercent: inputBorderPercent,
+        BorderPixels: BorderPixels,
+        BorderPercent: BorderPercent,
       },
       smallCanvasRef
     );
 
     setInputBorderColor("#ffffff");
-    setInputBorderPercent("0");
-    setInputBorderPixels("0");
+    setBorderPercent("0");
+    setBorderPixels("0");
     setCurrentProcess(null);
   }
 
@@ -441,16 +444,16 @@ export default function BorderProvider({
     }
 
     setInputBorderColor("#ffffff");
-    setInputBorderPercent("0");
-    setInputBorderPixels("0");
+    setBorderPercent("0");
+    setBorderPixels("0");
     setCurrentProcess(null);
   }
 
   return (
     <BorderContext.Provider
       value={{
-        inputBorderPixels,
-        inputBorderPercent,
+        BorderPixels,
+        BorderPercent,
         inputBorderColor,
         inputAspectRatioX,
         inputAspectRatioY,
@@ -461,8 +464,8 @@ export default function BorderProvider({
         setInputAspectRatioY,
         handleInputAspectRatioX,
         handleInputAspectRatioY,
-        setInputBorderPixels,
-        setInputBorderPercent,
+        setBorderPixels,
+        setBorderPercent,
         setInputBorderColor,
         handleInputBorderColor,
         handleInputBorderPixelsRange,

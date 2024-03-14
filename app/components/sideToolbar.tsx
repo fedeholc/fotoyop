@@ -18,8 +18,8 @@ export function SideToolbar() {
 
   const {
     inputBorderColor,
-    inputBorderPixels,
-    inputBorderPercent,
+    BorderPixels,
+    BorderPercent,
     handleInputBorderColor,
     handleInputBorderPixelsRange,
     handleInputBorderPixelsRangeMouseUp,
@@ -110,7 +110,7 @@ export function SideToolbar() {
                   id="inputBorderPercentN"
                   name="inputBorderPercentN"
                   min="0"
-                  value={inputBorderPercent}
+                  value={BorderPercent}
                   onKeyUp={handleInputBorderPercentText}
                   onChange={handleInputBorderPercentText}
                 ></input>
@@ -121,13 +121,13 @@ export function SideToolbar() {
                   name="inputBorderPercent"
                   min="0"
                   max="100"
-                  value={inputBorderPercent}
+                  value={BorderPercent} /* cambiar al pasar a */
                   onChange={handleInputBorderPercent}
                   onMouseUp={() =>
-                    handleInputBorderPercentRangeMouseUp(inputBorderPercent)
+                    handleInputBorderPercentRangeMouseUp(BorderPercent)
                   }
                   onTouchEnd={() =>
-                    handleInputBorderPercentRangeMouseUp(inputBorderPercent)
+                    handleInputBorderPercentRangeMouseUp(BorderPercent)
                   }
                 ></input>
               </div>
@@ -140,7 +140,7 @@ export function SideToolbar() {
                   id="inputBorderPixelsN"
                   name="inputBorderPixelsN"
                   min="0"
-                  value={inputBorderPixels}
+                  value={BorderPixels}
                   onKeyUp={handleInputBorderPixelsText}
                   onChange={handleInputBorderPixelsText}
                 ></input>
@@ -151,10 +151,14 @@ export function SideToolbar() {
                   name="inputBorderPixels"
                   min="0"
                   ref={inputBorderPixelsRef}
-                  value={inputBorderPixels}
+                  value={BorderPixels}
                   onChange={handleInputBorderPixelsRange}
-                  onMouseUp={handleInputBorderPixelsRangeMouseUp}
-                  onTouchEnd={handleInputBorderPixelsRangeMouseUp}
+                  onMouseUp={() =>
+                    handleInputBorderPixelsRangeMouseUp(BorderPixels)
+                  }
+                  onTouchEnd={() =>
+                    handleInputBorderPixelsRangeMouseUp(BorderPixels)
+                  }
                 ></input>
               </div>
             </div>
