@@ -24,14 +24,10 @@
   position: fixed;
   top: 0;
   right: 0;
-  /*   border-top: 1px solid var(--toolbarBorderColor);
- */
   padding: 0.5rem 0.6rem;
   width: 100%;
   background-color: var(--toolbarBg);
 }
-
-
 
 .border__row {
   gap: 0.5rem;
@@ -41,9 +37,7 @@
 .border__row input[type="Color"] {
   min-width: 60px;
   max-width: 60px;
-  /*  height: 100%; */
   height: 32px;
-
   border-radius: 5px;
   padding: 0.2rem;
   border: 1px solid rgb(128 128 128 / 50%);
@@ -53,9 +47,7 @@
 
 .border__row input[type="text"] {
   width: 80px;
-  /*     height: 100%; */
   min-height: 30px;
-
   border-radius: 5px;
   padding: 0.2rem 0.4rem;
   font-size: inherit;
@@ -66,11 +58,9 @@
   box-shadow: var(--buttonBoxShadow);
 }
 
-.border__row input[type="Number"] {
-  width: 70px;
-  /*     height: 100%; */
-  min-height: 30px;
 
+.border__row input[type="Number"] {
+  min-height: 30px;
   border-radius: 5px;
   padding: 0.2rem 0.4rem;
   font-size: 0.9rem;
@@ -78,14 +68,11 @@
   text-align: right;
   font-family: monospace;
   box-shadow: var(--buttonBoxShadow);
-
 }
 
-.border__row select {
+select.aspectRatioInput {
   width: 70px;
-  /*     height: 100%; */
   min-height: 30px;
-
   border-radius: 5px;
   padding: 0.2rem 0.4rem;
   font-size: 0.9rem;
@@ -93,17 +80,26 @@
   text-align: right;
   font-family: monospace;
   box-shadow: var(--buttonBoxShadow);
-
 }
 
 .border__row input[type="Range"] {
   width: auto;
-  /*     height: 100%; */
   min-height: 30px;
-
   accent-color: deeppink;
   margin-left: 0.5rem;
+}
 
+.canvasInputs>label {
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.canvasInputs {
+  padding: 0rem 0.5rem;
+}
+
+.separador {
+  padding: 0rem 0.0rem 0rem 0rem;
 }
 
 .buttonOnlyIcon {
@@ -160,8 +156,8 @@
 
 }
 
-.canvasInputs input {
-  width: 50px !important;
+.aspectRatioInput {
+  width: 50px;
 
 }
 

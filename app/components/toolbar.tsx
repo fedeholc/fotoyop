@@ -79,8 +79,7 @@ export function BottomToolbar() {
 
   //todo: pasar lo que es de canvas a un canvas context
 
-  const { originalImg } =
-    useContext(ImageContext);
+  const { originalImg } = useContext(ImageContext);
 
   const { handleToGrayscale } = useContext(ToolbarContext);
 
@@ -97,6 +96,7 @@ export function BottomToolbar() {
 
   //TODO: esto lo tenía como componente pero no funcionaba bien, al mover el slider no dejaba deslizarlo mas que un punto, y tampoco funcionaba el touchEnd, creo yo que por el re-renderizado del componente al actualizar el inputBorderPixels que viene del provider.
   //FIXME: habría que buscar en el curso de josh, que había una explicación para evitar ese re-renderizado, creo que era con memo o algo así, o sino ver si es necesario que el valor venga del provider, o si se puede manejar localmente y pasar el valor a la funcion que hace el cambio de borde.
+  //!sería bueno poder ponerlo en componente para poder armarlo con una label y usando useId, de modo de no repetir el id en el html (no en este caso que creo que no se repite pero en el input de color sí... aunque habría que ver si el input de color no debería modificar un state distinto según donde se use)
   const BorderPixelInputs = (
     <div className={toolbar.borderRanges}>
       <input
@@ -151,8 +151,9 @@ export function BottomToolbar() {
 
   const AspectRatioInputs = (
     <div className={toolbar.canvasInputs}>
-      <span>Custom</span>
+      <label>Custom</label>
       <input
+        className={toolbar.aspectRatioInput}
         type="number"
         name="inputAspectRatioX"
         min="0"
@@ -162,6 +163,7 @@ export function BottomToolbar() {
       ></input>
       <span>: </span>
       <input
+        className={toolbar.aspectRatioInput}
         type="number"
         name="inputAspectRatioY"
         min="0"
@@ -173,8 +175,18 @@ export function BottomToolbar() {
   );
   const AspectRatioPresets = (
     <div className={toolbar.canvasInputs}>
-      <span>AR</span>
-      <select value={selectAspectRatio} id="aspectRatioPresets" name="aspectRatioPresets" onChange={handleSelectAspectRatio}>
+      <label htmlFor="aspectRatioPresets">
+        Aspect
+        <br />
+        Ratio
+      </label>
+      <select
+        className={toolbar.aspectRatioInput}
+        value={selectAspectRatio}
+        id="aspectRatioPresets"
+        name="aspectRatioPresets"
+        onChange={handleSelectAspectRatio}
+      >
         <option value="1:1">1:1</option>
         <option value="16:9">16:9</option>
         <option value="4:3">4:3</option>
@@ -188,14 +200,12 @@ export function BottomToolbar() {
   const BorderColorInputs = (
     <>
       <input
-        id="inputBorderColorText"
         type="Text"
         min="0"
         value={inputBorderColor}
         onChange={handleInputBorderColor}
       />
       <input
-        id="inputBorderColor"
         type="color"
         list="true"
         value={inputBorderColor}
@@ -254,6 +264,9 @@ export function BottomToolbar() {
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.transform)}
           ></ButtonBack>
+          <span></span>
+          {/* separador para generar gap */}
+
           {BorderColorInputs}
           {AspectRatioPresets}
           {AspectRatioInputs}
