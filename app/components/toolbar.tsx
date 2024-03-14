@@ -122,60 +122,7 @@ export function BottomToolbar() {
       <div className="toolbar_row__units">px</div>{" "}
     </div>
   );
-
-  /*   const BorderPercentInputs = (
-    <div className={toolbar.borderRanges}>
-      <input
-        type="range"
-        id="inputBorderPercent"
-        name="inputBorderPercent"
-        min="0"
-        ref={inputBorderPercentRef}
-        value={inputBorderPercent}
-    onMouseUp={handleInputBorderPercentRangeMouseUp}
-        onChange={handleInputBorderPercentRange}
-        onTouchEnd={handleInputBorderPercentRangeMouseUp}  
-      ></input>
-      <input
-        type="number"
-        id="inputBorderPercentN"
-        name="inputBorderPercentN"
-        min="0"
-        value={inputBorderPercent}
-        onKeyUp={handleInputBorderPercentText}
-        onChange={handleInputBorderPercentText}
-      ></input>
-      <div className="toolbar_row__units">%</div>
-    </div>
-  ); */
-  /* const BorderPercentInputsTest = () => {
-    console.log("RENDER test!");
-    return (
-      <div className={toolbar.borderRanges}>
-        <input
-          type="range"
-          id="inputBorderPercent"
-          name="inputBorderPercent"
-          min="0"
-          ref={inputBorderPercentRef}
-          value={inputBorderPercent}
-             onMouseUp={handleInputBorderPercentRangeMouseUp}
-          onChange={handleInputBorderPercentRange}
-          onTouchEnd={handleInputBorderPercentRangeMouseUp} 
-        ></input>
-        <input
-          type="number"
-          id="inputBorderPercentN"
-          name="inputBorderPercentN"
-          min="0"
-          value={inputBorderPercent}
-          onKeyUp={handleInputBorderPercentText}
-          onChange={handleInputBorderPercentText}
-        ></input>
-        <div className="toolbar_row__units">%</div>
-      </div>
-    );
-  }; */
+ 
   const BorderPercentInputs = () => {
     console.log("RENDER test!2");
     const [inputBorderPercentTest, setInputBorderPercentTest] =
