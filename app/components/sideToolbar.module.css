@@ -128,6 +128,14 @@
    gap: 0.4rem;
  }
 
+ .canvasCustomInputs {
+   display: grid;
+   align-items: center;
+   grid-template-columns: min-content min-content min-content min-content;
+   gap: 0.4rem;
+   padding: 0.5rem 0rem;
+ }
+
  .changesGroup {
    overflow: auto;
  }

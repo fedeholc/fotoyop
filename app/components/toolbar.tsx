@@ -273,7 +273,7 @@ export function BottomToolbar() {
             }}
           ></ButtonApply>
           <ButtonDiscard onClick={handleDiscardCanvas}></ButtonDiscard>
-          {/* TODO: discard canvas */}
+        
         </ToolbarRow>
       )}
 

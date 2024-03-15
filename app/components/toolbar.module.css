@@ -156,9 +156,9 @@ select.aspectRatioInput {
 
 }
 
-.aspectRatioInput {
+input.aspectRatioInput {
   width: 50px;
-
+  min-height: 30px;
 }
 
 .buttonText {
