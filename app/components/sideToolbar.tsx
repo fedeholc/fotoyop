@@ -1,4 +1,4 @@
-import { useRef, useContext } from "react";
+import { useRef, useContext, useState, useId } from "react";
 import { ImageContext } from "../providers/ImageProvider";
 import { ProcessContext } from "../providers/ProcessProvider";
 import { ToolbarContext } from "../providers/ToolbarProvider";
@@ -14,6 +14,16 @@ import ButtonBorder from "./buttons/buttonBorder";
 import ButtonGrayscale from "./buttons/buttonGrayscale";
 import toolbar from "./toolbar.module.css";
 
+function ToolbarGroup({
+  className = "",
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const classes = `${toolbar.row} ${className}`;
+  return <div className={classes}>{children}</div>;
+}
 export function SideToolbar() {
   const inputBorderPixelsRef = useRef<HTMLInputElement | null>(null);
 
@@ -47,6 +57,119 @@ export function SideToolbar() {
 
   const { handleToGrayscale } = useContext(ToolbarContext);
 
+  function BorderPixelInputs({ maxRange }: { maxRange: string }) {
+    const id = useId();
+    const [inputBorderPixels, setInputBorderPixels] = useState(BorderPixels);
+    return (
+      <div className={sideToolbar.borderRangesRow}>
+        <input
+          type="number"
+          id={`${id}inputBorderPixelsN}`}
+          min="0"
+          value={inputBorderPixels}
+          onKeyUp={(e) => {
+            setInputBorderPixels((e.target as HTMLInputElement).value);
+            if (e.key === "Enter") {
+              handleInputBorderPixelsRangeMouseUp(
+                (e.target as HTMLInputElement).value
+              );
+            }
+          }}
+          onChange={(e) => {
+            setInputBorderPixels(e.target.value);
+          }}
+        ></input>
+        <div>px</div>
+        <input
+          type="range"
+          id={`${id}inputBorderPixels}`}
+          min="0"
+          max={maxRange}
+          value={inputBorderPixels}
+          onChange={(e) => setInputBorderPixels(e.target.value)}
+          onMouseUp={(e) =>
+            handleInputBorderPixelsRangeMouseUp(
+              (e.target as HTMLInputElement).value
+            )
+          }
+          onTouchEnd={(e) =>
+            handleInputBorderPixelsRangeMouseUp(
+              (e.target as HTMLInputElement).value
+            )
+          }
+        ></input>
+      </div>
+    );
+  }
+
+  function BorderPercentInputs({ maxRange }: { maxRange: string }) {
+    const id = useId();
+    const [inputBorderPercent, setInputBorderPercent] = useState(BorderPercent);
+    return (
+      <div className={sideToolbar.borderRangesRow}>
+        <input
+          type="number"
+          id={`${id}inputBorderPercentN}`}
+          min="0"
+          value={inputBorderPercent}
+          onKeyUp={(e) => {
+            setInputBorderPercent((e.target as HTMLInputElement).value);
+            if (e.key === "Enter") {
+              handleInputBorderPercentRangeMouseUp(
+                (e.target as HTMLInputElement).value
+              );
+            }
+          }}
+          onChange={(e) => {
+            setInputBorderPercent(e.target.value);
+          }}
+        ></input>
+        <div>%</div>
+        <input
+          type="range"
+          id={`${id}inputBorderPercent}`}
+          min="0"
+          max={maxRange}
+          value={inputBorderPercent}
+          onChange={(e) => setInputBorderPercent(e.target.value)}
+          onMouseUp={(e) =>
+            handleInputBorderPercentRangeMouseUp(
+              (e.target as HTMLInputElement).value
+            )
+          }
+          onTouchEnd={(e) =>
+            handleInputBorderPercentRangeMouseUp(
+              (e.target as HTMLInputElement).value
+            )
+          }
+        ></input>
+      </div>
+    );
+  }
+
+  function BorderColorInputs() {
+    const id = useId();
+    return (
+      <div className={sideToolbar.borderColorRow}>
+        <input
+          id={`${id}inputBorderColor`}
+          type="color"
+          list="true"
+          value={inputBorderColor}
+          onChange={handleInputBorderColor}
+        />
+
+        <input
+          id={`${id}inputBorderColorT`}
+          type="Text"
+          min="0"
+          value={inputBorderColor}
+          onChange={handleInputBorderColor}
+        ></input>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className={sideToolbar.toolbar__top}>
@@ -57,26 +180,28 @@ export function SideToolbar() {
       <div className={sideToolbar.groupContainer}>
         <details>
           <summary>Image Information</summary>
-          <div className={sideToolbar.toolbarRow}>
-            <div className={sideToolbar.imageInfoGroup}>
-              <div>
-                <strong>{originalFile?.name}</strong>
+          <div className={sideToolbar.bordersGroup}>
+            <div className={sideToolbar.toolbarRow}>
+              <div className={sideToolbar.imageInfoGroup}>
+                <div>
+                  <strong>{originalFile?.name}</strong>
+                </div>
+                {originalFile && (
+                  <div>
+                    {originalImg?.width} x {originalImg?.height} pixels
+                  </div>
+                )}
+                {originalFile && (
+                  <div>
+                    {Math.floor(originalFile.size / 1000).toString()} Kbytes
+                  </div>
+                )}
+                <img
+                  id="imagenPreview"
+                  style={{ maxWidth: "200px", maxHeight: "200px" }}
+                  ref={imagenPreviewRef}
+                ></img>
               </div>
-              {originalFile && (
-                <div>
-                  {originalImg?.width} x {originalImg?.height} pixels
-                </div>
-              )}
-              {originalFile && (
-                <div>
-                  {Math.floor(originalFile.size / 1000).toString()} Kbytes
-                </div>
-              )}
-              <img
-                id="imagenPreview"
-                style={{ maxWidth: "200px", maxHeight: "200px" }}
-                ref={imagenPreviewRef}
-              ></img>
             </div>
           </div>
         </details>
@@ -86,83 +211,19 @@ export function SideToolbar() {
           <div className={sideToolbar.bordersGroup}>
             <div className={sideToolbar.toolbarRow}>
               <div className={sideToolbar.rowTitle}>Color</div>
-              <div className={sideToolbar.borderColorRow}>
-                <input
-                  id="inputBorderColor"
-                  type="color"
-                  list="true"
-                  value={inputBorderColor}
-                  onChange={handleInputBorderColor}
-                />
-
-                <input
-                  id="inputBorderColorText"
-                  type="Text"
-                  min="0"
-                  value={inputBorderColor}
-                  onChange={handleInputBorderColor}
-                ></input>
-              </div>
+              <BorderColorInputs />
             </div>
             <div className={sideToolbar.toolbarRow}>
               <div className={sideToolbar.rowTitle}>Border in percent</div>
-              <div className={sideToolbar.borderRangesRow}>
-                <input
-                  type="number"
-                  id="inputBorderPercentN"
-                  name="inputBorderPercentN"
-                  min="0"
-                  value={BorderPercent}
-                  onKeyUp={handleInputBorderPercentText}
-                  onChange={handleInputBorderPercentText}
-                ></input>
-                <div>%</div>
-                <input
-                  type="range"
-                  id="inputBorderPercent"
-                  name="inputBorderPercent"
-                  min="0"
-                  max="100"
-                  value={BorderPercent} /* cambiar al pasar a */
-                  onChange={handleInputBorderPercent}
-                  onMouseUp={() =>
-                    handleInputBorderPercentRangeMouseUp(BorderPercent)
-                  }
-                  onTouchEnd={() =>
-                    handleInputBorderPercentRangeMouseUp(BorderPercent)
-                  }
-                ></input>
-              </div>
+              <BorderPercentInputs maxRange="100" />
             </div>
             <div className={sideToolbar.toolbarRow}>
               <div className={sideToolbar.rowTitle}>Border in pixels</div>
-              <div className={sideToolbar.borderRangesRow}>
-                <input
-                  type="number"
-                  id="inputBorderPixelsN"
-                  name="inputBorderPixelsN"
-                  min="0"
-                  value={BorderPixels}
-                  onKeyUp={handleInputBorderPixelsText}
-                  onChange={handleInputBorderPixelsText}
-                ></input>
-                <div>px</div>
-                <input
-                  type="range"
-                  id="inputBorderPixels"
-                  name="inputBorderPixels"
-                  min="0"
-                  ref={inputBorderPixelsRef}
-                  value={BorderPixels}
-                  onChange={handleInputBorderPixelsRange}
-                  onMouseUp={() =>
-                    handleInputBorderPixelsRangeMouseUp(BorderPixels)
-                  }
-                  onTouchEnd={() =>
-                    handleInputBorderPixelsRangeMouseUp(BorderPixels)
-                  }
-                ></input>
-              </div>
+              {originalImg?.src && (
+                <BorderPixelInputs
+                  maxRange={(originalImg.width / 2).toString()}
+                />
+              )}
             </div>
             <div className={sideToolbar.toolbarRow}>
               <div className={sideToolbar.rowButtons}>
@@ -177,23 +238,7 @@ export function SideToolbar() {
           <div className={sideToolbar.bordersGroup}>
             <div className={sideToolbar.toolbarRow}>
               <div className={sideToolbar.rowTitle}>Color</div>
-              <div className={sideToolbar.borderColorRow}>
-                <input
-                  id="inputBorderColor2"
-                  type="color"
-                  list="true"
-                  value={inputBorderColor}
-                  onChange={handleInputBorderColor}
-                />
-
-                <input
-                  id="inputBorderColorText2"
-                  type="Text"
-                  min="0"
-                  value={inputBorderColor}
-                  onChange={handleInputBorderColor}
-                ></input>
-              </div>
+              <BorderColorInputs />
             </div>
 
             <div className={sideToolbar.toolbarRow}>

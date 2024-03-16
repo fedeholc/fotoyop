@@ -17,7 +17,7 @@ import ButtonBorderPc from "./buttons/buttonBorderPc";
 import ButtonGrayscale from "./buttons/buttonGrayscale";
 import ButtonCanvas from "./buttons/buttonCanvas";
 
-export function ToolbarRow({
+function ToolbarRow({
   className = "",
   children,
 }: {
@@ -130,7 +130,7 @@ export function BottomToolbar() {
 
   //!TODO: ahora que funciona esto componentizado podría hacer lo de las labels en componente con useID
   //!   y hacer lo mismo con la side toolbar
-  function BorderPercentInputs() {
+  function BorderPercentInputs({ maxRange }: { maxRange: string }) {
     const id = useId();
 
     const [inputBorderPercent, setInputBorderPercent] = useState(BorderPercent);
@@ -139,6 +139,7 @@ export function BottomToolbar() {
         <input
           type="range"
           id={`${id}inputBorderPercent}`}
+          max={maxRange}
           min="0"
           value={inputBorderPercent}
           onChange={(e) => {
@@ -234,15 +235,18 @@ export function BottomToolbar() {
   }
 
   function BorderColorInputs() {
+    const id = useId();
     return (
       <>
         <input
+          id={`${id}inputBorderColorT`}
           type="Text"
           min="0"
           value={inputBorderColor}
           onChange={handleInputBorderColor}
         />
         <input
+          id={`${id}inputBorderColor`}
           type="color"
           list="true"
           value={inputBorderColor}
@@ -268,7 +272,7 @@ export function BottomToolbar() {
       {toolbarDisplay.borderPc && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
           <ButtonBack onClick={() => showToolbarRow(toolbarRow.border)} />
-          <BorderPercentInputs />
+          <BorderPercentInputs maxRange="100" />
           <ButtonApply
             onClick={() => {
               handleApplyBorder();
