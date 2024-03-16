@@ -179,6 +179,92 @@ export function SideToolbar() {
     );
   }
 
+  function ImageInfo() {
+    return (
+      <div className={sideToolbar.imageInfoGroup}>
+        <div>
+          <strong>{originalFile?.name}</strong>
+        </div>
+        {originalFile && (
+          <div>
+            {originalImg?.width} x {originalImg?.height} pixels
+          </div>
+        )}
+        {originalFile && (
+          <div>{Math.floor(originalFile.size / 1000).toString()} Kbytes</div>
+        )}
+        <img
+          id="imagenPreview"
+          style={{ maxWidth: "200px", maxHeight: "200px" }}
+          ref={imagenPreviewRef}
+        ></img>
+      </div>
+    );
+  }
+  function ChangesHistory() {
+    return (
+      <div className={`${sideToolbar.changesGroup} ${sideToolbar.toolbarRow}`}>
+        {undoImageList && (
+          <div className={sideToolbar.changesList}>
+            {undoImageList.toReversed().map((img, index) => {
+              return (
+                <span key={index}>
+                  <img src={`${imageDataToBase64(img)}`.toString()} />
+                </span>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  function AspectRatioInputs() {
+    return (
+      <>
+        <div className={sideToolbar.canvasCustomInputs}>
+          <label htmlFor="aspectRatioPresets">Presets</label>
+          <select
+            className={toolbar.aspectRatioInput}
+            value={selectAspectRatio}
+            id="aspectRatioPresets"
+            name="aspectRatioPresets"
+            onChange={handleSelectAspectRatio}
+          >
+            <option value="1:1">1:1</option>
+            <option value="16:9">16:9</option>
+            <option value="4:3">4:3</option>
+            <option value="3:4">3:4</option>
+            <option value="9:16">9:16</option>
+            <option value="">Custom</option>
+          </select>
+        </div>
+        <div className={sideToolbar.canvasCustomInputs}>
+          <label>Custom</label>
+          <input
+            className={toolbar.aspectRatioInput}
+            type="number"
+            name="inputAspectRatioX"
+            min="0"
+            value={inputAspectRatioX}
+            onKeyUp={handleInputAspectRatioX}
+            onChange={handleInputAspectRatioX}
+          ></input>
+          <span>: </span>
+          <input
+            className={toolbar.aspectRatioInput}
+            type="number"
+            name="inputAspectRatioY"
+            min="0"
+            value={inputAspectRatioY}
+            onKeyUp={handleInputAspectRatioY}
+            onChange={handleInputAspectRatioY}
+          ></input>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <div className={sideToolbar.toolbar__top}>
@@ -189,26 +275,7 @@ export function SideToolbar() {
       <div className={sideToolbar.groupContainer}>
         <ToolbarGroup groupTitle="Image Information">
           <div className={sideToolbar.toolbarRow}>
-            <div className={sideToolbar.imageInfoGroup}>
-              <div>
-                <strong>{originalFile?.name}</strong>
-              </div>
-              {originalFile && (
-                <div>
-                  {originalImg?.width} x {originalImg?.height} pixels
-                </div>
-              )}
-              {originalFile && (
-                <div>
-                  {Math.floor(originalFile.size / 1000).toString()} Kbytes
-                </div>
-              )}
-              <img
-                id="imagenPreview"
-                style={{ maxWidth: "200px", maxHeight: "200px" }}
-                ref={imagenPreviewRef}
-              ></img>
-            </div>
+            <ImageInfo />
           </div>
         </ToolbarGroup>
 
@@ -243,46 +310,8 @@ export function SideToolbar() {
           </div>
 
           <div className={sideToolbar.toolbarRow}>
-            <div className={sideToolbar.rowTitle}>Aspect Raio</div>
-            <div className={sideToolbar.canvasCustomInputs}>
-              <label htmlFor="aspectRatioPresets">Presets</label>
-              <select
-                className={toolbar.aspectRatioInput}
-                value={selectAspectRatio}
-                id="aspectRatioPresets"
-                name="aspectRatioPresets"
-                onChange={handleSelectAspectRatio}
-              >
-                <option value="1:1">1:1</option>
-                <option value="16:9">16:9</option>
-                <option value="4:3">4:3</option>
-                <option value="3:4">3:4</option>
-                <option value="9:16">9:16</option>
-                <option value="">Custom</option>
-              </select>
-            </div>
-            <div className={sideToolbar.canvasCustomInputs}>
-              <label>Custom</label>
-              <input
-                className={toolbar.aspectRatioInput}
-                type="number"
-                name="inputAspectRatioX"
-                min="0"
-                value={inputAspectRatioX}
-                onKeyUp={handleInputAspectRatioX}
-                onChange={handleInputAspectRatioX}
-              ></input>
-              <span>: </span>
-              <input
-                className={toolbar.aspectRatioInput}
-                type="number"
-                name="inputAspectRatioY"
-                min="0"
-                value={inputAspectRatioY}
-                onKeyUp={handleInputAspectRatioY}
-                onChange={handleInputAspectRatioY}
-              ></input>
-            </div>
+            <div className={sideToolbar.rowTitle}>Aspect Ratio</div>
+            <AspectRatioInputs />
           </div>
           <div className={sideToolbar.toolbarRow}>
             <div className={sideToolbar.rowButtons}>
@@ -303,21 +332,7 @@ export function SideToolbar() {
           </div>
         </ToolbarGroup>
         <ToolbarGroup groupTitle="Changes History">
-          <div
-            className={`${sideToolbar.changesGroup} ${sideToolbar.toolbarRow}`}
-          >
-            {undoImageList && (
-              <div className={sideToolbar.changesList}>
-                {undoImageList.toReversed().map((img, index) => {
-                  return (
-                    <span key={index}>
-                      <img src={`${imageDataToBase64(img)}`.toString()} />
-                    </span>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+          <ChangesHistory />
         </ToolbarGroup>
       </div>
 
