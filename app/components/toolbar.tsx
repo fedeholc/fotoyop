@@ -1,4 +1,4 @@
-import { useState, useRef, useContext, useEffect } from "react";
+import { useState, useRef, useContext, useEffect, useId } from "react";
 import toolbar from "./toolbar.module.css";
 import { BorderContext } from "../providers/BorderProvider";
 import { ImageContext } from "../providers/ImageProvider";
@@ -84,14 +84,14 @@ export function BottomToolbar() {
   //!sería bueno poder ponerlo en componente para poder armarlo con una label y usando useId, de modo de no repetir el id en el html (no en este caso que creo que no se repite pero en el input de color sí... aunque habría que ver si el input de color no debería modificar un state distinto según donde se use)
 
   function BorderPixelInputs({ maxRange }: { maxRange: string }) {
+    const id = useId();
     const [inputBorderPixels, setInputBorderPixelsTest] =
       useState(BorderPixels);
     return (
       <div className={toolbar.borderRanges}>
         <input
           type="range"
-          id="inputBorderPixels"
-          name="inputBorderPixels"
+          id={`${id}inputBorderPixels}`}
           min="0"
           max={maxRange}
           value={inputBorderPixels}
@@ -105,8 +105,7 @@ export function BottomToolbar() {
         ></input>
         <input
           type="number"
-          id="inputBorderPixelsN"
-          name="inputBorderPixelsN"
+          id={`${id}inputBorderPixelsN}`}
           min="0"
           value={inputBorderPixels}
           onKeyUp={handleInputBorderPixelsText}
@@ -120,13 +119,15 @@ export function BottomToolbar() {
   //!TODO: ahora que funciona esto componentizado podría hacer lo de las labels en componente con useID
   //!   y hacer lo mismo con la side toolbar
   function BorderPercentInputs() {
+    const id = useId();
+
     const [inputBorderPercent, setInputBorderPercentTest] =
       useState(BorderPercent);
     return (
       <div className={toolbar.borderRanges}>
         <input
           type="range"
-          id="inputBorderPercent"
+          id={`${id}inputBorderPercent}`}
           min="0"
           value={inputBorderPercent}
           onMouseUp={() =>
@@ -139,7 +140,7 @@ export function BottomToolbar() {
         ></input>
         <input
           type="number"
-          id="inputBorderPercentN"
+          id={`${id}inputBorderPercentN}`}
           min="0"
           value={inputBorderPercent}
           onKeyUp={handleInputBorderPercentText}
@@ -273,7 +274,6 @@ export function BottomToolbar() {
             }}
           ></ButtonApply>
           <ButtonDiscard onClick={handleDiscardCanvas}></ButtonDiscard>
-        
         </ToolbarRow>
       )}
 
