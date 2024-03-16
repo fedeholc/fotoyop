@@ -16,14 +16,23 @@ import toolbar from "./toolbar.module.css";
 
 function ToolbarGroup({
   className = "",
+  groupTitle = "",
   children,
 }: {
   className?: string;
+  groupTitle?: string;
   children: React.ReactNode;
 }) {
-  const classes = `${toolbar.row} ${className}`;
-  return <div className={classes}>{children}</div>;
+  const classes = `${sideToolbar.bordersGroup} ${className}`;
+  return (
+    <details>
+      <summary>{groupTitle}</summary>
+
+      <div className={classes}>{children}</div>
+    </details>
+  );
 }
+
 export function SideToolbar() {
   const inputBorderPixelsRef = useRef<HTMLInputElement | null>(null);
 
@@ -178,133 +187,122 @@ export function SideToolbar() {
         <ButtonDownload></ButtonDownload>
       </div>
       <div className={sideToolbar.groupContainer}>
-        <details>
-          <summary>Image Information</summary>
-          <div className={sideToolbar.bordersGroup}>
-            <div className={sideToolbar.toolbarRow}>
-              <div className={sideToolbar.imageInfoGroup}>
+        <ToolbarGroup groupTitle="Image Information">
+          <div className={sideToolbar.toolbarRow}>
+            <div className={sideToolbar.imageInfoGroup}>
+              <div>
+                <strong>{originalFile?.name}</strong>
+              </div>
+              {originalFile && (
                 <div>
-                  <strong>{originalFile?.name}</strong>
+                  {originalImg?.width} x {originalImg?.height} pixels
                 </div>
-                {originalFile && (
-                  <div>
-                    {originalImg?.width} x {originalImg?.height} pixels
-                  </div>
-                )}
-                {originalFile && (
-                  <div>
-                    {Math.floor(originalFile.size / 1000).toString()} Kbytes
-                  </div>
-                )}
-                <img
-                  id="imagenPreview"
-                  style={{ maxWidth: "200px", maxHeight: "200px" }}
-                  ref={imagenPreviewRef}
-                ></img>
-              </div>
-            </div>
-          </div>
-        </details>
-
-        <details>
-          <summary>Borders</summary>
-          <div className={sideToolbar.bordersGroup}>
-            <div className={sideToolbar.toolbarRow}>
-              <div className={sideToolbar.rowTitle}>Color</div>
-              <BorderColorInputs />
-            </div>
-            <div className={sideToolbar.toolbarRow}>
-              <div className={sideToolbar.rowTitle}>Border in percent</div>
-              <BorderPercentInputs maxRange="100" />
-            </div>
-            <div className={sideToolbar.toolbarRow}>
-              <div className={sideToolbar.rowTitle}>Border in pixels</div>
-              {originalImg?.src && (
-                <BorderPixelInputs
-                  maxRange={(originalImg.width / 2).toString()}
-                />
               )}
-            </div>
-            <div className={sideToolbar.toolbarRow}>
-              <div className={sideToolbar.rowButtons}>
-                <ButtonApply onClick={handleApplyBorder}></ButtonApply>
-                <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
-              </div>
+              {originalFile && (
+                <div>
+                  {Math.floor(originalFile.size / 1000).toString()} Kbytes
+                </div>
+              )}
+              <img
+                id="imagenPreview"
+                style={{ maxWidth: "200px", maxHeight: "200px" }}
+                ref={imagenPreviewRef}
+              ></img>
             </div>
           </div>
-        </details>
-        <details>
-          <summary>Canvas</summary>
-          <div className={sideToolbar.bordersGroup}>
-            <div className={sideToolbar.toolbarRow}>
-              <div className={sideToolbar.rowTitle}>Color</div>
-              <BorderColorInputs />
-            </div>
+        </ToolbarGroup>
 
-            <div className={sideToolbar.toolbarRow}>
-              <div className={sideToolbar.rowTitle}>Aspect Raio</div>
-              <div className={sideToolbar.canvasCustomInputs}>
-                <label htmlFor="aspectRatioPresets">Presets</label>
-                <select
-                  className={toolbar.aspectRatioInput}
-                  value={selectAspectRatio}
-                  id="aspectRatioPresets"
-                  name="aspectRatioPresets"
-                  onChange={handleSelectAspectRatio}
-                >
-                  <option value="1:1">1:1</option>
-                  <option value="16:9">16:9</option>
-                  <option value="4:3">4:3</option>
-                  <option value="3:4">3:4</option>
-                  <option value="9:16">9:16</option>
-                  <option value="">Custom</option>
-                </select>
-              </div>
-              <div className={sideToolbar.canvasCustomInputs}>
-                <label>Custom</label>
-                <input
-                  className={toolbar.aspectRatioInput}
-                  type="number"
-                  name="inputAspectRatioX"
-                  min="0"
-                  value={inputAspectRatioX}
-                  onKeyUp={handleInputAspectRatioX}
-                  onChange={handleInputAspectRatioX}
-                ></input>
-                <span>: </span>
-                <input
-                  className={toolbar.aspectRatioInput}
-                  type="number"
-                  name="inputAspectRatioY"
-                  min="0"
-                  value={inputAspectRatioY}
-                  onKeyUp={handleInputAspectRatioY}
-                  onChange={handleInputAspectRatioY}
-                ></input>
-              </div>
-            </div>
-            <div className={sideToolbar.toolbarRow}>
-              <div className={sideToolbar.rowButtons}>
-                <ButtonApply
-                  onClick={() => {
-                    handleApplyCanvas();
-                  }}
-                ></ButtonApply>
-                <ButtonDiscard onClick={handleDiscardCanvas}></ButtonDiscard>
-              </div>
+        <ToolbarGroup groupTitle="Borders">
+          <div className={sideToolbar.toolbarRow}>
+            <div className={sideToolbar.rowTitle}>Color</div>
+            <BorderColorInputs />
+          </div>
+          <div className={sideToolbar.toolbarRow}>
+            <div className={sideToolbar.rowTitle}>Border in percent</div>
+            <BorderPercentInputs maxRange="100" />
+          </div>
+          <div className={sideToolbar.toolbarRow}>
+            <div className={sideToolbar.rowTitle}>Border in pixels</div>
+            {originalImg?.src && (
+              <BorderPixelInputs
+                maxRange={(originalImg.width / 2).toString()}
+              />
+            )}
+          </div>
+          <div className={sideToolbar.toolbarRow}>
+            <div className={sideToolbar.rowButtons}>
+              <ButtonApply onClick={handleApplyBorder}></ButtonApply>
+              <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
             </div>
           </div>
-        </details>
-        <details>
-          <summary>Grayscale</summary>
+        </ToolbarGroup>
+        <ToolbarGroup groupTitle="Canvas">
+          <div className={sideToolbar.toolbarRow}>
+            <div className={sideToolbar.rowTitle}>Color</div>
+            <BorderColorInputs />
+          </div>
+
+          <div className={sideToolbar.toolbarRow}>
+            <div className={sideToolbar.rowTitle}>Aspect Raio</div>
+            <div className={sideToolbar.canvasCustomInputs}>
+              <label htmlFor="aspectRatioPresets">Presets</label>
+              <select
+                className={toolbar.aspectRatioInput}
+                value={selectAspectRatio}
+                id="aspectRatioPresets"
+                name="aspectRatioPresets"
+                onChange={handleSelectAspectRatio}
+              >
+                <option value="1:1">1:1</option>
+                <option value="16:9">16:9</option>
+                <option value="4:3">4:3</option>
+                <option value="3:4">3:4</option>
+                <option value="9:16">9:16</option>
+                <option value="">Custom</option>
+              </select>
+            </div>
+            <div className={sideToolbar.canvasCustomInputs}>
+              <label>Custom</label>
+              <input
+                className={toolbar.aspectRatioInput}
+                type="number"
+                name="inputAspectRatioX"
+                min="0"
+                value={inputAspectRatioX}
+                onKeyUp={handleInputAspectRatioX}
+                onChange={handleInputAspectRatioX}
+              ></input>
+              <span>: </span>
+              <input
+                className={toolbar.aspectRatioInput}
+                type="number"
+                name="inputAspectRatioY"
+                min="0"
+                value={inputAspectRatioY}
+                onKeyUp={handleInputAspectRatioY}
+                onChange={handleInputAspectRatioY}
+              ></input>
+            </div>
+          </div>
+          <div className={sideToolbar.toolbarRow}>
+            <div className={sideToolbar.rowButtons}>
+              <ButtonApply
+                onClick={() => {
+                  handleApplyCanvas();
+                }}
+              ></ButtonApply>
+              <ButtonDiscard onClick={handleDiscardCanvas}></ButtonDiscard>
+            </div>
+          </div>
+        </ToolbarGroup>
+        <ToolbarGroup groupTitle="GrayScale">
           <div className={sideToolbar.toolbarRow}>
             <div className={sideToolbar.rowButtons}>
               <ButtonGrayscale onClick={handleToGrayscale}></ButtonGrayscale>
             </div>
           </div>
-        </details>
-        <details>
-          <summary>Changes history</summary>
+        </ToolbarGroup>
+        <ToolbarGroup groupTitle="Changes History">
           <div
             className={`${sideToolbar.changesGroup} ${sideToolbar.toolbarRow}`}
           >
@@ -320,7 +318,7 @@ export function SideToolbar() {
               </div>
             )}
           </div>
-        </details>
+        </ToolbarGroup>
       </div>
 
       <br />
