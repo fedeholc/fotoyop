@@ -179,7 +179,7 @@ export function SideToolbar() {
               <div className={sideToolbar.rowTitle}>Color</div>
               <div className={sideToolbar.borderColorRow}>
                 <input
-                  id="inputBorderColor"
+                  id="inputBorderColor2"
                   type="color"
                   list="true"
                   value={inputBorderColor}
@@ -187,7 +187,7 @@ export function SideToolbar() {
                 />
 
                 <input
-                  id="inputBorderColorText"
+                  id="inputBorderColorText2"
                   type="Text"
                   min="0"
                   value={inputBorderColor}

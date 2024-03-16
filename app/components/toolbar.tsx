@@ -61,8 +61,8 @@ export function BottomToolbar() {
     handleInputAspectRatioX,
     handleInputAspectRatioY,
     handleInputBorderColor,
-    handleInputBorderPixelsRange,
-    handleInputBorderPixelsRangeMouseUp,
+    handleInputBorderPixelsRange, //TODO: si no se usan quitar y borrar del provider
+    handleInputBorderPixelsRangeMouseUp, //todo: renombrar
     handleInputBorderPixelsText,
     handleInputBorderPercentRange,
     handleInputBorderPercentRangeMouseUp,
@@ -85,8 +85,7 @@ export function BottomToolbar() {
 
   function BorderPixelInputs({ maxRange }: { maxRange: string }) {
     const id = useId();
-    const [inputBorderPixels, setInputBorderPixelsTest] =
-      useState(BorderPixels);
+    const [inputBorderPixels, setInputBorderPixels] = useState(BorderPixels);
     return (
       <div className={toolbar.borderRanges}>
         <input
@@ -95,12 +94,16 @@ export function BottomToolbar() {
           min="0"
           max={maxRange}
           value={inputBorderPixels}
-          onChange={(e) => setInputBorderPixelsTest(e.target.value)}
-          onMouseUp={() =>
-            handleInputBorderPixelsRangeMouseUp(inputBorderPixels)
+          onChange={(e) => setInputBorderPixels(e.target.value)}
+          onMouseUp={(e) =>
+            handleInputBorderPixelsRangeMouseUp(
+              (e.target as HTMLInputElement).value
+            )
           }
-          onTouchEnd={() =>
-            handleInputBorderPixelsRangeMouseUp(inputBorderPixels)
+          onTouchEnd={(e) =>
+            handleInputBorderPixelsRangeMouseUp(
+              (e.target as HTMLInputElement).value
+            )
           }
         ></input>
         <input
@@ -108,8 +111,17 @@ export function BottomToolbar() {
           id={`${id}inputBorderPixelsN}`}
           min="0"
           value={inputBorderPixels}
-          onKeyUp={handleInputBorderPixelsText}
-          onChange={handleInputBorderPixelsText}
+          onKeyUp={(e) => {
+            setInputBorderPixels((e.target as HTMLInputElement).value);
+            if (e.key === "Enter") {
+              handleInputBorderPixelsRangeMouseUp(
+                (e.target as HTMLInputElement).value
+              );
+            }
+          }}
+          onChange={(e) => {
+            setInputBorderPixels(e.target.value);
+          }}
         ></input>{" "}
         <div className="toolbar_row__units">px</div>{" "}
       </div>
@@ -129,6 +141,9 @@ export function BottomToolbar() {
           id={`${id}inputBorderPercent}`}
           min="0"
           value={inputBorderPercent}
+          onChange={(e) => {
+            setInputBorderPercent(e.target.value);
+          }}
           onMouseUp={(e) =>
             handleInputBorderPercentRangeMouseUp(
               (e.target as HTMLInputElement).value
@@ -139,9 +154,6 @@ export function BottomToolbar() {
               (e.target as HTMLInputElement).value
             )
           }
-          onChange={(e) => {
-            setInputBorderPercent(e.target.value);
-          }}
         ></input>
         <input
           type="number"
@@ -221,22 +233,25 @@ export function BottomToolbar() {
     );
   }
 
-  const BorderColorInputs = (
-    <>
-      <input
-        type="Text"
-        min="0"
-        value={inputBorderColor}
-        onChange={handleInputBorderColor}
-      />
-      <input
-        type="color"
-        list="true"
-        value={inputBorderColor}
-        onChange={handleInputBorderColor}
-      />
-    </>
-  );
+  function BorderColorInputs() {
+    return (
+      <>
+        <input
+          type="Text"
+          min="0"
+          value={inputBorderColor}
+          onChange={handleInputBorderColor}
+        />
+        <input
+          type="color"
+          list="true"
+          value={inputBorderColor}
+          onChange={handleInputBorderColor}
+        />
+      </>
+    );
+  }
+
   return (
     <>
       {toolbarDisplay.borderPx && originalImg?.src && (
@@ -244,7 +259,6 @@ export function BottomToolbar() {
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.border)}
           ></ButtonBack>
-          {/*  {BorderPixelInputs} */}
           <BorderPixelInputs maxRange={(originalImg.width / 2).toString()} />
           <ButtonApply onClick={handleApplyBorder}></ButtonApply>
           <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
@@ -269,7 +283,7 @@ export function BottomToolbar() {
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.transform)}
           ></ButtonBack>
-          {BorderColorInputs}
+          <BorderColorInputs />
           <ButtonBorderPc
             onClick={() => showToolbarRow(toolbarRow.borderPc)}
           ></ButtonBorderPc>
@@ -284,12 +298,10 @@ export function BottomToolbar() {
             onClick={() => showToolbarRow(toolbarRow.transform)}
           ></ButtonBack>
           <span></span>
-          {/* separador para generar gap */}
-
-          {BorderColorInputs}
+          {/* el span es un separador para generar gap */}
+          <BorderColorInputs />
           <AspectRatioPresets />
           <AspectRatioInputs />
-
           <ButtonApply
             onClick={() => {
               handleApplyCanvas();
