@@ -121,8 +121,7 @@ export function BottomToolbar() {
   function BorderPercentInputs() {
     const id = useId();
 
-    const [inputBorderPercent, setInputBorderPercentTest] =
-      useState(BorderPercent);
+    const [inputBorderPercent, setInputBorderPercent] = useState(BorderPercent);
     return (
       <div className={toolbar.borderRanges}>
         <input
@@ -130,74 +129,97 @@ export function BottomToolbar() {
           id={`${id}inputBorderPercent}`}
           min="0"
           value={inputBorderPercent}
-          onMouseUp={() =>
-            handleInputBorderPercentRangeMouseUp(inputBorderPercent)
+          onMouseUp={(e) =>
+            handleInputBorderPercentRangeMouseUp(
+              (e.target as HTMLInputElement).value
+            )
           }
-          onTouchEnd={() =>
-            handleInputBorderPercentRangeMouseUp(inputBorderPercent)
+          onTouchEnd={(e) =>
+            handleInputBorderPercentRangeMouseUp(
+              (e.target as HTMLInputElement).value
+            )
           }
-          onChange={(e) => setInputBorderPercentTest(e.target.value)}
+          onChange={(e) => {
+            setInputBorderPercent(e.target.value);
+          }}
         ></input>
         <input
           type="number"
           id={`${id}inputBorderPercentN}`}
           min="0"
           value={inputBorderPercent}
-          onKeyUp={handleInputBorderPercentText}
-          onChange={handleInputBorderPercentText}
+          onKeyUp={(e) => {
+            setInputBorderPercent((e.target as HTMLInputElement).value);
+            if (e.key === "Enter") {
+              handleInputBorderPercentRangeMouseUp(
+                (e.target as HTMLInputElement).value
+              );
+            }
+          }}
+          onChange={(e) => {
+            setInputBorderPercent(e.target.value);
+          }}
         ></input>
         <div className="toolbar_row__units">%</div>
       </div>
     );
   }
 
-  const AspectRatioInputs = (
-    <div className={toolbar.canvasInputs}>
-      <label>Custom</label>
-      <input
-        className={toolbar.aspectRatioInput}
-        type="number"
-        name="inputAspectRatioX"
-        min="0"
-        value={inputAspectRatioX}
-        onKeyUp={handleInputAspectRatioX}
-        onChange={handleInputAspectRatioX}
-      ></input>
-      <span>: </span>
-      <input
-        className={toolbar.aspectRatioInput}
-        type="number"
-        name="inputAspectRatioY"
-        min="0"
-        value={inputAspectRatioY}
-        onKeyUp={handleInputAspectRatioY}
-        onChange={handleInputAspectRatioY}
-      ></input>
-    </div>
-  );
-  const AspectRatioPresets = (
-    <div className={toolbar.canvasInputs}>
-      <label htmlFor="aspectRatioPresets">
-        Aspect
-        <br />
-        Ratio
-      </label>
-      <select
-        className={toolbar.aspectRatioInput}
-        value={selectAspectRatio}
-        id="aspectRatioPresets"
-        name="aspectRatioPresets"
-        onChange={handleSelectAspectRatio}
-      >
-        <option value="1:1">1:1</option>
-        <option value="16:9">16:9</option>
-        <option value="4:3">4:3</option>
-        <option value="3:4">3:4</option>
-        <option value="9:16">9:16</option>
-        <option value="">Custom</option>
-      </select>
-    </div>
-  );
+  //? A diferencia de lo que sucede con los componentes de inputs de borde, acá no puedo hacer que el state del valor sea propio del componente. En el otro podía porque ese valor se pasaba a un state general via el mouseUp, por lo que cuando era hora de aplicar el cambio se hacía con ese valor que ya se había pasado. Acá como no hay mouseUp sino que luego de modificarse los inputs nada cambia hasta que no se dispara el aplicar cambios, no habría forma de que el state local actualice al global. Hay que dejarlo así, o hay que hacer un componente que incluya los inputs junto con el aplicar cambios para que el state este a ese nivel. Modificar el de bordes no se puede porque el state local es lo que evita que se frene el slider por un rerender disparado por la modificacion del state global (todo esto para mantener la opción de "preview" del borde antes de aplicar cambios... otra posibilidad sería renuncia a esa funcionalidad)
+
+  function AspectRatioInputs() {
+    const id = useId();
+
+    return (
+      <div className={toolbar.canvasInputs}>
+        <label>Custom</label>
+        <input
+          className={toolbar.aspectRatioInput}
+          type="number"
+          id={`${id}inputAspectRatioX`}
+          min="0"
+          value={inputAspectRatioX}
+          onKeyUp={handleInputAspectRatioX}
+          onChange={handleInputAspectRatioX}
+        ></input>
+        <span>: </span>
+        <input
+          className={toolbar.aspectRatioInput}
+          type="number"
+          id={`${id}inputAspectRatioY`}
+          min="0"
+          value={inputAspectRatioY}
+          onKeyUp={handleInputAspectRatioY}
+          onChange={handleInputAspectRatioY}
+        ></input>
+      </div>
+    );
+  }
+  function AspectRatioPresets() {
+    const id = useId();
+    return (
+      <div className={toolbar.canvasInputs}>
+        <label htmlFor={`${id}inputAspectRatioPresets`}>
+          Aspect
+          <br />
+          Ratio
+        </label>
+        <select
+          className={toolbar.aspectRatioInput}
+          value={selectAspectRatio}
+          id={`${id}inputAspectRatioPresets`}
+          onChange={handleSelectAspectRatio}
+        >
+          <option value="1:1">1:1</option>
+          <option value="16:9">16:9</option>
+          <option value="4:3">4:3</option>
+          <option value="3:4">3:4</option>
+          <option value="9:16">9:16</option>
+          <option value="">Custom</option>
+        </select>
+      </div>
+    );
+  }
 
   const BorderColorInputs = (
     <>
@@ -265,8 +287,8 @@ export function BottomToolbar() {
           {/* separador para generar gap */}
 
           {BorderColorInputs}
-          {AspectRatioPresets}
-          {AspectRatioInputs}
+          <AspectRatioPresets />
+          <AspectRatioInputs />
 
           <ButtonApply
             onClick={() => {

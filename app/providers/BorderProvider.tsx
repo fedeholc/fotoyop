@@ -117,22 +117,6 @@ export default function BorderProvider({
     setInputAspectRatioX(0);
     setInputAspectRatioY(0);
   }
-  /**
-   * Handler del Mouse Up del input de rango de borde en porcentaje.
-   *
-   */
-  function handleInputBorderPercentRangeMouseUp(valor: string) {
-    setBorderPixels("0");
-    setBorderPercent(valor);
-    handleBorderChange(
-      {
-        BorderColor: inputBorderColor,
-        BorderPixels: "0",
-        BorderPercent: valor,
-      },
-      smallCanvasRef
-    );
-  }
 
   /**
    *
@@ -215,6 +199,7 @@ export default function BorderProvider({
       | React.ChangeEvent<HTMLInputElement>
       | React.KeyboardEvent<HTMLInputElement>
   ) {
+
     setBorderPixels("0");
     setBorderPercent((event.target as HTMLInputElement).value);
     handleBorderChange(
@@ -222,6 +207,24 @@ export default function BorderProvider({
         BorderColor: inputBorderColor,
         BorderPixels: "0",
         BorderPercent: (event.target as HTMLInputElement).value,
+      },
+      smallCanvasRef
+    );
+  }
+  /**
+   * Handler del Mouse Up del input de rango de borde en porcentaje.
+   *
+   */
+  function handleInputBorderPercentRangeMouseUp(valor: string) {
+    setBorderPixels("0");
+    setBorderPercent(valor);
+                    console.log(valor);
+
+    handleBorderChange(
+      {
+        BorderColor: inputBorderColor,
+        BorderPixels: "0",
+        BorderPercent: valor,
       },
       smallCanvasRef
     );
@@ -338,7 +341,7 @@ export default function BorderProvider({
 
     // Si ya se vienen haciendo modificaciones al canvas (aún no aplicadas) se descarta la última modificación y se agrega la nueva.
     //todo: ver, esto no se va a aplicar creo, no va a haber modificaciones sin aplicar como en borde
-    if (currentProcess === ImageProcess.Border && undoImageList.length > 1) {
+    if (currentProcess === ImageProcess.Canvas && undoImageList.length > 1) {
       const newUndoImageList = [...undoImageList];
       newUndoImageList.pop();
       drawImageDataOnCanvas(
