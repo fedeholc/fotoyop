@@ -1,20 +1,12 @@
-import {
-  createContext,
-  useState,
-  Dispatch,
-  SetStateAction,
-  useContext,
-} from "react";
+import { createContext, useContext } from "react";
 import { ImageContext } from "./ImageProvider";
 import { ProcessContext } from "./ProcessProvider";
 import { BorderContext } from "./BorderProvider";
-import { BorderOptionsType } from "../types";
-import { mainCanvasConfig } from "../App";
+
 import { ImageProcess } from "../types";
 import {
   applyProcessFunction,
   drawImageDataOnCanvas,
-  imgAddBorder,
   imgToBW,
   processToNewImageData,
   processImgToCanvas,
@@ -52,22 +44,10 @@ export default function ToolbarProvider({
   } = useContext(ProcessContext);
 
   const {
-    inputBorderColor,
     setInputBorderColor,
-    BorderPixels,
     setBorderPixels,
-    BorderPercent,
     setBorderPercent,
-    handleInputBorderColor,
-    handleInputBorderPixelsRange,
-    handleBorderChange,
-    handleInputBorderPixelsRangeMouseUp,
-    handleInputBorderPixelsText,
-    handleInputBorderPercentText,
-    handleInputBorderPercent,
-    handleInputBorderPercentRangeMouseUp,
     handleApplyBorder,
-    handleDiscardBorder,
   } = useContext(BorderContext);
 
   /**

@@ -46,31 +46,15 @@ export const BorderContext = createContext({
   handleInputBorderColor: (() => {}) as (
     e: React.ChangeEvent<HTMLInputElement>
   ) => void,
-  handleInputBorderPixelsRange: (() => {}) as (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => void,
-  handleInputBorderPercentRange: (() => {}) as (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => void,
+ 
   handleBorderChange: (() => {}) as (
     borderOptions: BorderOptionsType,
     smallCanvasRef: React.RefObject<HTMLCanvasElement>
   ) => void,
-  handleInputBorderPixelsRangeMouseUp: (() => {}) as (valor: string) => void,
-  handleInputBorderPercentRangeMouseUp: (() => {}) as (valor: string) => void,
-  handleInputBorderPixelsText: (() => {}) as (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.KeyboardEvent<HTMLInputElement>
-  ) => void,
-  handleInputBorderPercent: (() => {}) as (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => void,
-  handleInputBorderPercentText: (() => {}) as (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.KeyboardEvent<HTMLInputElement>
-  ) => void,
+  handleBorderPixelsRange: (() => {}) as (valor: string) => void,
+  handleBorderPercentRange: (() => {}) as (valor: string) => void,
+ 
+ 
   handleApplyBorder: () => {},
   handleDiscardBorder: () => {},
   handleDiscardCanvas: () => {},
@@ -117,17 +101,7 @@ export default function BorderProvider({
     setInputAspectRatioX(0);
     setInputAspectRatioY(0);
   }
-
-  /**
-   *
-   * @param event - evento del input de rango de borde en porcentaje
-   */
-  function handleInputBorderPercent(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
-    setBorderPixels("0");
-    setBorderPercent(event.target.value);
-  }
+ 
 
   function handleInputBorderColor(e: React.ChangeEvent<HTMLInputElement>) {
     setInputBorderColor(e.target.value);
@@ -151,74 +125,17 @@ export default function BorderProvider({
 
     setInputAspectRatioY(parseInt((e.target as HTMLInputElement).value));
   }
+ 
+ 
 
-  /**
-   *
-   * @param event - evento del input box de borde en pixels
-   */
-  function handleInputBorderPixelsText(
-    event:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.KeyboardEvent<HTMLInputElement>
-  ) {
-    setBorderPercent("0");
-    setBorderPixels((event.target as HTMLInputElement).value);
-    handleBorderChange(
-      {
-        BorderColor: inputBorderColor,
-        BorderPixels: (event.target as HTMLInputElement).value,
-        BorderPercent: "0",
-      },
-      smallCanvasRef
-    );
-  }
-  /**
-   *
-   * @param event - evento del input de rango de borde en pixels
-   */
-  function handleInputBorderPixelsRange(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
-    setBorderPercent("0");
-    setBorderPixels(event.target.value);
-  }
-
-  function handleInputBorderPercentRange(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
-    setBorderPixels("0");
-    setBorderPercent(event.target.value);
-  }
-
-  /**
-   *
-   * @param event - evento del input box de borde en porcentaje
-   */
-  function handleInputBorderPercentText(
-    event:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.KeyboardEvent<HTMLInputElement>
-  ) {
-
-    setBorderPixels("0");
-    setBorderPercent((event.target as HTMLInputElement).value);
-    handleBorderChange(
-      {
-        BorderColor: inputBorderColor,
-        BorderPixels: "0",
-        BorderPercent: (event.target as HTMLInputElement).value,
-      },
-      smallCanvasRef
-    );
-  }
+ 
   /**
    * Handler del Mouse Up del input de rango de borde en porcentaje.
    *
    */
-  function handleInputBorderPercentRangeMouseUp(valor: string) {
+  function handleBorderPercentRange(valor: string) {
     setBorderPixels("0");
     setBorderPercent(valor);
-                    console.log(valor);
 
     handleBorderChange(
       {
@@ -234,10 +151,9 @@ export default function BorderProvider({
    * Handler del Mouse Up del input de rango de borde en pixels.
    * Al mover el range, cuando se suelta el botón del mouse, se aplica el borde.
    */
-  function handleInputBorderPixelsRangeMouseUp(valor: string) {
+  function handleBorderPixelsRange(valor: string) {
     setBorderPercent("0");
     setBorderPixels(valor);
-    console.log("LLAMO A HANDLE BORDER CHANGE", valor);
     handleBorderChange(
       {
         BorderColor: inputBorderColor,
@@ -471,14 +387,11 @@ export default function BorderProvider({
         setBorderPercent,
         setInputBorderColor,
         handleInputBorderColor,
-        handleInputBorderPixelsRange,
-        handleInputBorderPercentRange,
+ 
         handleBorderChange,
-        handleInputBorderPixelsRangeMouseUp,
-        handleInputBorderPixelsText,
-        handleInputBorderPercent,
-        handleInputBorderPercentText,
-        handleInputBorderPercentRangeMouseUp,
+        handleBorderPixelsRange,
+    
+        handleBorderPercentRange,
         handleApplyBorder,
         handleDiscardBorder,
         handleApplyCanvas,

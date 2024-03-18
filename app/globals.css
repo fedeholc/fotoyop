@@ -236,7 +236,7 @@
 
  @media screen and (max-width: 1050px) {
 
-   /* TODO: tendría que ser solo para teléfonos, por el problema este de cuando se muestra la barra de navegación y cambia el tamaño de la pantalla, por lo que no combiene hacer un resize ahi, pero en una pc con una ventana vertical si habría que hacer que cambie con el resize o permitir el overflow */
+
    body {
      overflow-y: hidden;
    }

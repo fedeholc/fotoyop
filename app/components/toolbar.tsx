@@ -61,12 +61,8 @@ export function BottomToolbar() {
     handleInputAspectRatioX,
     handleInputAspectRatioY,
     handleInputBorderColor,
-    handleInputBorderPixelsRange, //TODO: si no se usan quitar y borrar del provider
-    handleInputBorderPixelsRangeMouseUp, //todo: renombrar
-    handleInputBorderPixelsText,
-    handleInputBorderPercentRange,
-    handleInputBorderPercentRangeMouseUp,
-    handleInputBorderPercentText,
+    handleBorderPixelsRange,
+    handleBorderPercentRange,
     handleApplyBorder,
     handleDiscardBorder,
     handleApplyCanvas,
@@ -96,14 +92,10 @@ export function BottomToolbar() {
           value={inputBorderPixels}
           onChange={(e) => setInputBorderPixels(e.target.value)}
           onMouseUp={(e) =>
-            handleInputBorderPixelsRangeMouseUp(
-              (e.target as HTMLInputElement).value
-            )
+            handleBorderPixelsRange((e.target as HTMLInputElement).value)
           }
           onTouchEnd={(e) =>
-            handleInputBorderPixelsRangeMouseUp(
-              (e.target as HTMLInputElement).value
-            )
+            handleBorderPixelsRange((e.target as HTMLInputElement).value)
           }
         ></input>
         <input
@@ -114,9 +106,7 @@ export function BottomToolbar() {
           onKeyUp={(e) => {
             setInputBorderPixels((e.target as HTMLInputElement).value);
             if (e.key === "Enter") {
-              handleInputBorderPixelsRangeMouseUp(
-                (e.target as HTMLInputElement).value
-              );
+              handleBorderPixelsRange((e.target as HTMLInputElement).value);
             }
           }}
           onChange={(e) => {
@@ -146,14 +136,10 @@ export function BottomToolbar() {
             setInputBorderPercent(e.target.value);
           }}
           onMouseUp={(e) =>
-            handleInputBorderPercentRangeMouseUp(
-              (e.target as HTMLInputElement).value
-            )
+            handleBorderPercentRange((e.target as HTMLInputElement).value)
           }
           onTouchEnd={(e) =>
-            handleInputBorderPercentRangeMouseUp(
-              (e.target as HTMLInputElement).value
-            )
+            handleBorderPercentRange((e.target as HTMLInputElement).value)
           }
         ></input>
         <input
@@ -164,9 +150,7 @@ export function BottomToolbar() {
           onKeyUp={(e) => {
             setInputBorderPercent((e.target as HTMLInputElement).value);
             if (e.key === "Enter") {
-              handleInputBorderPercentRangeMouseUp(
-                (e.target as HTMLInputElement).value
-              );
+              handleBorderPercentRange((e.target as HTMLInputElement).value);
             }
           }}
           onChange={(e) => {

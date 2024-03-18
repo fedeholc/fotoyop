@@ -10,7 +10,6 @@ import ButtonNew from "./buttons/buttonNew";
 import ButtonDownload from "./buttons/buttonDownload";
 import ButtonApply from "./buttons/buttonApply";
 import ButtonDiscard from "./buttons/buttonDiscard";
-import ButtonBorder from "./buttons/buttonBorder";
 import ButtonGrayscale from "./buttons/buttonGrayscale";
 import toolbar from "./toolbar.module.css";
 
@@ -30,7 +29,6 @@ function ToolbarGroup({
     setIsOpen(!isOpen);
   };
   const classes = `${sideToolbar.bordersGroup} ${className}`;
-
 
   /* el closeRendering está principalmente por el componente Changes History que cada vez que se hacía un cambio volvía a renderizar toda la undolist y se hacía muy lento. De esta forma cuando el details está cerrado no hace ese renderizado. 
   FIXME: de todos modos sigue siendo lento cuando se lo quiere ver por lo que habria que buscar alguna forma de reducir ese tiempo */
@@ -68,12 +66,8 @@ export function SideToolbar() {
     handleInputAspectRatioX,
     handleInputAspectRatioY,
     handleInputBorderColor,
-    handleInputBorderPixelsRange,
-    handleInputBorderPixelsRangeMouseUp,
-    handleInputBorderPixelsText,
-    handleInputBorderPercentText,
-    handleInputBorderPercent,
-    handleInputBorderPercentRangeMouseUp,
+    handleBorderPixelsRange,
+    handleBorderPercentRange,
     handleApplyBorder,
     handleDiscardBorder,
     handleApplyCanvas,
@@ -102,9 +96,7 @@ export function SideToolbar() {
           onKeyUp={(e) => {
             setInputBorderPixels((e.target as HTMLInputElement).value);
             if (e.key === "Enter") {
-              handleInputBorderPixelsRangeMouseUp(
-                (e.target as HTMLInputElement).value
-              );
+              handleBorderPixelsRange((e.target as HTMLInputElement).value);
             }
           }}
           onChange={(e) => {
@@ -120,14 +112,10 @@ export function SideToolbar() {
           value={inputBorderPixels}
           onChange={(e) => setInputBorderPixels(e.target.value)}
           onMouseUp={(e) =>
-            handleInputBorderPixelsRangeMouseUp(
-              (e.target as HTMLInputElement).value
-            )
+            handleBorderPixelsRange((e.target as HTMLInputElement).value)
           }
           onTouchEnd={(e) =>
-            handleInputBorderPixelsRangeMouseUp(
-              (e.target as HTMLInputElement).value
-            )
+            handleBorderPixelsRange((e.target as HTMLInputElement).value)
           }
         ></input>
       </div>
@@ -147,9 +135,7 @@ export function SideToolbar() {
           onKeyUp={(e) => {
             setInputBorderPercent((e.target as HTMLInputElement).value);
             if (e.key === "Enter") {
-              handleInputBorderPercentRangeMouseUp(
-                (e.target as HTMLInputElement).value
-              );
+              handleBorderPercentRange((e.target as HTMLInputElement).value);
             }
           }}
           onChange={(e) => {
@@ -165,14 +151,10 @@ export function SideToolbar() {
           value={inputBorderPercent}
           onChange={(e) => setInputBorderPercent(e.target.value)}
           onMouseUp={(e) =>
-            handleInputBorderPercentRangeMouseUp(
-              (e.target as HTMLInputElement).value
-            )
+            handleBorderPercentRange((e.target as HTMLInputElement).value)
           }
           onTouchEnd={(e) =>
-            handleInputBorderPercentRangeMouseUp(
-              (e.target as HTMLInputElement).value
-            )
+            handleBorderPercentRange((e.target as HTMLInputElement).value)
           }
         ></input>
       </div>
@@ -225,7 +207,6 @@ export function SideToolbar() {
     );
   }
   function ChangesHistory() {
-    console.log("Render Changes History");
     return (
       <div className={`${sideToolbar.changesGroup} ${sideToolbar.toolbarRow}`}>
         {undoImageList && (
