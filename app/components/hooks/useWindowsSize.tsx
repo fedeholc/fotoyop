@@ -1,8 +1,8 @@
-import { DisplaySections } from "@/app/types";
+import { DisplaySections, WindowsDimensions } from "@/app/types";
 import { useState, useEffect } from "react";
 
 export default function useWindowsSize(displays: DisplaySections) {
-  const [windowsSize, setWindowsSize] = useState({
+  const [windowsSize, setWindowsSize] = useState<WindowsDimensions>({
     width: 0,
     height: 0,
     mobileToolbarHeight: 0,

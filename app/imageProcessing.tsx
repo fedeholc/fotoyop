@@ -1,4 +1,10 @@
-import { ProcessFunction, BorderOptionsType, CanvasOptions } from "./types";
+import {
+  ProcessFunction,
+  BorderOptionsType,
+  CanvasOptions,
+  CanvasConfig,
+  WindowsDimensions,
+} from "./types";
 
 export {
   imgToBW,
@@ -15,7 +21,77 @@ export {
   drawImageDataOnCanvas,
   imageB64ToImageData,
   imageDataToBase64,
+  calcResizeToWindow,
 };
+
+/**
+ * Función que calcula un nuevo tamaño para la imagen del small canvas teniendo en cuenta el tamaño de la ventana.
+ * @param imageWidth - ancho de la imagen original
+ * @param imageHeight - alto de la imagen original
+ * @param windowDimensions - dimensiones de la ventana
+ * @param mainCanvasConfig - configuración del canvas principal
+ * @returns - ancho y alto de la imagen redimensionada
+ */
+function calcResizeToWindow(
+  imageWidth: number,
+  imageHeight: number,
+  windowDimensions: WindowsDimensions,
+  mainCanvasConfig: CanvasConfig
+): { newWidth: number; newHeight: number } {
+  let ratio = imageWidth / imageHeight;
+  let newWidth = 0;
+  let newHeight = 0;
+
+  // horizontal
+  if (ratio > 1) {
+    if (
+      windowDimensions.width <
+      mainCanvasConfig.maxWidth + mainCanvasConfig.margin
+    ) {
+      newWidth = windowDimensions.width - mainCanvasConfig.margin;
+    } else {
+      newWidth = mainCanvasConfig.maxWidth - mainCanvasConfig.margin;
+    }
+    newHeight = newWidth / ratio;
+
+    if (
+      newHeight >
+      windowDimensions.height -
+        windowDimensions.mobileToolbarHeight -
+        mainCanvasConfig.margin
+    ) {
+      newHeight =
+        windowDimensions.height -
+        windowDimensions.mobileToolbarHeight -
+        mainCanvasConfig.margin; // 32 por el margin 1rem del canvas container
+      newWidth = newHeight * ratio;
+    }
+  }
+  // vertical
+  else {
+    if (
+      windowDimensions.height -
+        windowDimensions.mobileToolbarHeight -
+        mainCanvasConfig.margin <
+      mainCanvasConfig.maxHeight
+    ) {
+      newHeight =
+        windowDimensions.height -
+        windowDimensions.mobileToolbarHeight -
+        mainCanvasConfig.margin;
+    } else {
+      newHeight = mainCanvasConfig.maxHeight - mainCanvasConfig.margin;
+    }
+    newWidth = newHeight * ratio;
+
+    if (newWidth > windowDimensions.width) {
+      newWidth = windowDimensions.width - mainCanvasConfig.margin;
+      newHeight = newWidth / ratio;
+    }
+  }
+
+  return { newWidth, newHeight };
+}
 
 function imageDataToBase64(imageData: ImageData): string {
   const canvas = document.createElement("canvas");

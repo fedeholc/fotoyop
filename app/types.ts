@@ -13,12 +13,20 @@ export enum ImageProcess {
   Canvas = "Canvas",
 }
 
+export type WindowsDimensions = {
+  width: number;
+  height: number;
+  mobileToolbarHeight: number;
+  mobileToolbarWidth: number;
+};
+
 /**
  * Define la configuración del canvas principal.
  */
 export type CanvasConfig = {
   maxWidth: number;
   maxHeight: number;
+  margin: number;
 };
 
 //? Sería mejor usar enums?

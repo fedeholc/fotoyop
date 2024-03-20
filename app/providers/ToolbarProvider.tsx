@@ -79,8 +79,11 @@ export default function ToolbarProvider({
     setDisplays((prev) => {
       return { canvas: false, form: true };
     });
+
     setOriginalFile(null);
     setOriginalImg(null);
+           /*  setOriginalImg(new window.Image() as HTMLImageElement); */
+
     setProcessList([]);
     setUndoImageList([]);
     setCurrentProcess(null);

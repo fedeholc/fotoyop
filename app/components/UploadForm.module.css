@@ -1,0 +1,56 @@
+ .dropContainer {
+   position: relative;
+   display: flex;
+   gap: 1rem;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   padding: 1rem 8rem;
+   border-radius: 10px;
+   border: 2px dashed black;
+   color: black;
+   cursor: pointer;
+   /*    transition: background .2s ease-in-out, border .2s ease-in-out;
+ */
+   height: 80svh;
+ }
+
+ .unselectable {
+   user-select: none;
+ }
+
+ .dropContainer:hover,
+ .dropContainer-dragover {
+   border: 2px dashed white;
+ }
+
+
+ .dropContainer:hover .drop-title {
+   color: black;
+ }
+
+ .dropTitle {
+   color: black;
+   padding: 0.2rem 0.5rem;
+   font-size: 1.5rem;
+   font-weight: bold;
+   text-align: center;
+   /* transition: color .2s ease-in-out; */
+
+ }
+
+ .dropContainer:hover .dropTitle,
+ .dropTitleDragover {
+   background-color: deeppink;
+ }
+
+ @media screen and (max-width: 1050px) {
+
+
+
+   .dropContainer {
+     /*  height: 60vh;   */
+     height: auto;
+     padding: 1rem 1rem;
+   }
+ }
