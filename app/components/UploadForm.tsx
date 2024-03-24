@@ -152,6 +152,7 @@ export default function UploadForm({}) {
     <form
       onClick={handleUploadFormClick}
       onInput={handleUploadFormInput}
+      data-testid="formUpload"
       id="form-upload"
     >
       <div
@@ -180,10 +181,12 @@ export default function UploadForm({}) {
         <input
           type="file"
           id="input-upload"
+          data-testid="inputUpload"
           accept="image/*"
           style={{ display: "none" }}
           ref={inputUploadRef}
         ></input>
+        <button type="submit">Submit</button>
       </div>
     </form>
   );
