@@ -30,7 +30,7 @@ export default function App() {
 
   return (
     <div className="app-wrapper">
-      <main id="app" className={styles.main}>
+      <main data-testid="main" id="app" className={styles.main}>
         <section id="section__image">
           {displays.canvas && <SmallCanvas></SmallCanvas>}
           {displays.form && <UploadForm></UploadForm>}
