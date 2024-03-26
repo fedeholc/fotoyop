@@ -216,10 +216,10 @@ function imgAddBorder(
 }
 
 /**
- * Función que agrega un borde a una imagen.
+ * Función que agrega un canvas a una imagen.
  * @param imageData - datos de la imagen
- * @param options - opciones de bordes para el proceso
- * @returns - datos de la imagen con el borde agregado
+ * @param options - opciones de canvas para el proceso
+ * @returns - datos de la imagen con el canvas agregado
  */
 export function imgAddCanvas(
   imageData: ImageData,
