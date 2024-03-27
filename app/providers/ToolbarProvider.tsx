@@ -6,7 +6,7 @@ import { BorderContext } from "./BorderProvider";
 import { ImageProcess } from "../types";
 import {
   applyProcessFunction,
-  drawImageDataOnCanvas,
+  putImageDataOnCanvas,
   imgToBW,
   processToNewImageData,
   processImgToCanvas,
@@ -124,7 +124,7 @@ export default function ToolbarProvider({
       const newUndoImageList = [...undoImageList];
       newUndoImageList.pop();
       setUndoImageList(newUndoImageList);
-      drawImageDataOnCanvas(
+      putImageDataOnCanvas(
         newUndoImageList[newUndoImageList.length - 1],
         smallCanvasRef.current!
       );

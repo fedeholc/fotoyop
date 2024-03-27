@@ -12,7 +12,7 @@ import { mainCanvasConfig } from "../App";
 import { ImageProcess } from "../types";
 import {
   applyProcessFunction,
-  drawImageDataOnCanvas,
+  putImageDataOnCanvas,
   imgAddBorder,
   imgAddCanvas,
 } from "../imageProcessing";
@@ -46,15 +46,14 @@ export const BorderContext = createContext({
   handleInputBorderColor: (() => {}) as (
     e: React.ChangeEvent<HTMLInputElement>
   ) => void,
- 
+
   handleBorderChange: (() => {}) as (
     borderOptions: BorderOptionsType,
     smallCanvasRef: React.RefObject<HTMLCanvasElement>
   ) => void,
   handleBorderPixelsRange: (() => {}) as (valor: string) => void,
   handleBorderPercentRange: (() => {}) as (valor: string) => void,
- 
- 
+
   handleApplyBorder: () => {},
   handleDiscardBorder: () => {},
   handleDiscardCanvas: () => {},
@@ -101,7 +100,6 @@ export default function BorderProvider({
     setInputAspectRatioX(0);
     setInputAspectRatioY(0);
   }
- 
 
   function handleInputBorderColor(e: React.ChangeEvent<HTMLInputElement>) {
     setInputBorderColor(e.target.value);
@@ -125,10 +123,7 @@ export default function BorderProvider({
 
     setInputAspectRatioY(parseInt((e.target as HTMLInputElement).value));
   }
- 
- 
 
- 
   /**
    * Handler del Mouse Up del input de rango de borde en porcentaje.
    *
@@ -209,7 +204,7 @@ export default function BorderProvider({
     if (currentProcess === ImageProcess.Border && undoImageList.length > 1) {
       const newUndoImageList = [...undoImageList];
       newUndoImageList.pop();
-      drawImageDataOnCanvas(
+      putImageDataOnCanvas(
         newUndoImageList[newUndoImageList.length - 1],
         smallCanvasRef.current!
       );
@@ -260,7 +255,7 @@ export default function BorderProvider({
     if (currentProcess === ImageProcess.Canvas && undoImageList.length > 1) {
       const newUndoImageList = [...undoImageList];
       newUndoImageList.pop();
-      drawImageDataOnCanvas(
+      putImageDataOnCanvas(
         newUndoImageList[newUndoImageList.length - 1],
         smallCanvasRef.current!
       );
@@ -351,7 +346,7 @@ export default function BorderProvider({
       newUndoImageList.pop();
       setUndoImageList(newUndoImageList);
 
-      drawImageDataOnCanvas(
+      putImageDataOnCanvas(
         newUndoImageList[newUndoImageList.length - 1],
         smallCanvasRef.current!
       );
@@ -387,10 +382,10 @@ export default function BorderProvider({
         setBorderPercent,
         setInputBorderColor,
         handleInputBorderColor,
- 
+
         handleBorderChange,
         handleBorderPixelsRange,
-    
+
         handleBorderPercentRange,
         handleApplyBorder,
         handleDiscardBorder,

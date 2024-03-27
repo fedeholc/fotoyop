@@ -1,6 +1,13 @@
 import { describe, expect, test } from "vitest";
-import { calcResizeToWindow } from "./imageProcessing";
+import {
+  calcResizeToWindow,
+  getAdaptedSize,
+  hexToRgb,
+} from "./imageProcessing";
 import { WindowsDimensions } from "./types";
+
+//? No pude crear tests para las funciones que utilizan ImageData ya que es un objeto del DOM y acá estamos en node, y jsdom no lo implementa. Probé crear un mock con lo que me tiraba copilot pero tampoco funcionó.
+//? Tampoco están implementadas FileReader y File como para probar la carga del archivo con imagen.
 
 describe("calcResizeToWindow", () => {
   test("when window is smaller than the toolbar", () => {
@@ -111,5 +118,85 @@ describe("calcResizeToWindow", () => {
     expect(newHeight).toBeLessThan(imageHeight);
     expect(newWidth).toBeLessThanOrEqual(mainCanvasConfig.maxWidth);
     expect(newHeight).toBeLessThanOrEqual(mainCanvasConfig.maxHeight);
+  });
+});
+
+describe("getAdaptedSize", () => {
+  test("returns original size for square image", () => {
+    const canvasMaxWidth = 100;
+    const canvasMaxHeight = 100;
+    const imageWidth = 100;
+    const imageHeight = 100;
+
+    const { width, height } = getAdaptedSize(
+      canvasMaxWidth,
+      canvasMaxHeight,
+      imageWidth,
+      imageHeight
+    );
+
+    expect(width).toBe(imageWidth);
+    expect(height).toBe(imageHeight);
+  });
+
+  test("resizes proportionally to fit canvas horizontally (wide image)", () => {
+    const canvasMaxWidth = 200;
+    const canvasMaxHeight = 100;
+    const imageWidth = 400;
+    const imageHeight = 200;
+
+    const { width, height } = getAdaptedSize(
+      canvasMaxWidth,
+      canvasMaxHeight,
+      imageWidth,
+      imageHeight
+    );
+
+    expect(width).toBeLessThanOrEqual(canvasMaxWidth);
+    expect(height).toBeLessThanOrEqual(canvasMaxHeight);
+    expect(width / height).toBeCloseTo(imageWidth / imageHeight, 2); // Check aspect ratio preserved
+  });
+  test("resizes proportionally to fit canvas vertically (tall image)", () => {
+    const canvasMaxWidth = 100;
+    const canvasMaxHeight = 200;
+    const imageWidth = 200;
+    const imageHeight = 400;
+
+    const { width, height } = getAdaptedSize(
+      canvasMaxWidth,
+      canvasMaxHeight,
+      imageWidth,
+      imageHeight
+    );
+
+    expect(width).toBeLessThanOrEqual(canvasMaxWidth);
+    expect(height).toBeLessThanOrEqual(canvasMaxHeight);
+    expect(width / height).toBeCloseTo(imageWidth / imageHeight, 2); // Check aspect ratio preserved
+  });
+});
+
+describe("hexToRgb", () => {
+  test("converts valid hex color to RGB object", () => {
+    const hexColor = "ff0000";
+    const expectedRgb = { red: 255, green: 0, blue: 0 };
+
+    const rgb = hexToRgb(hexColor);
+
+    expect(rgb).toEqual(expectedRgb);
+  });
+
+  test("converts hex color with # to RGB object", () => {
+    const hexColor = "#00ff00";
+    const expectedRgb = { red: 0, green: 255, blue: 0 };
+
+    const rgb = hexToRgb(hexColor);
+
+    expect(rgb).toEqual(expectedRgb);
+  });
+
+  test("throws error for invalid hex color", () => {
+    expect(() => hexToRgb("abc")).toThrowError();
+    expect(() => hexToRgb("#12345")).toThrowError(); // Invalid length
+    expect(() => hexToRgb("#gggggg")).toThrowError(); // Invalid characters
   });
 });

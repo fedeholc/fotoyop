@@ -18,7 +18,7 @@ export {
   applyProcessFunctionWithSize,
   processImgToCanvas,
   processToNewImageData,
-  drawImageDataOnCanvas,
+  putImageDataOnCanvas,
   imageB64ToImageData,
   imageDataToBase64,
   calcResizeToWindow,
@@ -443,7 +443,6 @@ function drawImageB64OnCanvas(
   };
 }
 
-//TODO: Limitar el tamaño al máximo del canvas.
 async function imageB64ToImageData(
   imageB64: string,
   canvasMaxWidth: number,
@@ -484,8 +483,7 @@ async function imageB64ToImageData(
     ?.getImageData(0, 0, canvas.width, canvas.height)!;
 }
 
-//todo: renombrar a putImageDataOnCanvas
-function drawImageDataOnCanvas(image: ImageData, canvas: HTMLCanvasElement) {
+function putImageDataOnCanvas(image: ImageData, canvas: HTMLCanvasElement) {
   canvas.width = image.width;
   canvas.height = image.height;
   canvas
@@ -589,6 +587,10 @@ function hexToRgb(hexColor: string): {
   blue: number;
 } {
   let color = hexColor.charAt(0) === "#" ? hexColor.substring(1, 7) : hexColor;
+
+  if (!/^[0-9A-F]{6}$/i.test(color)) {
+    throw new Error("Invalid hex color");
+  }
 
   let red = parseInt(color.substring(0, 2), 16);
   let green = parseInt(color.substring(2, 4), 16);
