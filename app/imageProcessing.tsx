@@ -89,6 +89,12 @@ function calcResizeToWindow(
       newHeight = newWidth / ratio;
     }
   }
+  if (newWidth <= 0) {
+    newWidth = 1;
+  }
+  if (newHeight <= 0) {
+    newHeight = 1;
+  }
   return { newWidth, newHeight };
 }
 
