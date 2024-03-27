@@ -1,7 +1,11 @@
+"use client";
 import { DisplaySections, WindowsDimensions } from "@/app/types";
 import { useState, useEffect } from "react";
 
-export default function useWindowsSize(displays: DisplaySections) {
+export default function useWindowsSize(
+  displays: DisplaySections,
+  mobileToolbarRef: React.RefObject<HTMLDivElement>
+) {
   const [windowsSize, setWindowsSize] = useState<WindowsDimensions>({
     width: 0,
     height: 0,
@@ -14,10 +18,8 @@ export default function useWindowsSize(displays: DisplaySections) {
       setWindowsSize({
         width: window.innerWidth,
         height: window.innerHeight,
-        mobileToolbarHeight:
-          document.querySelector("#section__mobile")?.clientHeight || 0,
-        mobileToolbarWidth:
-          document.querySelector("#section__mobile")?.clientWidth || 0,
+        mobileToolbarHeight: mobileToolbarRef.current?.clientHeight || 0,
+        mobileToolbarWidth: mobileToolbarRef.current?.clientWidth || 0,
       });
     }
 
@@ -29,12 +31,23 @@ export default function useWindowsSize(displays: DisplaySections) {
     setWindowsSize({
       width: window.innerWidth,
       height: window.innerHeight,
-      mobileToolbarHeight:
-        document.querySelector("#section__mobile")?.clientHeight || 0,
-      mobileToolbarWidth:
-        document.querySelector("#section__mobile")?.clientWidth || 0,
+      mobileToolbarHeight: mobileToolbarRef.current?.clientHeight || 0,
+      mobileToolbarWidth: mobileToolbarRef.current?.clientWidth || 0,
     });
   }, [displays]);
 
-  return windowsSize;
+  let windowWidth = 0;
+  let windowHeight = 0;
+
+  if (typeof window !== "undefined") {
+    windowWidth = window.innerWidth;
+    windowHeight = window.innerHeight;
+  }
+
+  return {
+    width: windowWidth,
+    height: windowHeight,
+    mobileToolbarHeight: mobileToolbarRef.current?.clientHeight || 0,
+    mobileToolbarWidth: mobileToolbarRef.current?.clientWidth || 0,
+  };
 }

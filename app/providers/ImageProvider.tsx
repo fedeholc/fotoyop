@@ -19,6 +19,7 @@ export const ImageContext = createContext({
   imagenPreviewRef: createRef<HTMLImageElement>(),
   displays: {} as DisplaySections,
   setDisplays: (() => {}) as Dispatch<SetStateAction<DisplaySections>>,
+  mobileToolbarRef: createRef<HTMLDivElement>(),
 });
 
 export default function ImageProvider({
@@ -33,7 +34,9 @@ export default function ImageProvider({
   const [displays, setDisplays] = useState<DisplaySections>({
     canvas: false,
     form: true,
+    resizeTrigger: false,
   });
+  const mobileToolbarRef = useRef<HTMLDivElement>(null);
 
   return (
     <ImageContext.Provider
@@ -46,6 +49,7 @@ export default function ImageProvider({
         imagenPreviewRef,
         displays,
         setDisplays,
+        mobileToolbarRef,
       }}
     >
       {children}

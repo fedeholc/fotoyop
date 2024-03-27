@@ -62,6 +62,7 @@ export type ProcessFunction = (
 export type DisplaySections = {
   form: boolean;
   canvas: boolean;
+  resizeTrigger: boolean;
 };
 
 export type DisplayToolbars = {

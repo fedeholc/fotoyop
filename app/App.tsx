@@ -27,6 +27,7 @@ export const mainCanvasConfig: CanvasConfig = {
 
 export default function App() {
   const { displays } = useContext(ImageContext);
+  const { mobileToolbarRef } = useContext(ImageContext);
 
   return (
     <div className="app-wrapper">
@@ -41,7 +42,7 @@ export default function App() {
             <section id="section__toolbar">
               <SideToolbar></SideToolbar>
             </section>
-            <section id="section__mobile">
+            <section ref={mobileToolbarRef} id="section__mobile">
               <BottomToolbar></BottomToolbar>
             </section>
           </BorderProvider>

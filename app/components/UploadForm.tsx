@@ -1,3 +1,4 @@
+"use client";
 import { ImageContext } from "../providers/ImageProvider";
 import { useContext, useRef } from "react";
 import {
@@ -10,6 +11,7 @@ import useWindowsSize from "./hooks/useWindowsSize";
 import { mainCanvasConfig } from "../App";
 import { calcResizeToWindow } from "../imageProcessing";
 import upForm from "./UploadForm.module.css";
+
 export default function UploadForm({}) {
   /**
    * Handler del input cuando se sube un archivo.
@@ -29,12 +31,10 @@ export default function UploadForm({}) {
    * @returns
    */
   async function loadFileProcedure(file: File) {
-    setDisplays((prev) => {
-      return { canvas: true, form: false };
-    });
-
     let originalImageB64: string;
-
+    setDisplays((prev) => {
+      return { canvas: true, form: false, resizeTrigger: false };
+    });
     try {
       originalImageB64 = (await getImageFromFile(file as File)) as string;
     } catch (error) {
@@ -141,9 +141,10 @@ export default function UploadForm({}) {
     imagenPreviewRef,
     displays,
     setDisplays,
+    mobileToolbarRef,
   } = useContext(ImageContext);
 
-  const windowDimensions = useWindowsSize(displays);
+  const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
   const inputUploadRef = useRef<HTMLInputElement | null>(null);
 
   const { setUndoImageList } = useContext(ProcessContext);
@@ -186,7 +187,6 @@ export default function UploadForm({}) {
           style={{ display: "none" }}
           ref={inputUploadRef}
         ></input>
-        <button type="submit">Submit</button>
       </div>
     </form>
   );

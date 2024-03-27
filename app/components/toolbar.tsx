@@ -1,3 +1,4 @@
+"use client";
 import { useState, useRef, useContext, useEffect, useId } from "react";
 import toolbar from "./toolbar.module.css";
 import { BorderContext } from "../providers/BorderProvider";
@@ -29,6 +30,8 @@ function ToolbarRow({
 }
 
 export function BottomToolbar() {
+  const { setDisplays } = useContext(ImageContext);
+
   function showToolbarRow(row: toolbarRow) {
     let toolbar = {
       mainMenu: true,
@@ -41,6 +44,13 @@ export function BottomToolbar() {
     // funciona como toggle, si se vuelve a hacer click en el mismo boton, se oculta (por ahora solo para Edit)
     toolbar[row] = toolbarDisplay[row] === true ? false : true;
     setToolbarDisplay(toolbar);
+    setDisplays((prev) => {
+      return {
+        canvas: prev.canvas,
+        form: prev.form,
+        resizeTrigger: !prev.resizeTrigger,
+      };
+    });
   }
 
   const [toolbarDisplay, setToolbarDisplay] = useState({

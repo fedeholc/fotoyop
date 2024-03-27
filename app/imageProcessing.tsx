@@ -46,7 +46,7 @@ function calcResizeToWindow(
   if (ratio > 1) {
     if (
       windowDimensions.width <
-      mainCanvasConfig.maxWidth + mainCanvasConfig.margin
+      mainCanvasConfig.maxWidth - mainCanvasConfig.margin
     ) {
       newWidth = windowDimensions.width - mainCanvasConfig.margin;
     } else {
@@ -63,7 +63,7 @@ function calcResizeToWindow(
       newHeight =
         windowDimensions.height -
         windowDimensions.mobileToolbarHeight -
-        mainCanvasConfig.margin; // 32 por el margin 1rem del canvas container
+        mainCanvasConfig.margin;
       newWidth = newHeight * ratio;
     }
   }
@@ -90,6 +90,15 @@ function calcResizeToWindow(
     }
   }
 
+  console.log(
+    "windowDimensions",
+    windowDimensions,
+    "mainCanvasConfig",
+    mainCanvasConfig
+  );
+
+  console.log("imageWidth", imageWidth, "imageHeight", imageHeight);
+  console.log("newWidth", newWidth, "newHeight", newHeight);
   return { newWidth, newHeight };
 }
 

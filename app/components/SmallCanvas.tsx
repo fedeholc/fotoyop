@@ -1,3 +1,4 @@
+"use client";
 import { ImageContext } from "../providers/ImageProvider";
 import { useContext, useEffect } from "react";
 import useWindowsSize from "./hooks/useWindowsSize";
@@ -6,8 +7,9 @@ import { ProcessContext } from "../providers/ProcessProvider";
 import { calcResizeToWindow } from "../imageProcessing";
 
 export default function SmallCanvas() {
-  const { originalImg, smallCanvasRef, displays } = useContext(ImageContext);
-  const windowDimensions = useWindowsSize(displays);
+  const { originalImg, smallCanvasRef, displays, mobileToolbarRef } =
+    useContext(ImageContext);
+  const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
   const { undoImageList } = useContext(ProcessContext);
 
   useEffect(() => {
