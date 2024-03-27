@@ -43,6 +43,13 @@ export default function useWindowsSize(
     windowWidth = window.innerWidth;
     windowHeight = window.innerHeight;
   }
+  if (mobileToolbarRef.current) {
+    mobileToolbarRef.current.style.display = "block";
+    console.log(
+      "tamaño ref:",
+      mobileToolbarRef.current?.clientHeight || "no"
+    );
+  }
 
   return {
     width: windowWidth,

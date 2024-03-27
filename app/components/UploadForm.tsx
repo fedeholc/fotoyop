@@ -22,7 +22,12 @@ export default function UploadForm({}) {
   ) {
     event.preventDefault();
     const file = (event.target as HTMLFormElement).files[0];
-    loadFileProcedure(file as File);
+    await loadFileProcedure(file as File);
+    setDisplays((prev) => {
+      return { canvas: true, form: false, resizeTrigger: !prev.resizeTrigger };
+    });
+
+    //todo: probar si con este agregado de setDisplays acá se puede quitar el resizeTrigger
   }
 
   /**
@@ -33,7 +38,7 @@ export default function UploadForm({}) {
   async function loadFileProcedure(file: File) {
     let originalImageB64: string;
     setDisplays((prev) => {
-      return { canvas: true, form: false, resizeTrigger: false };
+      return { canvas: true, form: false, resizeTrigger: !prev.resizeTrigger };
     });
     try {
       originalImageB64 = (await getImageFromFile(file as File)) as string;
