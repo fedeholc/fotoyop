@@ -43,7 +43,7 @@ export default function UploadForm({}) {
     try {
       originalImageB64 = (await getImageFromFile(file as File)) as string;
     } catch (error) {
-      console.log("Error:", error);
+      console.error("Error:", error);
       return;
     }
 

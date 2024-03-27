@@ -45,10 +45,6 @@ export default function useWindowsSize(
   }
   if (mobileToolbarRef.current) {
     mobileToolbarRef.current.style.display = "block";
-    console.log(
-      "tamaño ref:",
-      mobileToolbarRef.current?.clientHeight || "no"
-    );
   }
 
   return {

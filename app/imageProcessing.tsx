@@ -89,16 +89,6 @@ function calcResizeToWindow(
       newHeight = newWidth / ratio;
     }
   }
-
-  console.log(
-    "windowDimensions",
-    windowDimensions,
-    "mainCanvasConfig",
-    mainCanvasConfig
-  );
-
-  console.log("imageWidth", imageWidth, "imageHeight", imageHeight);
-  console.log("newWidth", newWidth, "newHeight", newHeight);
   return { newWidth, newHeight };
 }
 
