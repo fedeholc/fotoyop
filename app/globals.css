@@ -186,8 +186,8 @@
 
  #section__mobile {
    grid-area: section-mobile;
-   /*    display: none !important;
- */
+   display: none;
+
    background-color: var(--toolbarBg);
 
  }
@@ -224,9 +224,9 @@
 
  }
 
- @media screen and (min-width: 1050px) {
+ /*  @media screen and (min-width: 1050px) {
    #section__mobile {
      grid-area: section-mobile;
-     display: none !important;
+     display: none;
    }
- }
+ } */

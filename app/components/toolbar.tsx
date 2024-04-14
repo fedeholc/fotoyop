@@ -29,7 +29,7 @@ function ToolbarRow({
   return <div className={classes}>{children}</div>;
 }
 
-export function BottomToolbar() {
+export function  BottomToolbar() {
   const { setDisplays } = useContext(ImageContext);
 
   function showToolbarRow(row: toolbarRow) {
@@ -250,8 +250,10 @@ export function BottomToolbar() {
     );
   }
 
+    const { mobileToolbarRef } = useContext(ImageContext);
+
   return (
-    <>
+    <div ref={mobileToolbarRef}>
       {toolbarDisplay.borderPx && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
           <ButtonBack
@@ -374,6 +376,6 @@ export function BottomToolbar() {
           )} */}
         </ToolbarRow>
       )}
-    </>
+    </div>
   );
 }
