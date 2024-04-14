@@ -29,7 +29,7 @@ function ToolbarRow({
   return <div className={classes}>{children}</div>;
 }
 
-export function  BottomToolbar() {
+export function BottomToolbar() {
   const { setDisplays } = useContext(ImageContext);
 
   function showToolbarRow(row: toolbarRow) {
@@ -250,7 +250,7 @@ export function  BottomToolbar() {
     );
   }
 
-    const { mobileToolbarRef } = useContext(ImageContext);
+  const { mobileToolbarRef } = useContext(ImageContext);
 
   return (
     <div ref={mobileToolbarRef}>
@@ -333,7 +333,7 @@ export function  BottomToolbar() {
             onClick={() => showToolbarRow(toolbarRow.transform)}
           ></ButtonEdit>
 
-          {/* TODO: no funciona la ubicacion del popover justo arriba del boton */}
+          {/* FIXME: no funciona la ubicacion del popover justo arriba del boton */}
           {/* @ts-ignore */}
           {/*  <button className={toolbar.popoverButton} popovertarget="my-popover">
             Open Popover
@@ -355,11 +355,7 @@ export function  BottomToolbar() {
                     {Math.floor(originalFile.size / 1000).toString()} Kbytes
                   </div>
                 )}
-                <img
-                  id="imagenPreview"
-                  style={{ maxWidth: "150px", maxHeight: "150px" }}
-                  ref={imagenPreviewRef}
-                ></img>
+            
               </div>
             </div>
           </div> */}

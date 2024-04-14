@@ -66,10 +66,6 @@ export default function UploadForm({}) {
           newWidth,
           newHeight
         );
-
-        if (imagenPreviewRef.current) {
-          imagenPreviewRef.current.src = originalImageB64;
-        }
       };
       setOriginalImg(newImageElement);
       setUndoImageList([
@@ -143,7 +139,6 @@ export default function UploadForm({}) {
     setOriginalFile,
     setOriginalImg,
     smallCanvasRef,
-    imagenPreviewRef,
     displays,
     setDisplays,
     mobileToolbarRef,

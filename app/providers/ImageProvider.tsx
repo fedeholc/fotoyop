@@ -16,7 +16,6 @@ export const ImageContext = createContext({
   >,
   setOriginalFile: (() => {}) as Dispatch<SetStateAction<File | null>>,
   smallCanvasRef: createRef<HTMLCanvasElement>(),
-  imagenPreviewRef: createRef<HTMLImageElement>(),
   displays: {} as DisplaySections,
   setDisplays: (() => {}) as Dispatch<SetStateAction<DisplaySections>>,
   mobileToolbarRef: createRef<HTMLDivElement>(),
@@ -30,7 +29,6 @@ export default function ImageProvider({
   const [originalImg, setOriginalImg] = useState<HTMLImageElement | null>(null);
   const [originalFile, setOriginalFile] = useState<File | null>(null);
   const smallCanvasRef = useRef<HTMLCanvasElement>(null);
-  const imagenPreviewRef = useRef<HTMLImageElement>(null);
   const [displays, setDisplays] = useState<DisplaySections>({
     canvas: false,
     form: true,
@@ -46,7 +44,6 @@ export default function ImageProvider({
         setOriginalImg,
         setOriginalFile,
         smallCanvasRef,
-        imagenPreviewRef,
         displays,
         setDisplays,
         mobileToolbarRef,

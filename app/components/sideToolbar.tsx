@@ -55,8 +55,6 @@ function ToolbarGroup({
 }
 
 export function SideToolbar() {
-  const inputBorderPixelsRef = useRef<HTMLInputElement | null>(null);
-
   const {
     inputBorderColor,
     BorderPixels,
@@ -76,8 +74,7 @@ export function SideToolbar() {
     handleSelectAspectRatio,
   } = useContext(BorderContext);
 
-  const { originalFile, originalImg, imagenPreviewRef } =
-    useContext(ImageContext);
+  const { originalFile, originalImg } = useContext(ImageContext);
 
   const { undoImageList } = useContext(ProcessContext);
 
@@ -201,7 +198,7 @@ export function SideToolbar() {
         <img
           id="imagenPreview"
           style={{ maxWidth: "200px", maxHeight: "200px" }}
-          ref={imagenPreviewRef}
+          src={originalImg?.src}
         ></img>
       </div>
     );
@@ -320,9 +317,7 @@ export function SideToolbar() {
           </div>
           <div className={sideToolbar.toolbarRow}>
             <div className={sideToolbar.rowButtons}>
-              <ButtonApply
-                onClick={handleApplyCanvas}
-              ></ButtonApply>
+              <ButtonApply onClick={handleApplyCanvas}></ButtonApply>
               <ButtonDiscard onClick={handleDiscardCanvas}></ButtonDiscard>
             </div>
           </div>

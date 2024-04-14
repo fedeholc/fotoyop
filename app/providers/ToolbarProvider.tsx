@@ -30,8 +30,7 @@ export default function ToolbarProvider({
     setOriginalFile,
     setOriginalImg,
     smallCanvasRef,
-    imagenPreviewRef,
-    setDisplays,
+     setDisplays,
   } = useContext(ImageContext);
 
   const {
@@ -90,8 +89,7 @@ export default function ToolbarProvider({
     setBorderPixels("0");
     setBorderPercent("0");
     setInputBorderColor("#ffffff");
-    imagenPreviewRef.current!.src = "";
-  }
+   }
 
   /**
    * Procedimiento para generar la imagen procesada y enviarla como descarga.
