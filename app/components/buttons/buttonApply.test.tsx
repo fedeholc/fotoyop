@@ -4,6 +4,9 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
+import { axe, toHaveNoViolations } from "jest-axe";
+
+expect.extend(toHaveNoViolations);
 
 describe("ButtonApply", () => {
   test("renders", () => {
@@ -19,5 +22,12 @@ describe("ButtonApply", () => {
     //ojo, acá apply no se busca en la propiedad name del boton sino en lo que se llama el nombre accesible, el texto puede estar en el aria-label, title, etc.
     //en este caso que hay un solo boton en el documento, se podría buscar por role y no hace falta especificar el nombre
     expect(onChange).toHaveBeenCalledTimes(1);
+  });
+
+  test("should have no accessibility violations", async () => {
+    const onChange = vi.fn();
+    const { container } = render(<ButtonApply onClick={onChange} />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 });
