@@ -321,9 +321,7 @@ export function SideToolbar() {
           <div className={sideToolbar.toolbarRow}>
             <div className={sideToolbar.rowButtons}>
               <ButtonApply
-                onClick={() => {
-                  handleApplyCanvas();
-                }}
+                onClick={handleApplyCanvas}
               ></ButtonApply>
               <ButtonDiscard onClick={handleDiscardCanvas}></ButtonDiscard>
             </div>
