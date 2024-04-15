@@ -27,7 +27,6 @@ export const mainCanvasConfig: CanvasConfig = {
 
 export default function App() {
   const { displays } = useContext(ImageContext);
-  //console.log("inicio env:", process.env.BASE_URL);
 
   return (
     <div className="app-wrapper">

@@ -6,7 +6,6 @@ test("carga de una imagen", async ({ page }) => {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
 
-  console.log("env2: ", process.env.BASE_URL!);
   await page.goto(process.env.BASE_URL!);
   const canvas = page.locator("#canvas-small");
   const input = page.getByTestId("inputUpload");
