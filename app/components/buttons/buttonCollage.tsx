@@ -1,4 +1,4 @@
-import { Ratio } from "lucide-react";
+import { Component } from "lucide-react";
 import toolbar from "../BottomToolbar.module.css";
 
 export default function ButtonCollage({ onClick }: { onClick: () => void }) {
@@ -8,7 +8,7 @@ export default function ButtonCollage({ onClick }: { onClick: () => void }) {
       className={toolbar.buttonWithIcon}
       onClick={onClick}
     >
-      <Ratio />
+      <Component />
       <span>Collage</span>
     </button>
   );

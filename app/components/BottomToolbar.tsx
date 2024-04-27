@@ -17,6 +17,7 @@ import ButtonBorderPx from "./buttons/buttonBorderPx";
 import ButtonBorderPc from "./buttons/buttonBorderPc";
 import ButtonGrayscale from "./buttons/buttonGrayscale";
 import ButtonCanvas from "./buttons/buttonCanvas";
+import ButtonCollage from "./buttons/buttonCollage";
 
 function ToolbarRow({
   className = "",
@@ -40,6 +41,7 @@ export function BottomToolbar() {
       borderPx: false,
       borderPc: false,
       canvas: false,
+      collage: false,
     };
     // funciona como toggle, si se vuelve a hacer click en el mismo boton, se oculta (por ahora solo para Edit)
     toolbar[row] = toolbarDisplay[row] === true ? false : true;
@@ -61,6 +63,7 @@ export function BottomToolbar() {
     borderPx: false,
     borderPc: false,
     canvas: false,
+    collage: false,
   });
 
   const {
@@ -312,6 +315,28 @@ export function BottomToolbar() {
         </ToolbarRow>
       )}
 
+      {toolbarDisplay.collage && originalImg?.src && (
+        <ToolbarRow className={toolbar.border__row}>
+          <ButtonBack
+            onClick={() => showToolbarRow(toolbarRow.edit)}
+          ></ButtonBack>
+          <span></span>
+          {/* el span es un separador para generar gap */}
+
+          <ButtonApply
+            onClick={() => {
+              //handleApplyCanvas();
+            }}
+          ></ButtonApply>
+          <ButtonDiscard
+            onClick={
+              () => {}
+              //handleDiscardCanvas
+            }
+          ></ButtonDiscard>
+        </ToolbarRow>
+      )}
+
       {toolbarDisplay.edit && originalImg?.src && (
         <ToolbarRow>
           <ButtonBorder
@@ -322,6 +347,9 @@ export function BottomToolbar() {
           <ButtonCanvas
             onClick={() => showToolbarRow(toolbarRow.canvas)}
           ></ButtonCanvas>
+          <ButtonCollage
+            onClick={() => showToolbarRow(toolbarRow.collage)}
+          ></ButtonCollage>
         </ToolbarRow>
       )}
 
