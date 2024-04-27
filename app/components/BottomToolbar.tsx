@@ -49,6 +49,7 @@ export function BottomToolbar() {
         canvas: prev.canvas,
         form: prev.form,
         resizeTrigger: !prev.resizeTrigger,
+        collage: prev.collage,
       };
     });
   }

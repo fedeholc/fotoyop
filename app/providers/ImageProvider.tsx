@@ -33,6 +33,7 @@ export default function ImageProvider({
     canvas: false,
     form: true,
     resizeTrigger: false,
+    collage: false,
   });
   const mobileToolbarRef = useRef<HTMLDivElement>(null);
 

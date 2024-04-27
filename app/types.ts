@@ -63,10 +63,12 @@ export type DisplaySections = {
   form: boolean;
   canvas: boolean;
   resizeTrigger: boolean;
+  collage: boolean;
 };
 
 export type DisplayToolbars = {
   border: boolean;
   borderPixels: boolean
   gray: boolean;
+  collage: boolean;
 }

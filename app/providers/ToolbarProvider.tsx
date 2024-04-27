@@ -30,7 +30,7 @@ export default function ToolbarProvider({
     setOriginalFile,
     setOriginalImg,
     smallCanvasRef,
-     setDisplays,
+    setDisplays,
   } = useContext(ImageContext);
 
   const {
@@ -76,7 +76,12 @@ export default function ToolbarProvider({
    */
   function handleNewImage() {
     setDisplays((prev) => {
-      return { canvas: false, form: true, resizeTrigger: false };
+      return {
+        canvas: false,
+        form: true,
+        resizeTrigger: false,
+        collage: false,
+      };
     });
 
     setOriginalFile(null);
@@ -89,7 +94,7 @@ export default function ToolbarProvider({
     setBorderPixels("0");
     setBorderPercent("0");
     setInputBorderColor("#ffffff");
-   }
+  }
 
   /**
    * Procedimiento para generar la imagen procesada y enviarla como descarga.
