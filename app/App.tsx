@@ -18,6 +18,7 @@ import useWindowsSize from "./components/hooks/useWindowsSize";
 import { Upload } from "lucide-react";
 import UploadForm from "./components/UploadForm";
 import MainCanvas from "./components/MainCanvas";
+import CollageCanvas from "./components/CollageCanvas";
 
 export const mainCanvasConfig: CanvasConfig = {
   maxWidth: 600,
@@ -34,6 +35,7 @@ export default function App() {
         <section id="section__image">
           {displays.canvas && <MainCanvas></MainCanvas>}
           {displays.form && <UploadForm></UploadForm>}
+          {displays.collage && <CollageCanvas></CollageCanvas>}
         </section>
 
         <ToolbarProvider>

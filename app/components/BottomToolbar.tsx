@@ -348,7 +348,17 @@ export function BottomToolbar() {
             onClick={() => showToolbarRow(toolbarRow.canvas)}
           ></ButtonCanvas>
           <ButtonCollage
-            onClick={() => showToolbarRow(toolbarRow.collage)}
+            onClick={() => {
+              showToolbarRow(toolbarRow.collage);
+              setDisplays((prev) => {
+                return {
+                  canvas: false,
+                  form: false,
+                  resizeTrigger: !prev.resizeTrigger,
+                  collage: true,
+                };
+              });
+            }}
           ></ButtonCollage>
         </ToolbarRow>
       )}
