@@ -35,7 +35,7 @@ export function BottomToolbar() {
   function showToolbarRow(row: toolbarRow) {
     let toolbar = {
       mainMenu: true,
-      transform: false,
+      edit: false,
       border: false,
       borderPx: false,
       borderPc: false,
@@ -56,7 +56,7 @@ export function BottomToolbar() {
 
   const [toolbarDisplay, setToolbarDisplay] = useState({
     mainMenu: true,
-    transform: false,
+    edit: false,
     border: false,
     borderPx: false,
     borderPc: false,
@@ -282,7 +282,7 @@ export function BottomToolbar() {
       {toolbarDisplay.border && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
           <ButtonBack
-            onClick={() => showToolbarRow(toolbarRow.transform)}
+            onClick={() => showToolbarRow(toolbarRow.edit)}
           ></ButtonBack>
           <BorderColorInputs />
           <ButtonBorderPc
@@ -296,7 +296,7 @@ export function BottomToolbar() {
       {toolbarDisplay.canvas && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
           <ButtonBack
-            onClick={() => showToolbarRow(toolbarRow.transform)}
+            onClick={() => showToolbarRow(toolbarRow.edit)}
           ></ButtonBack>
           <span></span>
           {/* el span es un separador para generar gap */}
@@ -312,7 +312,7 @@ export function BottomToolbar() {
         </ToolbarRow>
       )}
 
-      {toolbarDisplay.transform && originalImg?.src && (
+      {toolbarDisplay.edit && originalImg?.src && (
         <ToolbarRow>
           <ButtonBorder
             onClick={() => showToolbarRow(toolbarRow.border)}
@@ -331,7 +331,7 @@ export function BottomToolbar() {
           <ButtonNew></ButtonNew>
           <ButtonUndo></ButtonUndo>
           <ButtonEdit
-            onClick={() => showToolbarRow(toolbarRow.transform)}
+            onClick={() => showToolbarRow(toolbarRow.edit)}
           ></ButtonEdit>
 
           {/* FIXME: no funciona la ubicacion del popover justo arriba del boton */}
