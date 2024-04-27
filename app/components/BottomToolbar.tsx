@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useContext, useEffect, useId } from "react";
-import toolbar from "./toolbar.module.css";
+import toolbar from "./BottomToolbar.module.css";
 import { BorderContext } from "../providers/BorderProvider";
 import { ImageContext } from "../providers/ImageProvider";
 import { ToolbarContext } from "../providers/ToolbarProvider";

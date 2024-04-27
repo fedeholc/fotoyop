@@ -11,7 +11,7 @@ import ButtonDownload from "./buttons/buttonDownload";
 import ButtonApply from "./buttons/buttonApply";
 import ButtonDiscard from "./buttons/buttonDiscard";
 import ButtonGrayscale from "./buttons/buttonGrayscale";
-import toolbar from "./toolbar.module.css";
+import toolbar from "./BottomToolbar.module.css";
 
 function ToolbarGroup({
   className = "",

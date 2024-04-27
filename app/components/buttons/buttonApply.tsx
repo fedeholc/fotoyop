@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import toolbar from "../toolbar.module.css";
+import toolbar from "../BottomToolbar.module.css";
 
 export default function ButtonApply({ onClick }: { onClick: () => void }) {
   return (

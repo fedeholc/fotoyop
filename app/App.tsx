@@ -7,7 +7,7 @@ import {
   drawImageB64OnCanvas,
   imageB64ToImageData,
 } from "./imageProcessing";
-import { BottomToolbar } from "./components/toolbar";
+import { BottomToolbar } from "./components/BottomToolbar";
 import { SideToolbar } from "./components/sideToolbar";
 import { ImageContext } from "./providers/ImageProvider";
 import { ProcessContext } from "./providers/ProcessProvider";
@@ -17,7 +17,7 @@ import ToolbarProvider from "./providers/ToolbarProvider";
 import useWindowsSize from "./components/hooks/useWindowsSize";
 import { Upload } from "lucide-react";
 import UploadForm from "./components/UploadForm";
-import SmallCanvas from "./components/SmallCanvas";
+import MainCanvas from "./components/MainCanvas";
 
 export const mainCanvasConfig: CanvasConfig = {
   maxWidth: 600,
@@ -32,7 +32,7 @@ export default function App() {
     <div className="app-wrapper">
       <main data-testid="main" id="app" className={styles.main}>
         <section id="section__image">
-          {displays.canvas && <SmallCanvas></SmallCanvas>}
+          {displays.canvas && <MainCanvas></MainCanvas>}
           {displays.form && <UploadForm></UploadForm>}
         </section>
 

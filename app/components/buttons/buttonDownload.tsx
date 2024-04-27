@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { ToolbarContext } from "../../providers/ToolbarProvider";
 import { Download } from "lucide-react";
-import toolbar from "../toolbar.module.css";
+import toolbar from "../BottomToolbar.module.css";
 
 export default function ButtonDownload() {
   const { handleDownload } = useContext(ToolbarContext);

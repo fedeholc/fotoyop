@@ -6,7 +6,7 @@ import { mainCanvasConfig } from "../App";
 import { ProcessContext } from "../providers/ProcessProvider";
 import { calcResizeToWindow } from "../imageProcessing";
 
-export default function SmallCanvas() {
+export default function MainCanvas() {
   const { originalImg, smallCanvasRef, displays, mobileToolbarRef } =
     useContext(ImageContext);
   const windowDimensions = useWindowsSize(displays, mobileToolbarRef);

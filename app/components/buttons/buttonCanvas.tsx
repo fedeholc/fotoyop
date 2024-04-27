@@ -1,5 +1,5 @@
 import { Ratio } from "lucide-react";
-import toolbar from "../toolbar.module.css";
+import toolbar from "../BottomToolbar.module.css";
 
 export default function ButtonCanvas({ onClick }: { onClick: () => void }) {
   return (
