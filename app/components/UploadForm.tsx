@@ -196,6 +196,7 @@ export default function UploadForm({}) {
           accept="image/*"
           style={{ display: "none" }}
           ref={inputUploadRef}
+          multiple={true}
         ></input>
       </div>
     </form>

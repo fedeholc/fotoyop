@@ -56,82 +56,19 @@ export default function CollageCanvas() {
     event.preventDefault();
     const files = (event.target as HTMLFormElement).files;
     await loadMultipleFilesProcedure(files as File[]);
-    /* setDisplays((prev) => {
-      return {
-        canvas: true,
-        form: false,
-        resizeTrigger: !prev.resizeTrigger,
-        collage: false,
-      };
-    }); */
-    /* 
-    //todo: probar si con este agregado de setDisplays acá se puede quitar el resizeTrigger */
-  }
-
-  /**
-   * Pasos a seguir cuando se carga un archivo de imagen.
-   * @param file - archivo de imagen
-   * @returns
-   */
-  async function loadFileProcedure(file: File) {
-    let originalImageB64: string;
-    /* setDisplays((prev) => {
-      return {
-        canvas: true,
-        form: false,
-        resizeTrigger: !prev.resizeTrigger,
-        collage: false,
-      };
-    }); */
-    try {
-      originalImageB64 = (await getImageFromFile(file as File)) as string;
-    } catch (error) {
-      console.error("Error:", error);
-      return;
-    }
-
-    if (originalImageB64) {
-      setOriginalFile(file);
-
-      const newImageElement = new window.Image();
-      newImageElement.src = originalImageB64;
-      newImageElement.onload = () => {
-        const { newWidth, newHeight } = calcResizeToWindow(
-          newImageElement.width,
-          newImageElement.height,
-          windowDimensions,
-          mainCanvasConfig
-        );
-
-        drawImageB64OnCanvas(
-          originalImageB64,
-          smallCanvasRef.current as HTMLCanvasElement,
-          newWidth,
-          newHeight
-        );
-      };
-      setOriginalImg(newImageElement);
-      setUndoImageList([
-        (await imageB64ToImageData(
-          originalImageB64,
-          mainCanvasConfig.maxWidth,
-          mainCanvasConfig.maxHeight
-        )) as ImageData,
-      ]);
-    }
   }
 
   async function loadMultipleFilesProcedure(files: File[]) {
-    /* setDisplays((prev) => {
+    setDisplays((prev) => {
       return {
-        canvas: true,
+        canvas: false,
         form: false,
         resizeTrigger: !prev.resizeTrigger,
-        collage: false,
+        collage: true,
       };
-    }); */
+    });
     let collageImagesB64: string[] = [];
-    console.log(files);
+    //console.log(files);
     try {
       for (let i = 0; i < files.length; i++) {
         collageImagesB64.push(
@@ -240,6 +177,26 @@ export default function CollageCanvas() {
     dropContainer?.classList.remove("drop-container-dragover");
   }
 
+  async function handleProbar() {
+    const canvas = document.getElementById(
+      "collage__canvas"
+    ) as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d");
+    ctx?.createImageData(400, 500);
+    if (ctx) {
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, 400, 500);
+      ctx.fillStyle = "red";
+      ctx.fillRect(10, 10, 150, 100);
+    }
+    if (collageImages) {
+      const imgd = await imageB64ToImageData(collageImages[0].src, 200, 200);
+      ctx?.putImageData(imgd as ImageData, 0, 0);
+      const imgd2 = await imageB64ToImageData(collageImages[1].src, 200, 200);
+      ctx?.putImageData(imgd2 as ImageData, 0, 250);
+    }
+  }
+
   //TODO: acá seguramente haya que usar otros elementos
   const {
     setOriginalFile,
@@ -260,6 +217,8 @@ export default function CollageCanvas() {
 
   const { setUndoImageList } = useContext(ProcessContext);
 
+  const CollageCanvasRef = useRef<HTMLCanvasElement>(null);
+
   return (
     <div>
       <form
@@ -277,7 +236,7 @@ export default function CollageCanvas() {
         >
           <div className={upForm.dropTitleGroup}>
             <span className={`${upForm.dropTitle} ${upForm.unselectable}`}>
-              Drop files here
+              Drop 2 files here
             </span>
             <br />
             <br />
@@ -297,6 +256,7 @@ export default function CollageCanvas() {
             data-testid="inputUpload"
             accept="image/*"
             style={{ display: "none" }}
+            multiple={true}
             ref={inputUploadRef}
           ></input>
         </div>
@@ -312,17 +272,15 @@ export default function CollageCanvas() {
             ></img>
           );
         })}
-
-      <img
-        id="imagen1"
-        style={{ maxWidth: "200px", maxHeight: "200px" }}
-        //src={originalImg?.src}
-      ></img>
-      <img
-        id="imagen2"
-        style={{ maxWidth: "200px", maxHeight: "200px" }}
-        //src={originalImg?.src}
-      ></img>
+      <button onClick={handleProbar}>probar</button>
+      <div className="collage__container">
+        <canvas
+          width={600}
+          height={600}
+          id="collage__canvas"
+          ref={CollageCanvasRef}
+        ></canvas>
+      </div>
     </div>
   );
 }
