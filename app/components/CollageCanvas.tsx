@@ -177,7 +177,7 @@ export default function CollageCanvas() {
     dropContainer?.classList.remove("drop-container-dragover");
   }
 
-  async function handleProbar() {
+  async function handleProbar2() {
     const canvas = document.getElementById(
       "collage__canvas"
     ) as HTMLCanvasElement;
@@ -193,8 +193,41 @@ export default function CollageCanvas() {
       const imgd = await imageB64ToImageData(collageImages[0].src, 200, 200);
       ctx?.putImageData(imgd as ImageData, 0, 0);
       const imgd2 = await imageB64ToImageData(collageImages[1].src, 200, 200);
+
       ctx?.putImageData(imgd2 as ImageData, 0, 250);
     }
+  }
+  async function handleProbar() {
+    const canvas = document.getElementById(
+      "collage__canvas"
+    ) as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d");
+    if (collageImages) {
+      const imgd = await imageB64ToImageData(collageImages[0].src, 400, 500);
+      const imgd2 = await imageB64ToImageData(collageImages[1].src, 400, 500);
+
+      let gap = (imgd.height + imgd2.height) * 0.05;
+      let maxWidth = Math.max(imgd.width, imgd2.width);
+      let maxHeight = imgd.height + imgd2.height + gap;
+
+      canvas.width = maxWidth;
+      canvas.height = maxHeight;
+
+      ctx?.createImageData(maxWidth, maxHeight);
+      ctx!.fillStyle = "white";
+      ctx!.fillRect(0, 0, maxWidth, maxHeight);
+
+      ctx?.putImageData(imgd as ImageData, 0, 0);
+      ctx?.putImageData(imgd2 as ImageData, 0, imgd.height + gap);
+    }
+    let downloadDataURL = canvas.toDataURL("image/jpeg", 1);
+    const enlaceDescarga = document.createElement("a");
+    enlaceDescarga.href = downloadDataURL || "";
+    enlaceDescarga.download = "image.jpg";
+
+    document.body.appendChild(enlaceDescarga);
+    enlaceDescarga.click();
+    document.body.removeChild(enlaceDescarga);
   }
 
   //TODO: acá seguramente haya que usar otros elementos
