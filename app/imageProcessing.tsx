@@ -20,6 +20,7 @@ export {
   processToNewImageData,
   putImageDataOnCanvas,
   imageB64ToImageData,
+  imageB64ToImageDataWithOrientation,
   imageDataToBase64,
   calcResizeToWindow,
 };
@@ -460,6 +461,49 @@ async function imageB64ToImageData(
         canvas.width = canvasMaxWidth;
         canvas.height = canvasMaxWidth / aspectRatio;
       } else {
+        canvas.height = canvasMaxHeight;
+        canvas.width = canvasMaxHeight * aspectRatio;
+      }
+
+      canvas
+        .getContext("2d")
+        ?.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
+
+      resolve();
+    };
+
+    imgElement.onerror = function () {
+      reject(new Error("Error al cargar la imagen"));
+    };
+
+    imgElement.src = imageB64;
+  });
+
+  await loadImage;
+  return canvas
+    .getContext("2d")
+    ?.getImageData(0, 0, canvas.width, canvas.height)!;
+}
+
+async function imageB64ToImageDataWithOrientation(
+  imageB64: string,
+  canvasMaxWidth: number,
+  canvasMaxHeight: number,
+  orientation: number
+): Promise<ImageData> {
+  const canvas = document.createElement("canvas");
+  const imgElement = new window.Image();
+
+  const loadImage = new Promise<void>((resolve, reject) => {
+    imgElement.onload = function () {
+      const aspectRatio = imgElement.width / imgElement.height;
+
+      //para collage vertical
+      if (orientation > 1) {
+        canvas.width = canvasMaxWidth;
+        canvas.height = canvasMaxWidth / aspectRatio;
+      } else {
+        //para collage horizontal
         canvas.height = canvasMaxHeight;
         canvas.width = canvasMaxHeight * aspectRatio;
       }
