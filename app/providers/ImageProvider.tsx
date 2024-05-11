@@ -19,6 +19,12 @@ export const ImageContext = createContext({
   displays: {} as DisplaySections,
   setDisplays: (() => {}) as Dispatch<SetStateAction<DisplaySections>>,
   mobileToolbarRef: createRef<HTMLDivElement>(),
+  collageImages: null as HTMLImageElement[] | null,
+  collageFiles: null as File[] | null,
+  setCollageImages: (() => {}) as Dispatch<
+    SetStateAction<HTMLImageElement[] | null>
+  >,
+  setCollageFiles: (() => {}) as Dispatch<SetStateAction<File[] | null>>,
 });
 
 export default function ImageProvider({
@@ -28,6 +34,10 @@ export default function ImageProvider({
 }) {
   const [originalImg, setOriginalImg] = useState<HTMLImageElement | null>(null);
   const [originalFile, setOriginalFile] = useState<File | null>(null);
+  const [collageFiles, setCollageFiles] = useState<File[] | null>(null);
+  const [collageImages, setCollageImages] = useState<
+    HTMLImageElement[] | null
+  >(null);
   const smallCanvasRef = useRef<HTMLCanvasElement>(null);
   const [displays, setDisplays] = useState<DisplaySections>({
     canvas: false,
@@ -48,6 +58,10 @@ export default function ImageProvider({
         displays,
         setDisplays,
         mobileToolbarRef,
+        collageImages,
+        collageFiles,
+        setCollageImages,
+        setCollageFiles,
       }}
     >
       {children}

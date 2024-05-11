@@ -21,16 +21,31 @@ export default function UploadForm({}) {
     event: React.FormEvent<HTMLFormElement>
   ) {
     event.preventDefault();
-    const file = (event.target as HTMLFormElement).files[0];
-    await loadFileProcedure(file as File);
-    setDisplays((prev) => {
-      return {
-        canvas: true,
-        form: false,
-        resizeTrigger: !prev.resizeTrigger,
-        collage: false,
-      };
-    });
+    const files = (event.target as HTMLFormElement).files;
+
+    if (files.length == 1) {
+      await loadFileProcedure(files[0] as File);
+
+      setDisplays((prev) => {
+        return {
+          canvas: true,
+          form: false,
+          resizeTrigger: !prev.resizeTrigger,
+          collage: false,
+        };
+      });
+    } else if (files.length > 1) {
+      await loadMultipleFilesProcedure(files as File[]);
+
+      setDisplays((prev) => {
+        return {
+          canvas: true,
+          form: false,
+          resizeTrigger: !prev.resizeTrigger,
+          collage: true,
+        };
+      });
+    }
 
     //todo: probar si con este agregado de setDisplays acá se puede quitar el resizeTrigger
   }
@@ -88,7 +103,55 @@ export default function UploadForm({}) {
     }
   }
 
-  
+  async function loadMultipleFilesProcedure(files: File[]) {
+    setDisplays((prev) => {
+      return {
+        canvas: true,
+        form: false,
+        resizeTrigger: !prev.resizeTrigger,
+        collage: true,
+      };
+    });
+    let collageImagesB64: string[] = [];
+    try {
+      for (let i = 0; i < files.length; i++) {
+        collageImagesB64.push(
+          (await getImageFromFile(files[i] as File)) as string
+        );
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      return;
+    }
+
+    if (files && collageImagesB64) {
+      setCollageFiles(files);
+      let imageElements: HTMLImageElement[] = [];
+
+      collageImagesB64.forEach(async (callageImageB64) => {
+        const newImageElement = new window.Image();
+        newImageElement.src = callageImageB64;
+        newImageElement.onload = () => {
+          //? creo que por ahora no es necesario
+          /* const { newWidth, newHeight } = calcResizeToWindow(
+            newImageElement.width,
+            newImageElement.height,
+            windowDimensions,
+            mainCanvasConfig
+          ); */
+          /* drawImageB64OnCanvas(
+            originalImageB64,
+            smallCanvasRef.current as HTMLCanvasElement,
+            newWidth,
+            newHeight
+          ); */
+        };
+        imageElements.push(newImageElement);
+      });
+
+      setCollageImages(imageElements);
+    }
+  }
 
   /**
    * Simula el click en el input de tipo file para abrir el explorador de archivos.
@@ -116,7 +179,11 @@ export default function UploadForm({}) {
       }
     }
 
-    loadFileProcedure(files[0]);
+    if (files.length === 1) {
+      loadFileProcedure(files[0]);
+    } else if (files.length > 1) {
+      loadMultipleFilesProcedure(files);
+    }
   }
 
   /**
@@ -154,6 +221,8 @@ export default function UploadForm({}) {
     displays,
     setDisplays,
     mobileToolbarRef,
+    setCollageFiles,
+    setCollageImages,
   } = useContext(ImageContext);
 
   const windowDimensions = useWindowsSize(displays, mobileToolbarRef);

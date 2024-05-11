@@ -68,7 +68,6 @@ export default function CollageCanvas() {
       };
     });
     let collageImagesB64: string[] = [];
-    //console.log(files);
     try {
       for (let i = 0; i < files.length; i++) {
         collageImagesB64.push(
@@ -81,7 +80,7 @@ export default function CollageCanvas() {
     }
 
     if (files && collageImagesB64) {
-      setCollagesFiles(files);
+      setCollageFiles(files);
       let imageElements: HTMLImageElement[] = [];
 
       collageImagesB64.forEach(async (callageImageB64) => {
@@ -105,7 +104,7 @@ export default function CollageCanvas() {
         imageElements.push(newImageElement);
       });
 
-      setCollagesImages(imageElements);
+      setCollageImages(imageElements);
 
       /* setUndoImageList([
         (await imageB64ToImageData(
@@ -257,12 +256,11 @@ export default function CollageCanvas() {
     displays,
     setDisplays,
     mobileToolbarRef,
+    collageImages,
+    collageFiles,
+    setCollageImages,
+    setCollageFiles,
   } = useContext(ImageContext);
-
-  const [collageFiles, setCollagesFiles] = useState<File[] | null>(null);
-  const [collageImages, setCollagesImages] = useState<
-    HTMLImageElement[] | null
-  >(null);
 
   const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
   const inputUploadRef = useRef<HTMLInputElement | null>(null);
