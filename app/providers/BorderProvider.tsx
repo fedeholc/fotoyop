@@ -163,7 +163,7 @@ export default function BorderProvider({
     borderOptions: BorderOptionsType,
     smallCanvasRef: React.RefObject<HTMLCanvasElement>
   ) {
-    if (!originalFile) {
+    if (!originalImg) {
       return;
     }
     // El borderOptions como viene lo uso para guardar en processList, ya que el borde en pixels se aplica tal cual a la imagen final con la resolución original. Pero para el small canvas, que es el que se muestra, el borde en pixels se tiene que ajustar a la resolución del canvas.
@@ -231,7 +231,7 @@ export default function BorderProvider({
     options: CanvasOptions,
     smallCanvasRef: React.RefObject<HTMLCanvasElement>
   ) {
-    if (!originalFile) {
+    if (!originalImg) {
       return;
     }
 
