@@ -177,11 +177,9 @@ export default function CollageCanvas() {
     dropContainer?.classList.remove("drop-container-dragover");
   }
 
-  
+  //VER si queremos una miniatura con las distintas opciones de collage a elegir, en ese caso habría que tener canvas pequeños en pantalla, y luego pasar la imagen grande según lo elegido a edición
   async function handleProbar() {
-    const canvas = document.getElementById(
-      "collage__canvas"
-    ) as HTMLCanvasElement;
+    const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     if (collageImages) {
       let width = Math.max(collageImages[0].width, collageImages[1].width);
@@ -210,9 +208,7 @@ export default function CollageCanvas() {
       ctx?.putImageData(imgd as ImageData, 0, 0);
       ctx?.putImageData(imgd2 as ImageData, 0, imgd.height + gap);
 
-     
       loadB64Procedure(canvas.toDataURL("image/jpeg", 1) as string);
- 
     }
   }
 
