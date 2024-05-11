@@ -4,7 +4,7 @@ import withSerwistInit from "@serwist/next";
 const USE_PWA = false;
 
 const withSerwist = withSerwistInit({
-  cacheOnFrontEndNav: true,
+  cacheOnNavigation: true,
   swSrc: "app/sw.ts",
   swDest: "public/sw.js",
 });
