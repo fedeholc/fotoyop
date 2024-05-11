@@ -88,6 +88,8 @@ export default function UploadForm({}) {
     }
   }
 
+  
+
   /**
    * Simula el click en el input de tipo file para abrir el explorador de archivos.
    */

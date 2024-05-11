@@ -61,7 +61,7 @@ export default function CollageCanvas() {
   async function loadMultipleFilesProcedure(files: File[]) {
     setDisplays((prev) => {
       return {
-        canvas: false,
+        canvas: true,
         form: false,
         resizeTrigger: !prev.resizeTrigger,
         collage: true,
@@ -203,11 +203,20 @@ export default function CollageCanvas() {
     ) as HTMLCanvasElement;
     const ctx = canvas.getContext("2d");
     if (collageImages) {
-      const imgd = await imageB64ToImageData(collageImages[0].src, 400, 500);
-      const imgd2 = await imageB64ToImageData(collageImages[1].src, 400, 500);
+      let width = Math.max(collageImages[0].width, collageImages[1].width);
+      const imgd = await imageB64ToImageData(
+        collageImages[0].src,
+        collageImages[0].width,
+        collageImages[0].height
+      );
+      const imgd2 = await imageB64ToImageData(
+        collageImages[1].src,
+        collageImages[1].width,
+        collageImages[1].height
+      );
 
       let gap = (imgd.height + imgd2.height) * 0.05;
-      let maxWidth = Math.max(imgd.width, imgd2.width);
+      let maxWidth = Math.min(imgd.width, imgd2.width);
       let maxHeight = imgd.height + imgd2.height + gap;
 
       canvas.width = maxWidth;
@@ -219,15 +228,84 @@ export default function CollageCanvas() {
 
       ctx?.putImageData(imgd as ImageData, 0, 0);
       ctx?.putImageData(imgd2 as ImageData, 0, imgd.height + gap);
-    }
-    let downloadDataURL = canvas.toDataURL("image/jpeg", 1);
-    const enlaceDescarga = document.createElement("a");
-    enlaceDescarga.href = downloadDataURL || "";
-    enlaceDescarga.download = "image.jpg";
 
-    document.body.appendChild(enlaceDescarga);
-    enlaceDescarga.click();
-    document.body.removeChild(enlaceDescarga);
+      /*     setDisplays((prev) => {
+        return {
+          canvas: true,
+          form: false,
+          resizeTrigger: !prev.resizeTrigger,
+          collage: true,
+        };
+      }); */
+
+      /*  const newImage = new window.Image();
+      newImage.src = canvas.toDataURL("image/jpeg", 1) as string;
+      newImage.onload = () => {
+        const { newWidth, newHeight } = calcResizeToWindow(
+          newImage.width,
+          newImage.height,
+          windowDimensions,
+          mainCanvasConfig
+        );
+      }; */
+
+      /*      drawImageB64OnCanvas(
+        canvas.toDataURL("image/jpeg", 1) as string,
+        smallCanvasRef.current as HTMLCanvasElement,
+        canvas.width,
+        canvas.height
+      ); */
+
+      loadB64Procedure(canvas.toDataURL("image/jpeg", 1) as string);
+
+      //smallCanvasRef.current?.getContext("2d")?.drawImage(canvas, 0, 0);
+
+      /*  let downloadDataURL = canvas.toDataURL("image/jpeg", 1);
+      const enlaceDescarga = document.createElement("a");
+      enlaceDescarga.href = downloadDataURL || "";
+      enlaceDescarga.download = "image.jpg";
+
+      document.body.appendChild(enlaceDescarga);
+      enlaceDescarga.click();
+      document.body.removeChild(enlaceDescarga); */
+    }
+  }
+
+  async function loadB64Procedure(originalImageB64: string) {
+    setDisplays((prev) => {
+      return {
+        canvas: true,
+        form: false,
+        resizeTrigger: !prev.resizeTrigger,
+        collage: false,
+      };
+    });
+
+    const newImageElement = new window.Image();
+    newImageElement.src = originalImageB64;
+    newImageElement.onload = () => {
+      const { newWidth, newHeight } = calcResizeToWindow(
+        newImageElement.width,
+        newImageElement.height,
+        windowDimensions,
+        mainCanvasConfig
+      );
+
+      drawImageB64OnCanvas(
+        originalImageB64,
+        smallCanvasRef.current as HTMLCanvasElement,
+        newWidth,
+        newHeight
+      );
+    };
+    setOriginalImg(newImageElement);
+    setUndoImageList([
+      (await imageB64ToImageData(
+        originalImageB64,
+        mainCanvasConfig.maxWidth,
+        mainCanvasConfig.maxHeight
+      )) as ImageData,
+    ]);
   }
 
   //TODO: acá seguramente haya que usar otros elementos

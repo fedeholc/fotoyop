@@ -443,6 +443,7 @@ function drawImageB64OnCanvas(
   };
 }
 
+// TODO: no debería usar un offline canvas acá?
 async function imageB64ToImageData(
   imageB64: string,
   canvasMaxWidth: number,

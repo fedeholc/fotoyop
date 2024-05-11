@@ -53,7 +53,7 @@ export default function ToolbarProvider({
    * Handler del click en convertir a blanco y negro.
    */
   function handleToGrayscale() {
-    if (!originalFile) {
+    if (!originalImg) {
       return;
     }
 
@@ -100,7 +100,7 @@ export default function ToolbarProvider({
    * Procedimiento para generar la imagen procesada y enviarla como descarga.
    */
   function handleDownload() {
-    if (!originalFile) {
+    if (!originalImg) {
       return;
     }
     let downloadDataURL = processImgToCanvas(
@@ -120,7 +120,7 @@ export default function ToolbarProvider({
    * Handler del botón Undo. Deshace la última modificación.
    */
   function handleUndo() {
-    if (!originalFile) {
+    if (!originalImg) {
       return;
     }
     if (undoImageList.length > 1) {
