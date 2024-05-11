@@ -1,6 +1,6 @@
 "use client";
 import { ImageContext } from "../providers/ImageProvider";
-import { ReactEventHandler, useContext, useRef, useState } from "react";
+import { ReactEventHandler, useContext, useRef, useState, useId } from "react";
 import {
   drawImageB64OnCanvas,
   imageB64ToImageData,
@@ -195,7 +195,7 @@ export default function CollageCanvas() {
         collageImages.map((image) => {
           return (
             <img
-              id="imagen1"
+              key={useId()}
               style={{ maxWidth: "200px", maxHeight: "200px" }}
               src={image.src}
             ></img>
