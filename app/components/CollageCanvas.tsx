@@ -177,26 +177,7 @@ export default function CollageCanvas() {
     dropContainer?.classList.remove("drop-container-dragover");
   }
 
-  async function handleProbar2() {
-    const canvas = document.getElementById(
-      "collage__canvas"
-    ) as HTMLCanvasElement;
-    const ctx = canvas.getContext("2d");
-    ctx?.createImageData(400, 500);
-    if (ctx) {
-      ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, 400, 500);
-      ctx.fillStyle = "red";
-      ctx.fillRect(10, 10, 150, 100);
-    }
-    if (collageImages) {
-      const imgd = await imageB64ToImageData(collageImages[0].src, 200, 200);
-      ctx?.putImageData(imgd as ImageData, 0, 0);
-      const imgd2 = await imageB64ToImageData(collageImages[1].src, 200, 200);
-
-      ctx?.putImageData(imgd2 as ImageData, 0, 250);
-    }
-  }
+  
   async function handleProbar() {
     const canvas = document.getElementById(
       "collage__canvas"
@@ -229,45 +210,9 @@ export default function CollageCanvas() {
       ctx?.putImageData(imgd as ImageData, 0, 0);
       ctx?.putImageData(imgd2 as ImageData, 0, imgd.height + gap);
 
-      /*     setDisplays((prev) => {
-        return {
-          canvas: true,
-          form: false,
-          resizeTrigger: !prev.resizeTrigger,
-          collage: true,
-        };
-      }); */
-
-      /*  const newImage = new window.Image();
-      newImage.src = canvas.toDataURL("image/jpeg", 1) as string;
-      newImage.onload = () => {
-        const { newWidth, newHeight } = calcResizeToWindow(
-          newImage.width,
-          newImage.height,
-          windowDimensions,
-          mainCanvasConfig
-        );
-      }; */
-
-      /*      drawImageB64OnCanvas(
-        canvas.toDataURL("image/jpeg", 1) as string,
-        smallCanvasRef.current as HTMLCanvasElement,
-        canvas.width,
-        canvas.height
-      ); */
-
+     
       loadB64Procedure(canvas.toDataURL("image/jpeg", 1) as string);
-
-      //smallCanvasRef.current?.getContext("2d")?.drawImage(canvas, 0, 0);
-
-      /*  let downloadDataURL = canvas.toDataURL("image/jpeg", 1);
-      const enlaceDescarga = document.createElement("a");
-      enlaceDescarga.href = downloadDataURL || "";
-      enlaceDescarga.download = "image.jpg";
-
-      document.body.appendChild(enlaceDescarga);
-      enlaceDescarga.click();
-      document.body.removeChild(enlaceDescarga); */
+ 
     }
   }
 
