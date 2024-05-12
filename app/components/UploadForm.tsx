@@ -11,8 +11,12 @@ import useWindowsSize from "./hooks/useWindowsSize";
 import { mainCanvasConfig } from "../App";
 import { calcResizeToWindow } from "../imageProcessing";
 import upForm from "./UploadForm.module.css";
+import { CollageContext } from "../providers/CollageProvider";
+import { Orientation } from "../types";
 
 export default function UploadForm({}) {
+  const { createPreview } = useContext(CollageContext);
+
   /**
    * Handler del input cuando se sube un archivo.
    * @param event

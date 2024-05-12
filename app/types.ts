@@ -1,3 +1,7 @@
+export enum Orientation {
+  vertical,
+  horizontal,
+}
 export enum toolbarRow {
   mainMenu = "mainMenu",
   edit = "edit",

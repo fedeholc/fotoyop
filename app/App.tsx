@@ -10,6 +10,7 @@ import ToolbarProvider from "./providers/ToolbarProvider";
 import UploadForm from "./components/UploadForm";
 import MainCanvas from "./components/MainCanvas";
 import CollageCanvas from "./components/CollageCanvas";
+import CollageProvider from "./providers/CollageProvider";
 
 export const mainCanvasConfig: CanvasConfig = {
   maxWidth: 600,
@@ -22,24 +23,26 @@ export default function App() {
 
   return (
     <div className="app-wrapper">
-      <main data-testid="main" id="app" className={styles.main}>
-        <section id="section__image">
-          {displays.canvas && <MainCanvas></MainCanvas>}
-          {displays.form && <UploadForm></UploadForm>}
-          {displays.collage && <CollageCanvas></CollageCanvas>}
-        </section>
+      <CollageProvider>
+        <main data-testid="main" id="app" className={styles.main}>
+          <section id="section__image">
+            {displays.canvas && <MainCanvas></MainCanvas>}
+            {displays.form && <UploadForm></UploadForm>}
+            {displays.collage && <CollageCanvas></CollageCanvas>}
+          </section>
 
-        <ToolbarProvider>
-          <BorderProvider>
-            <section id="section__toolbar">
-              <SideToolbar></SideToolbar>
-            </section>
-            <section id="section__mobile">
-              <BottomToolbar></BottomToolbar>
-            </section>
-          </BorderProvider>
-        </ToolbarProvider>
-      </main>
+          <ToolbarProvider>
+            <BorderProvider>
+              <section id="section__toolbar">
+                <SideToolbar></SideToolbar>
+              </section>
+              <section id="section__mobile">
+                <BottomToolbar></BottomToolbar>
+              </section>
+            </BorderProvider>
+          </ToolbarProvider>
+        </main>
+      </CollageProvider>
     </div>
   );
 }

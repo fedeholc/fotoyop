@@ -79,10 +79,7 @@ export default function BorderProvider({
   const [selectAspectRatio, setSelectAspectRatio] = useState<string>("1:1");
 
   const {
-    originalFile,
     originalImg,
-    setOriginalFile,
-    setOriginalImg,
     smallCanvasRef,
   } = useContext(ImageContext);
 

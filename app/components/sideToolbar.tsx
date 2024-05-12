@@ -2,7 +2,11 @@ import { useRef, useContext, useState, useId } from "react";
 import { ImageContext } from "../providers/ImageProvider";
 import { ProcessContext } from "../providers/ProcessProvider";
 import { ToolbarContext } from "../providers/ToolbarProvider";
-import { imageDataToBase64 } from "../imageProcessing";
+import {
+  imageDataToBase64,
+  imageB64ToImageData,
+  drawImageB64OnCanvas,
+} from "../imageProcessing";
 import { BorderContext } from "../providers/BorderProvider";
 import sideToolbar from "./sideToolbar.module.css";
 import ButtonUndo from "./buttons/buttonUndo";
@@ -12,6 +16,11 @@ import ButtonApply from "./buttons/buttonApply";
 import ButtonDiscard from "./buttons/buttonDiscard";
 import ButtonGrayscale from "./buttons/buttonGrayscale";
 import toolbar from "./BottomToolbar.module.css";
+import { CollageContext } from "../providers/CollageProvider";
+import { Orientation } from "../types";
+import useWindowsSize from "./hooks/useWindowsSize";
+import { mainCanvasConfig } from "../App";
+import { calcResizeToWindow } from "../imageProcessing";
 
 export function SideToolbar() {
   const { originalImg } = useContext(ImageContext);
@@ -32,10 +41,16 @@ export function SideToolbar() {
           <TbChangesHistory></TbChangesHistory>
         </div>
       )}
+      <div className={sideToolbar.groupContainer}>
+        <TbCollageImages></TbCollageImages>
+        <TbCollageOptions></TbCollageOptions>
+      </div>
       <br />
     </>
   );
 }
+
+import collage from "./CollageCanvas.module.css";
 
 function ToolbarGroup({
   className = "",
@@ -76,6 +91,158 @@ function ToolbarGroup({
       </details>
     );
   }
+}
+
+function TbCollageOptions() {
+  const {
+    setOriginalImg,
+    smallCanvasRef,
+    displays,
+    setDisplays,
+    mobileToolbarRef,
+  } = useContext(ImageContext);
+
+  const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
+  const { setUndoImageList } = useContext(ProcessContext);
+
+  function handleOrientation(orientation: Orientation) {
+    console.log("llamo a create con: ", orientation);
+    createPreview(orientation);
+  }
+  function handlePreview() {
+    console.log("llamo a create con: ", previewOrientation);
+    createPreview(previewOrientation);
+  }
+
+  //TODO: ojo esto está incompleto, no tiene la parte de horizontal como el create preview.
+  async function handleProbar() {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    if (collageImages) {
+      //para collage vertical
+      let width = Math.min(collageImages[0].width, collageImages[1].width);
+      const imgd = await imageB64ToImageData(
+        collageImages[0].src,
+        width,
+        collageImages[0].height
+      );
+      const imgd2 = await imageB64ToImageData(
+        collageImages[1].src,
+        width,
+        collageImages[1].height
+      );
+
+      let gap = (imgd.height + imgd2.height) * 0.05;
+      let maxWidth = Math.min(imgd.width, imgd2.width);
+      let maxHeight = imgd.height + imgd2.height + gap;
+
+      canvas.width = maxWidth;
+      canvas.height = maxHeight;
+
+      ctx?.createImageData(maxWidth, maxHeight);
+      ctx!.fillStyle = "white";
+      ctx!.fillRect(0, 0, maxWidth, maxHeight);
+
+      ctx?.putImageData(imgd as ImageData, 0, 0);
+      ctx?.putImageData(imgd2 as ImageData, 0, imgd.height + gap);
+
+      //pasa la imagen al smallCanvas
+      loadB64Procedure(canvas.toDataURL("image/jpeg", 1) as string);
+    }
+  }
+
+  async function loadB64Procedure(originalImageB64: string) {
+    setDisplays((prev) => {
+      return {
+        canvas: true,
+        form: false,
+        resizeTrigger: !prev.resizeTrigger,
+        collage: false,
+      };
+    });
+
+    const newImageElement = new window.Image();
+    newImageElement.src = originalImageB64;
+    newImageElement.onload = () => {
+      const { newWidth, newHeight } = calcResizeToWindow(
+        newImageElement.width,
+        newImageElement.height,
+        windowDimensions,
+        mainCanvasConfig
+      );
+
+      drawImageB64OnCanvas(
+        originalImageB64,
+        smallCanvasRef.current as HTMLCanvasElement,
+        newWidth,
+        newHeight
+      );
+    };
+    setOriginalImg(newImageElement);
+    setUndoImageList([
+      (await imageB64ToImageData(
+        originalImageB64,
+        mainCanvasConfig.maxWidth,
+        mainCanvasConfig.maxHeight
+      )) as ImageData,
+    ]);
+  }
+
+  const { createPreview } = useContext(CollageContext);
+  const { previewOrientation, setPreviewOrientation } =
+    useContext(CollageContext);
+  const { collageImages } = useContext(ImageContext);
+  return (
+    <ToolbarGroup closedRendering={false} groupTitle="Collage Options">
+      <div className={`${sideToolbar.toolbarRow}`}>
+        <input
+          type="radio"
+          name="collage"
+          value="vertical"
+          onChange={() => {
+            setPreviewOrientation(Orientation.vertical);
+            handleOrientation(Orientation.vertical);
+          }}
+          checked={previewOrientation === Orientation.vertical}
+        />
+        <label>Vertical</label>
+        <input
+          type="radio"
+          name="collage"
+          value="horizontal"
+          onChange={() => {
+            setPreviewOrientation(Orientation.horizontal);
+            handleOrientation(Orientation.horizontal);
+          }}
+          checked={previewOrientation === Orientation.horizontal}
+        />
+        <label>Horizontal</label>
+
+        <button onClick={handleProbar}>probar</button>
+        <button onClick={handlePreview}>preview</button>
+      </div>
+    </ToolbarGroup>
+  );
+}
+
+function TbCollageImages() {
+  const { collageImages } = useContext(ImageContext);
+  return (
+    <ToolbarGroup closedRendering={false} groupTitle="Collage Images">
+      <div className={`${collage.imagesGroup} ${sideToolbar.toolbarRow}`}>
+        <div className={collage.imagesList}>
+          {collageImages &&
+            collageImages.map((image) => {
+              return (
+                <span key={image.src}>
+                  <img src={image.src}></img>
+                </span>
+              );
+            })}
+        </div>
+      </div>
+    </ToolbarGroup>
+  );
 }
 
 function TbImageInfo() {
