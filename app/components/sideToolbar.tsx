@@ -21,6 +21,7 @@ import { Orientation } from "../types";
 import useWindowsSize from "./hooks/useWindowsSize";
 import { mainCanvasConfig } from "../App";
 import { calcResizeToWindow } from "../imageProcessing";
+import { createCollage } from "../imageProcessing";
 
 export function SideToolbar() {
   const { originalImg } = useContext(ImageContext);
@@ -97,6 +98,7 @@ function TbCollageOptions() {
   const {
     setOriginalImg,
     smallCanvasRef,
+    collageCanvasRef,
     displays,
     setDisplays,
     mobileToolbarRef,
@@ -106,12 +108,18 @@ function TbCollageOptions() {
   const { setUndoImageList } = useContext(ProcessContext);
 
   function handleOrientation(orientation: Orientation) {
-    console.log("llamo a create con: ", orientation);
-    createPreview(orientation);
+    if (collageImages && collageCanvasRef.current) {
+      createCollage(collageCanvasRef.current, orientation, collageImages);
+    }
   }
   function handlePreview() {
-    console.log("llamo a create con: ", previewOrientation);
-    createPreview(previewOrientation);
+    if (collageImages && collageCanvasRef.current) {
+      createCollage(
+        collageCanvasRef.current,
+        previewOrientation,
+        collageImages
+      );
+    }
   }
 
   //TODO: ojo esto está incompleto, no tiene la parte de horizontal como el create preview.
@@ -188,7 +196,6 @@ function TbCollageOptions() {
     ]);
   }
 
-  const { createPreview } = useContext(CollageContext);
   const { previewOrientation, setPreviewOrientation } =
     useContext(CollageContext);
   const { collageImages } = useContext(ImageContext);

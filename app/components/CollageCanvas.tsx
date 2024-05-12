@@ -1,7 +1,7 @@
 "use client";
 import { ImageContext } from "../providers/ImageProvider";
 import { useEffect, useContext, useRef, useState, useId } from "react";
-
+import { createCollage } from "../imageProcessing";
 import { Orientation } from "../types";
 
 import { CollageContext } from "../providers/CollageProvider";
@@ -9,8 +9,7 @@ import { CollageContext } from "../providers/CollageProvider";
 export default function CollageCanvas() {
   const { collageImages } = useContext(ImageContext);
 
-  const { createPreview } = useContext(CollageContext);
-
+ 
   const { collageCanvasRef } = useContext(ImageContext);
 
   const [previewOrientation, setPreviewOrientation] = useState<Orientation>(
@@ -27,8 +26,12 @@ export default function CollageCanvas() {
   }, [collageCanvasRef]);
 
   useEffect(() => {
-    if (collageImages) {
-       createPreview(previewOrientation);
+    if (collageImages && collageCanvasRef.current) {
+       createCollage(
+        collageCanvasRef.current,
+        Orientation.vertical,
+        collageImages
+      );
     }
   }, [collageImages]);
 
