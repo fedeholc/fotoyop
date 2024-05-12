@@ -11,6 +11,7 @@ import { ProcessContext } from "../providers/ProcessProvider";
 import useWindowsSize from "./hooks/useWindowsSize";
 import { mainCanvasConfig } from "../App";
 import { calcResizeToWindow } from "../imageProcessing";
+import collage from "./CollageCanvas.module.css";
 
 export default function CollageCanvas() {
   //VER si queremos una miniatura con las distintas opciones de collage a elegir, en ese caso habría que tener canvas pequeños en pantalla, y luego pasar la imagen grande según lo elegido a edición
@@ -171,9 +172,7 @@ export default function CollageCanvas() {
   } = useContext(ImageContext);
 
   const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
-
   const { setUndoImageList } = useContext(ProcessContext);
-
   const CollageCanvasRef = useRef<HTMLCanvasElement>(null);
 
   enum CollageOrientation {
@@ -195,17 +194,21 @@ export default function CollageCanvas() {
   }
   return (
     <div>
-      <p>hola</p>
-      {collageImages &&
-        collageImages.map((image) => {
-           return (
-            <img
-              key={image.src}
-              style={{ maxWidth: "200px", maxHeight: "200px" }}
-              src={image.src}
-            ></img>
-          );
-        })}
+      <p>Loaded images:</p>
+      <div className={collage.imagesGrid}>
+        {collageImages &&
+          collageImages.map((image, index) => {
+            return (
+              <div>
+                <img
+                  key={image.src}
+                  style={{ maxWidth: "200px", maxHeight: "200px" }}
+                  src={image.src}
+                ></img>
+              </div>
+            );
+          })}
+      </div>
 
       <input
         type="radio"

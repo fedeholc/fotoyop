@@ -39,7 +39,7 @@ export default function UploadForm({}) {
 
       setDisplays((prev) => {
         return {
-          canvas: true,
+          canvas: false,
           form: false,
           resizeTrigger: !prev.resizeTrigger,
           collage: true,

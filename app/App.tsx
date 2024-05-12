@@ -1,21 +1,12 @@
 "use client";
 import styles from "./page.module.css";
-import { useEffect, useRef, useState } from "react";
 import { CanvasConfig } from "./types";
-import {
-  getImageFromFile,
-  drawImageB64OnCanvas,
-  imageB64ToImageData,
-} from "./imageProcessing";
 import { BottomToolbar } from "./components/BottomToolbar";
 import { SideToolbar } from "./components/sideToolbar";
 import { ImageContext } from "./providers/ImageProvider";
-import { ProcessContext } from "./providers/ProcessProvider";
 import { useContext } from "react";
 import BorderProvider from "./providers/BorderProvider";
 import ToolbarProvider from "./providers/ToolbarProvider";
-import useWindowsSize from "./components/hooks/useWindowsSize";
-import { Upload } from "lucide-react";
 import UploadForm from "./components/UploadForm";
 import MainCanvas from "./components/MainCanvas";
 import CollageCanvas from "./components/CollageCanvas";

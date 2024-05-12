@@ -56,130 +56,16 @@ function ToolbarGroup({
 
 export function SideToolbar() {
   const {
-    inputBorderColor,
     BorderPixels,
     BorderPercent,
-    inputAspectRatioX,
-    inputAspectRatioY,
-    handleInputAspectRatioX,
-    handleInputAspectRatioY,
-    handleInputBorderColor,
+
     handleBorderPixelsRange,
     handleBorderPercentRange,
     handleApplyBorder,
     handleDiscardBorder,
-    handleApplyCanvas,
-    handleDiscardCanvas,
-    selectAspectRatio,
-    handleSelectAspectRatio,
   } = useContext(BorderContext);
 
   const { originalFile, originalImg } = useContext(ImageContext);
-
-  const { undoImageList } = useContext(ProcessContext);
-
-  const { handleToGrayscale } = useContext(ToolbarContext);
-
-  function BorderPixelInputs({ maxRange }: { maxRange: string }) {
-    const id = useId();
-    const [inputBorderPixels, setInputBorderPixels] = useState(BorderPixels);
-    return (
-      <div className={sideToolbar.borderRangesRow}>
-        <input
-          type="number"
-          id={`${id}inputBorderPixelsN}`}
-          min="0"
-          value={inputBorderPixels}
-          onKeyUp={(e) => {
-            setInputBorderPixels((e.target as HTMLInputElement).value);
-            if (e.key === "Enter") {
-              handleBorderPixelsRange((e.target as HTMLInputElement).value);
-            }
-          }}
-          onChange={(e) => {
-            setInputBorderPixels(e.target.value);
-          }}
-        ></input>
-        <div>px</div>
-        <input
-          type="range"
-          id={`${id}inputBorderPixels}`}
-          min="0"
-          max={maxRange}
-          value={inputBorderPixels}
-          onChange={(e) => setInputBorderPixels(e.target.value)}
-          onMouseUp={(e) =>
-            handleBorderPixelsRange((e.target as HTMLInputElement).value)
-          }
-          onTouchEnd={(e) =>
-            handleBorderPixelsRange((e.target as HTMLInputElement).value)
-          }
-        ></input>
-      </div>
-    );
-  }
-
-  function BorderPercentInputs({ maxRange }: { maxRange: string }) {
-    const id = useId();
-    const [inputBorderPercent, setInputBorderPercent] = useState(BorderPercent);
-    return (
-      <div className={sideToolbar.borderRangesRow}>
-        <input
-          type="number"
-          id={`${id}inputBorderPercentN}`}
-          min="0"
-          value={inputBorderPercent}
-          onKeyUp={(e) => {
-            setInputBorderPercent((e.target as HTMLInputElement).value);
-            if (e.key === "Enter") {
-              handleBorderPercentRange((e.target as HTMLInputElement).value);
-            }
-          }}
-          onChange={(e) => {
-            setInputBorderPercent(e.target.value);
-          }}
-        ></input>
-        <div>%</div>
-        <input
-          type="range"
-          id={`${id}inputBorderPercent}`}
-          min="0"
-          max={maxRange}
-          value={inputBorderPercent}
-          onChange={(e) => setInputBorderPercent(e.target.value)}
-          onMouseUp={(e) =>
-            handleBorderPercentRange((e.target as HTMLInputElement).value)
-          }
-          onTouchEnd={(e) =>
-            handleBorderPercentRange((e.target as HTMLInputElement).value)
-          }
-        ></input>
-      </div>
-    );
-  }
-
-  function BorderColorInputs() {
-    const id = useId();
-    return (
-      <div className={sideToolbar.borderColorRow}>
-        <input
-          id={`${id}inputBorderColor`}
-          type="color"
-          list="true"
-          value={inputBorderColor}
-          onChange={handleInputBorderColor}
-        />
-
-        <input
-          id={`${id}inputBorderColorT`}
-          type="Text"
-          min="0"
-          value={inputBorderColor}
-          onChange={handleInputBorderColor}
-        ></input>
-      </div>
-    );
-  }
 
   function ImageInfo() {
     return (
@@ -203,8 +89,87 @@ export function SideToolbar() {
       </div>
     );
   }
-  function ChangesHistory() {
-    return (
+
+  return (
+    <>
+      <div className={sideToolbar.toolbar__top}>
+        <ButtonUndo></ButtonUndo>
+        <ButtonNew></ButtonNew>
+        <ButtonDownload></ButtonDownload>
+      </div>
+      {originalImg && (
+        <div className={sideToolbar.groupContainer}>
+          <ToolbarGroup groupTitle="Image Information">
+            <div className={sideToolbar.toolbarRow}>
+              <ImageInfo />
+            </div>
+          </ToolbarGroup>
+
+          <TbCanvas></TbCanvas>
+          <TbGrayScale></TbGrayScale>
+          <TbChangesHistory></TbChangesHistory>
+        </div>
+      )}
+      <br />
+    </>
+  );
+}
+function TbBorders() {
+  const { handleApplyBorder, handleDiscardBorder } = useContext(BorderContext);
+  const { originalFile, originalImg } = useContext(ImageContext);
+
+  return (
+    <ToolbarGroup groupTitle="Borders">
+      <div className={sideToolbar.toolbarRow}>
+        <div className={sideToolbar.rowTitle}>Color</div>
+        <BorderColorInputs />
+      </div>
+      <div className={sideToolbar.toolbarRow}>
+        <div className={sideToolbar.rowTitle}>Border in percent</div>
+        <BorderPercentInputs maxRange="100" />
+      </div>
+      <div className={sideToolbar.toolbarRow}>
+        <div className={sideToolbar.rowTitle}>Border in pixels</div>
+        {originalImg?.src && (
+          <BorderPixelInputs maxRange={(originalImg.width / 2).toString()} />
+        )}
+      </div>
+      <div className={sideToolbar.toolbarRow}>
+        <div className={sideToolbar.rowButtons}>
+          <ButtonApply onClick={handleApplyBorder}></ButtonApply>
+          <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
+        </div>
+      </div>
+    </ToolbarGroup>
+  );
+}
+function TbCanvas() {
+  const { handleApplyCanvas, handleDiscardCanvas } = useContext(BorderContext);
+  return (
+    <ToolbarGroup groupTitle="Canvas">
+      <div className={sideToolbar.toolbarRow}>
+        <div className={sideToolbar.rowTitle}>Color</div>
+        <BorderColorInputs />
+      </div>
+
+      <div className={sideToolbar.toolbarRow}>
+        <div className={sideToolbar.rowTitle}>Aspect Ratio</div>
+        <AspectRatioInputs />
+      </div>
+      <div className={sideToolbar.toolbarRow}>
+        <div className={sideToolbar.rowButtons}>
+          <ButtonApply onClick={handleApplyCanvas}></ButtonApply>
+          <ButtonDiscard onClick={handleDiscardCanvas}></ButtonDiscard>
+        </div>
+      </div>
+    </ToolbarGroup>
+  );
+}
+
+function TbChangesHistory() {
+  const { undoImageList } = useContext(ProcessContext);
+  return (
+    <ToolbarGroup closedRendering={false} groupTitle="Changes History">
       <div className={`${sideToolbar.changesGroup} ${sideToolbar.toolbarRow}`}>
         {undoImageList && (
           <div className={sideToolbar.changesList}>
@@ -218,123 +183,182 @@ export function SideToolbar() {
           </div>
         )}
       </div>
-    );
-  }
+    </ToolbarGroup>
+  );
+}
 
-  function AspectRatioInputs() {
-    return (
-      <>
-        <div className={sideToolbar.canvasCustomInputs}>
-          <label htmlFor="aspectRatioPresets">Presets</label>
-          <select
-            className={toolbar.aspectRatioInput}
-            value={selectAspectRatio}
-            id="aspectRatioPresets"
-            name="aspectRatioPresets"
-            onChange={handleSelectAspectRatio}
-          >
-            <option value="1:1">1:1</option>
-            <option value="16:9">16:9</option>
-            <option value="4:3">4:3</option>
-            <option value="3:4">3:4</option>
-            <option value="9:16">9:16</option>
-            <option value="">Custom</option>
-          </select>
-        </div>
-        <div className={sideToolbar.canvasCustomInputs}>
-          <label>Custom</label>
-          <input
-            className={toolbar.aspectRatioInput}
-            type="number"
-            name="inputAspectRatioX"
-            min="0"
-            value={inputAspectRatioX}
-            onKeyUp={handleInputAspectRatioX}
-            onChange={handleInputAspectRatioX}
-          ></input>
-          <span>: </span>
-          <input
-            className={toolbar.aspectRatioInput}
-            type="number"
-            name="inputAspectRatioY"
-            min="0"
-            value={inputAspectRatioY}
-            onKeyUp={handleInputAspectRatioY}
-            onChange={handleInputAspectRatioY}
-          ></input>
-        </div>
-      </>
-    );
-  }
+function TbGrayScale() {
+  const { handleToGrayscale } = useContext(ToolbarContext);
 
   return (
+    <ToolbarGroup groupTitle="GrayScale">
+      <div className={sideToolbar.toolbarRow}>
+        <div className={sideToolbar.rowButtons}>
+          <ButtonGrayscale onClick={handleToGrayscale}></ButtonGrayscale>
+        </div>
+      </div>
+    </ToolbarGroup>
+  );
+}
+
+function BorderColorInputs() {
+  const {
+    inputBorderColor,
+
+    handleInputBorderColor,
+  } = useContext(BorderContext);
+  const id = useId();
+  return (
+    <div className={sideToolbar.borderColorRow}>
+      <input
+        id={`${id}inputBorderColor`}
+        type="color"
+        list="true"
+        value={inputBorderColor}
+        onChange={handleInputBorderColor}
+      />
+
+      <input
+        id={`${id}inputBorderColorT`}
+        type="Text"
+        min="0"
+        value={inputBorderColor}
+        onChange={handleInputBorderColor}
+      ></input>
+    </div>
+  );
+}
+function AspectRatioInputs() {
+  const {
+    inputAspectRatioX,
+    inputAspectRatioY,
+    handleInputAspectRatioX,
+    handleInputAspectRatioY,
+
+    selectAspectRatio,
+    handleSelectAspectRatio,
+  } = useContext(BorderContext);
+  return (
     <>
-      <div className={sideToolbar.toolbar__top}>
-        <ButtonUndo></ButtonUndo>
-        <ButtonNew></ButtonNew>
-        <ButtonDownload></ButtonDownload>
+      <div className={sideToolbar.canvasCustomInputs}>
+        <label htmlFor="aspectRatioPresets">Presets</label>
+        <select
+          className={toolbar.aspectRatioInput}
+          value={selectAspectRatio}
+          id="aspectRatioPresets"
+          name="aspectRatioPresets"
+          onChange={handleSelectAspectRatio}
+        >
+          <option value="1:1">1:1</option>
+          <option value="16:9">16:9</option>
+          <option value="4:3">4:3</option>
+          <option value="3:4">3:4</option>
+          <option value="9:16">9:16</option>
+          <option value="">Custom</option>
+        </select>
       </div>
-      <div className={sideToolbar.groupContainer}>
-        <ToolbarGroup groupTitle="Image Information">
-          <div className={sideToolbar.toolbarRow}>
-            <ImageInfo />
-          </div>
-        </ToolbarGroup>
-
-        <ToolbarGroup groupTitle="Borders">
-          <div className={sideToolbar.toolbarRow}>
-            <div className={sideToolbar.rowTitle}>Color</div>
-            <BorderColorInputs />
-          </div>
-          <div className={sideToolbar.toolbarRow}>
-            <div className={sideToolbar.rowTitle}>Border in percent</div>
-            <BorderPercentInputs maxRange="100" />
-          </div>
-          <div className={sideToolbar.toolbarRow}>
-            <div className={sideToolbar.rowTitle}>Border in pixels</div>
-            {originalImg?.src && (
-              <BorderPixelInputs
-                maxRange={(originalImg.width / 2).toString()}
-              />
-            )}
-          </div>
-          <div className={sideToolbar.toolbarRow}>
-            <div className={sideToolbar.rowButtons}>
-              <ButtonApply onClick={handleApplyBorder}></ButtonApply>
-              <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
-            </div>
-          </div>
-        </ToolbarGroup>
-        <ToolbarGroup groupTitle="Canvas">
-          <div className={sideToolbar.toolbarRow}>
-            <div className={sideToolbar.rowTitle}>Color</div>
-            <BorderColorInputs />
-          </div>
-
-          <div className={sideToolbar.toolbarRow}>
-            <div className={sideToolbar.rowTitle}>Aspect Ratio</div>
-            <AspectRatioInputs />
-          </div>
-          <div className={sideToolbar.toolbarRow}>
-            <div className={sideToolbar.rowButtons}>
-              <ButtonApply onClick={handleApplyCanvas}></ButtonApply>
-              <ButtonDiscard onClick={handleDiscardCanvas}></ButtonDiscard>
-            </div>
-          </div>
-        </ToolbarGroup>
-        <ToolbarGroup groupTitle="GrayScale">
-          <div className={sideToolbar.toolbarRow}>
-            <div className={sideToolbar.rowButtons}>
-              <ButtonGrayscale onClick={handleToGrayscale}></ButtonGrayscale>
-            </div>
-          </div>
-        </ToolbarGroup>
-        <ToolbarGroup closedRendering={false} groupTitle="Changes History">
-          <ChangesHistory />
-        </ToolbarGroup>
+      <div className={sideToolbar.canvasCustomInputs}>
+        <label>Custom</label>
+        <input
+          className={toolbar.aspectRatioInput}
+          type="number"
+          name="inputAspectRatioX"
+          min="0"
+          value={inputAspectRatioX}
+          onKeyUp={handleInputAspectRatioX}
+          onChange={handleInputAspectRatioX}
+        ></input>
+        <span>: </span>
+        <input
+          className={toolbar.aspectRatioInput}
+          type="number"
+          name="inputAspectRatioY"
+          min="0"
+          value={inputAspectRatioY}
+          onKeyUp={handleInputAspectRatioY}
+          onChange={handleInputAspectRatioY}
+        ></input>
       </div>
-
-      <br />
     </>
+  );
+}
+function BorderPixelInputs({ maxRange }: { maxRange: string }) {
+  const id = useId();
+  const { BorderPixels, handleBorderPixelsRange, handleInputBorderColor } =
+    useContext(BorderContext);
+  const [inputBorderPixels, setInputBorderPixels] = useState(BorderPixels);
+  return (
+    <div className={sideToolbar.borderRangesRow}>
+      <input
+        type="number"
+        id={`${id}inputBorderPixelsN}`}
+        min="0"
+        value={inputBorderPixels}
+        onKeyUp={(e) => {
+          setInputBorderPixels((e.target as HTMLInputElement).value);
+          if (e.key === "Enter") {
+            handleBorderPixelsRange((e.target as HTMLInputElement).value);
+          }
+        }}
+        onChange={(e) => {
+          setInputBorderPixels(e.target.value);
+        }}
+      ></input>
+      <div>px</div>
+      <input
+        type="range"
+        id={`${id}inputBorderPixels}`}
+        min="0"
+        max={maxRange}
+        value={inputBorderPixels}
+        onChange={(e) => setInputBorderPixels(e.target.value)}
+        onMouseUp={(e) =>
+          handleBorderPixelsRange((e.target as HTMLInputElement).value)
+        }
+        onTouchEnd={(e) =>
+          handleBorderPixelsRange((e.target as HTMLInputElement).value)
+        }
+      ></input>
+    </div>
+  );
+}
+
+function BorderPercentInputs({ maxRange }: { maxRange: string }) {
+  const id = useId();
+  const { BorderPercent, handleBorderPercentRange } = useContext(BorderContext);
+  const [inputBorderPercent, setInputBorderPercent] = useState(BorderPercent);
+  return (
+    <div className={sideToolbar.borderRangesRow}>
+      <input
+        type="number"
+        id={`${id}inputBorderPercentN}`}
+        min="0"
+        value={inputBorderPercent}
+        onKeyUp={(e) => {
+          setInputBorderPercent((e.target as HTMLInputElement).value);
+          if (e.key === "Enter") {
+            handleBorderPercentRange((e.target as HTMLInputElement).value);
+          }
+        }}
+        onChange={(e) => {
+          setInputBorderPercent(e.target.value);
+        }}
+      ></input>
+      <div>%</div>
+      <input
+        type="range"
+        id={`${id}inputBorderPercent}`}
+        min="0"
+        max={maxRange}
+        value={inputBorderPercent}
+        onChange={(e) => setInputBorderPercent(e.target.value)}
+        onMouseUp={(e) =>
+          handleBorderPercentRange((e.target as HTMLInputElement).value)
+        }
+        onTouchEnd={(e) =>
+          handleBorderPercentRange((e.target as HTMLInputElement).value)
+        }
+      ></input>
+    </div>
   );
 }
