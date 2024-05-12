@@ -193,9 +193,9 @@ export default function CollageCanvas() {
       <p>hola</p>
       {collageImages &&
         collageImages.map((image) => {
-          return (
+           return (
             <img
-              key={useId()}
+              key={image.src}
               style={{ maxWidth: "200px", maxHeight: "200px" }}
               src={image.src}
             ></img>
