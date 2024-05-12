@@ -190,6 +190,9 @@ export default function CollageCanvas() {
     createPreview(previewOrientation);
   }
 
+  if (collageImages) {
+    createPreview(previewOrientation);
+  }
   return (
     <div>
       <p>hola</p>
