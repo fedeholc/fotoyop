@@ -62,15 +62,17 @@ export default function CollageCanvas() {
 
     if (orientation === CollageOrientation.vertical) {
       let width = Math.min(collageImages[0].width, collageImages[1].width);
-      const imgd = await imageB64ToImageData(
+      const imgd = await imageB64ToImageDataWithOrientation(
         collageImages[0].src,
         200,
-        collageImages[0].height
+        collageImages[0].height,
+        2
       );
-      const imgd2 = await imageB64ToImageData(
+      const imgd2 = await imageB64ToImageDataWithOrientation(
         collageImages[1].src,
         200,
-        collageImages[1].height
+        collageImages[1].height,
+        2
       );
 
       let gap = (imgd.height + imgd2.height) * 0.05;
