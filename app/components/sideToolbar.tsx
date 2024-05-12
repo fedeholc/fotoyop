@@ -13,6 +13,30 @@ import ButtonDiscard from "./buttons/buttonDiscard";
 import ButtonGrayscale from "./buttons/buttonGrayscale";
 import toolbar from "./BottomToolbar.module.css";
 
+export function SideToolbar() {
+  const { originalImg } = useContext(ImageContext);
+
+  return (
+    <>
+      <div className={sideToolbar.toolbar__top}>
+        <ButtonUndo></ButtonUndo>
+        <ButtonNew></ButtonNew>
+        <ButtonDownload></ButtonDownload>
+      </div>
+      {originalImg && (
+        <div className={sideToolbar.groupContainer}>
+          <TbImageInfo></TbImageInfo>
+          <TbBorders></TbBorders>
+          <TbCanvas></TbCanvas>
+          <TbGrayScale></TbGrayScale>
+          <TbChangesHistory></TbChangesHistory>
+        </div>
+      )}
+      <br />
+    </>
+  );
+}
+
 function ToolbarGroup({
   className = "",
   groupTitle = "",
@@ -54,69 +78,38 @@ function ToolbarGroup({
   }
 }
 
-export function SideToolbar() {
-  const {
-    BorderPixels,
-    BorderPercent,
-
-    handleBorderPixelsRange,
-    handleBorderPercentRange,
-    handleApplyBorder,
-    handleDiscardBorder,
-  } = useContext(BorderContext);
-
+function TbImageInfo() {
   const { originalFile, originalImg } = useContext(ImageContext);
-
-  function ImageInfo() {
-    return (
-      <div className={sideToolbar.imageInfoGroup}>
-        <div>
-          <strong>{originalFile?.name}</strong>
-        </div>
-        {originalFile && (
-          <div>
-            {originalImg?.width} x {originalImg?.height} pixels
-          </div>
-        )}
-        {originalFile && (
-          <div>{Math.floor(originalFile.size / 1000).toString()} Kbytes</div>
-        )}
-        <img
-          id="imagenPreview"
-          style={{ maxWidth: "200px", maxHeight: "200px" }}
-          src={originalImg?.src}
-        ></img>
-      </div>
-    );
-  }
 
   return (
-    <>
-      <div className={sideToolbar.toolbar__top}>
-        <ButtonUndo></ButtonUndo>
-        <ButtonNew></ButtonNew>
-        <ButtonDownload></ButtonDownload>
-      </div>
-      {originalImg && (
-        <div className={sideToolbar.groupContainer}>
-          <ToolbarGroup groupTitle="Image Information">
-            <div className={sideToolbar.toolbarRow}>
-              <ImageInfo />
+    <ToolbarGroup groupTitle="Image Information">
+      <div className={sideToolbar.toolbarRow}>
+        <div className={sideToolbar.imageInfoGroup}>
+          <div>
+            <strong>{originalFile?.name}</strong>
+          </div>
+          {originalFile && (
+            <div>
+              {originalImg?.width} x {originalImg?.height} pixels
             </div>
-          </ToolbarGroup>
-
-          <TbCanvas></TbCanvas>
-          <TbGrayScale></TbGrayScale>
-          <TbChangesHistory></TbChangesHistory>
+          )}
+          {originalFile && (
+            <div>{Math.floor(originalFile.size / 1000).toString()} Kbytes</div>
+          )}
+          <img
+            id="imagenPreview"
+            style={{ maxWidth: "200px", maxHeight: "200px" }}
+            src={originalImg?.src}
+          ></img>
         </div>
-      )}
-      <br />
-    </>
+      </div>
+    </ToolbarGroup>
   );
 }
+
 function TbBorders() {
   const { handleApplyBorder, handleDiscardBorder } = useContext(BorderContext);
-  const { originalFile, originalImg } = useContext(ImageContext);
+  const { originalImg } = useContext(ImageContext);
 
   return (
     <ToolbarGroup groupTitle="Borders">
@@ -143,6 +136,7 @@ function TbBorders() {
     </ToolbarGroup>
   );
 }
+
 function TbCanvas() {
   const { handleApplyCanvas, handleDiscardCanvas } = useContext(BorderContext);
   return (
@@ -228,6 +222,7 @@ function BorderColorInputs() {
     </div>
   );
 }
+
 function AspectRatioInputs() {
   const {
     inputAspectRatioX,
@@ -282,6 +277,7 @@ function AspectRatioInputs() {
     </>
   );
 }
+
 function BorderPixelInputs({ maxRange }: { maxRange: string }) {
   const id = useId();
   const { BorderPixels, handleBorderPixelsRange, handleInputBorderColor } =
