@@ -1,3 +1,4 @@
+import { i } from "vitest/dist/reporters-yx5ZTtEV.js";
 import {
   ProcessFunction,
   BorderOptionsType,
@@ -42,9 +43,26 @@ export async function createCollage(
   orientation: Orientation,
   collageImages: HTMLImageElement[] | null,
   maxSize: number = 0,
-  gapPc: number = 0,
+  gapPc: number = 5,
   gapColor: string = "black"
 ) {
+  function getMinSize(images: HTMLImageElement[]): {
+    width: number;
+    height: number;
+  } {
+    let minWidth = images[0].width;
+    let minHeight = images[0].height;
+    images.forEach((image) => {
+      if (image.width < minWidth) {
+        minWidth = image.width;
+      }
+      if (image.height < minHeight) {
+        minHeight = image.height;
+      }
+    });
+    return { width: minWidth, height: minHeight };
+  }
+
   const ctx = canvas?.getContext("2d");
   if (!collageImages || !canvas || !ctx) {
     return;
@@ -53,34 +71,34 @@ export async function createCollage(
   let maxImageDataWidth = maxSize;
   let maxImageDataHeight = maxSize;
   if (maxSize === 0) {
-    maxImageDataWidth = Math.min(
-      collageImages[0].width,
-      collageImages[1].width
-    );
-    maxImageDataHeight = Math.min(
-      collageImages[0].height,
-      collageImages[1].height
-    );
+    const minSize = getMinSize(collageImages);
+    maxImageDataWidth = minSize.width;
+    maxImageDataHeight = minSize.height;
   }
 
   //para collage vertical
   if (orientation === Orientation.vertical) {
-    const imageData1 = await imageB64ToImageDataWithOrientation(
-      collageImages[0].src,
-      maxImageDataWidth,
-      collageImages[0].height,
-      Orientation.vertical
-    );
-    const imageData2 = await imageB64ToImageDataWithOrientation(
-      collageImages[1].src,
-      maxImageDataWidth,
-      collageImages[1].height,
-      Orientation.vertical
+    let imagesData: ImageData[] = [];
+    let imagesHeightSum: number = 0;
+    let imagesWidths: number[] = [];
+
+    await Promise.all(
+      collageImages.map(async (image) => {
+        const imageData = await imageB64ToImageDataWithOrientation(
+          image.src,
+          maxImageDataWidth,
+          image.height,
+          Orientation.vertical
+        );
+        imagesData.push(imageData);
+        imagesWidths.push(imageData.width);
+        imagesHeightSum += imageData.height;
+      })
     );
 
-    let gap = (imageData1.height + imageData2.height) * (gapPc / 100);
-    let newCanvasWidth = Math.min(imageData1.width, imageData2.width);
-    let newCanvasHeight = imageData1.height + imageData2.height + gap;
+    let gap = imagesHeightSum * (gapPc / 100);
+    let newCanvasWidth = Math.min(...imagesWidths);
+    let newCanvasHeight = imagesHeightSum + gap * (collageImages.length - 1);
 
     canvas.width = newCanvasWidth;
     canvas.height = newCanvasHeight;
@@ -89,28 +107,43 @@ export async function createCollage(
     ctx.fillStyle = gapColor;
     ctx.fillRect(0, 0, newCanvasWidth, newCanvasHeight);
 
-    ctx.putImageData(imageData1 as ImageData, 0, 0);
-    ctx.putImageData(imageData2 as ImageData, 0, imageData1.height + gap);
+    let heightPlace = 0;
+    imagesData.forEach((imageData, index) => {
+      if (index === 0) {
+        ctx.putImageData(imageData, 0, 0);
+        heightPlace = imageData.height + gap;
+      } else if (index === imagesData.length - 1) {
+        ctx.putImageData(imageData, 0, heightPlace);
+      } else {
+        ctx.putImageData(imageData, 0, heightPlace);
+        heightPlace += imageData.height + gap;
+      }
+    });
   }
 
   //para collage horizontal
   if (orientation === Orientation.horizontal) {
-    const imageData1 = await imageB64ToImageDataWithOrientation(
-      collageImages[0].src,
-      collageImages[0].width,
-      maxImageDataHeight,
-      Orientation.horizontal
-    );
-    const imageData2 = await imageB64ToImageDataWithOrientation(
-      collageImages[1].src,
-      collageImages[1].width,
-      maxImageDataHeight,
-      Orientation.horizontal
+    let imagesData: ImageData[] = [];
+    let imagesWidthSum: number = 0;
+    let imagesHeights: number[] = [];
+
+    await Promise.all(
+      collageImages.map(async (image) => {
+        const imageData = await imageB64ToImageDataWithOrientation(
+          image.src,
+          image.height,
+          maxImageDataWidth,
+          Orientation.horizontal
+        );
+        imagesData.push(imageData);
+        imagesHeights.push(imageData.height);
+        imagesWidthSum += imageData.width;
+      })
     );
 
-    let gap = (imageData1.width + imageData2.width) * (gapPc / 100);
-    let newCanvasHeight = Math.min(imageData1.height, imageData2.height);
-    let newCanvasWidth = imageData1.width + imageData2.width + gap;
+    let gap = imagesWidthSum * (gapPc / 100);
+    let newCanvasWidth = imagesWidthSum + gap * (collageImages.length - 1);
+    let newCanvasHeight = Math.min(...imagesHeights);
 
     canvas.width = newCanvasWidth;
     canvas.height = newCanvasHeight;
@@ -119,8 +152,18 @@ export async function createCollage(
     ctx.fillStyle = gapColor;
     ctx.fillRect(0, 0, newCanvasWidth, newCanvasHeight);
 
-    ctx.putImageData(imageData1 as ImageData, 0, 0);
-    ctx.putImageData(imageData2 as ImageData, imageData1.width + gap, 0);
+    let widthPlace = 0;
+    imagesData.forEach((imageData, index) => {
+      if (index === 0) {
+        ctx.putImageData(imageData, 0, 0);
+        widthPlace = imageData.width + gap;
+      } else if (index === imagesData.length - 1) {
+        ctx.putImageData(imageData, widthPlace, 0);
+      } else {
+        ctx.putImageData(imageData, widthPlace, 0);
+        widthPlace += imageData.width + gap;
+      }
+    });
   }
 }
 /**
