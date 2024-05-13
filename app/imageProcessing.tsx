@@ -27,96 +27,23 @@ export {
 };
 
 //TODO: poner gap como parametro y luego otras ops
-export async function createCollage2(
-  canvas: HTMLCanvasElement,
-  orientation: Orientation,
-  collageImages: HTMLImageElement[] | null,
-  maxSize: number
-) {
-  const ctx = canvas?.getContext("2d");
-  if (!collageImages || !canvas || !ctx) {
-    return;
-  }
-
-  let maxImageDataWidth = maxSize;
-  let maxImageDataHeight = maxSize;
-  if (maxSize === 0) {
-    maxImageDataWidth = Math.min(
-      collageImages[0].width,
-      collageImages[1].width
-    );
-    maxImageDataHeight = Math.min(
-      collageImages[0].height,
-      collageImages[1].height
-    );
-  }
-
-  //para collage vertical
-  if (orientation === Orientation.vertical) {
-    const imageData1 = await imageB64ToImageDataWithOrientation(
-      collageImages[0].src,
-      maxImageDataWidth,
-      collageImages[0].height,
-      Orientation.vertical
-    );
-    const imageData2 = await imageB64ToImageDataWithOrientation(
-      collageImages[1].src,
-      maxImageDataWidth,
-      collageImages[1].height,
-      Orientation.vertical
-    );
-
-    let gap = (imageData1.height + imageData2.height) * 0.05;
-    let newCanvasWidth = Math.min(imageData1.width, imageData2.width);
-    let newCanvasHeight = imageData1.height + imageData2.height + gap;
-
-    canvas.width = newCanvasWidth;
-    canvas.height = newCanvasHeight;
-
-    ctx.createImageData(newCanvasWidth, newCanvasHeight);
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, newCanvasWidth, newCanvasHeight);
-
-    ctx.putImageData(imageData1 as ImageData, 0, 0);
-    ctx.putImageData(imageData2 as ImageData, 0, imageData1.height + gap);
-  }
-
-  //para collage horizontal
-  if (orientation === Orientation.horizontal) {
-    const imgd1 = await imageB64ToImageDataWithOrientation(
-      collageImages[0].src,
-      collageImages[0].width,
-      maxImageDataHeight,
-      Orientation.horizontal
-    );
-    const imgd2 = await imageB64ToImageDataWithOrientation(
-      collageImages[1].src,
-      collageImages[1].width,
-      maxImageDataHeight,
-      Orientation.horizontal
-    );
-
-    let gap = (imgd1.width + imgd2.width) * 0.05;
-    let maxHeight = Math.min(imgd1.height, imgd2.height);
-    let maxWidth = imgd1.width + imgd2.width + gap;
-
-    canvas.width = maxWidth;
-    canvas.height = maxHeight;
-
-    ctx.createImageData(maxWidth, maxHeight);
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, maxWidth, maxHeight);
-
-    ctx.putImageData(imgd1 as ImageData, 0, 0);
-    ctx.putImageData(imgd2 as ImageData, imgd1.width + gap, 0);
-  }
-}
-
+/**
+ *
+ * @param canvas
+ * @param orientation
+ * @param collageImages
+ * @param maxSize maximum size of the collage in pixels (0 for no limit)
+ * @param gapPc gap between images in percentage
+ * @param gapColor
+ * @returns
+ */
 export async function createCollage(
   canvas: HTMLCanvasElement,
   orientation: Orientation,
   collageImages: HTMLImageElement[] | null,
-  maxSize: number
+  maxSize: number = 0,
+  gapPc: number = 0,
+  gapColor: string = "black"
 ) {
   const ctx = canvas?.getContext("2d");
   if (!collageImages || !canvas || !ctx) {
@@ -151,7 +78,7 @@ export async function createCollage(
       Orientation.vertical
     );
 
-    let gap = (imageData1.height + imageData2.height) * 0.05;
+    let gap = (imageData1.height + imageData2.height) * (gapPc / 100);
     let newCanvasWidth = Math.min(imageData1.width, imageData2.width);
     let newCanvasHeight = imageData1.height + imageData2.height + gap;
 
@@ -159,7 +86,7 @@ export async function createCollage(
     canvas.height = newCanvasHeight;
 
     ctx.createImageData(newCanvasWidth, newCanvasHeight);
-    ctx.fillStyle = "white";
+    ctx.fillStyle = gapColor;
     ctx.fillRect(0, 0, newCanvasWidth, newCanvasHeight);
 
     ctx.putImageData(imageData1 as ImageData, 0, 0);
@@ -181,7 +108,7 @@ export async function createCollage(
       Orientation.horizontal
     );
 
-    let gap = (imageData1.width + imageData2.width) * 0.05;
+    let gap = (imageData1.width + imageData2.width) * (gapPc / 100);
     let newCanvasHeight = Math.min(imageData1.height, imageData2.height);
     let newCanvasWidth = imageData1.width + imageData2.width + gap;
 
@@ -189,7 +116,7 @@ export async function createCollage(
     canvas.height = newCanvasHeight;
 
     ctx.createImageData(newCanvasWidth, newCanvasHeight);
-    ctx.fillStyle = "white";
+    ctx.fillStyle = gapColor;
     ctx.fillRect(0, 0, newCanvasWidth, newCanvasHeight);
 
     ctx.putImageData(imageData1 as ImageData, 0, 0);
