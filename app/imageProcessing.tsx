@@ -131,8 +131,8 @@ export async function createCollage(
       collageImages.map(async (image) => {
         const imageData = await imageB64ToImageDataWithOrientation(
           image.src,
-          image.height,
-          maxImageDataWidth,
+          image.width,
+          maxImageDataHeight,
           Orientation.horizontal
         );
         imagesData.push(imageData);
