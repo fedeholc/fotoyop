@@ -123,48 +123,10 @@ function TbCollageOptions() {
     }
   }
 
-  //TODO: ojo esto está incompleto, no tiene la parte de horizontal como el create preview.
-  async function handleProbar2() {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    if (collageImages) {
-      //para collage vertical
-      let width = Math.min(collageImages[0].width, collageImages[1].width);
-      const imgd = await imageB64ToImageData(
-        collageImages[0].src,
-        width,
-        collageImages[0].height
-      );
-      const imgd2 = await imageB64ToImageData(
-        collageImages[1].src,
-        width,
-        collageImages[1].height
-      );
-
-      let gap = (imgd.height + imgd2.height) * 0.05;
-      let maxWidth = Math.min(imgd.width, imgd2.width);
-      let maxHeight = imgd.height + imgd2.height + gap;
-
-      canvas.width = maxWidth;
-      canvas.height = maxHeight;
-
-      ctx?.createImageData(maxWidth, maxHeight);
-      ctx!.fillStyle = "white";
-      ctx!.fillRect(0, 0, maxWidth, maxHeight);
-
-      ctx?.putImageData(imgd as ImageData, 0, 0);
-      ctx?.putImageData(imgd2 as ImageData, 0, imgd.height + gap);
-
-      //pasa la imagen al smallCanvas
-      loadB64Procedure(canvas.toDataURL("image/jpeg", 1) as string);
-    }
-  }
   async function handleProbar() {
     if (collageImages && collageCanvasRef.current) {
-      //hide collagecanvasref
-      collageCanvasRef.current.style.display = "none";
-
       //  hay que ocultar el canvas para que no se vea que se está creando el collage en grande
+      collageCanvasRef.current.style.display = "none";
 
       await createCollage(
         collageCanvasRef.current,
@@ -172,7 +134,7 @@ function TbCollageOptions() {
         collageImages,
         0
       );
-      //pasa la imagen al smallCanvas
+      //pasa la imagen al smallCanvas para trabajar en modo edición
       loadB64Procedure(
         collageCanvasRef.current.toDataURL("image/jpeg", 1) as string
       );
@@ -214,12 +176,6 @@ function TbCollageOptions() {
         mainCanvasConfig.maxHeight
       )) as ImageData,
     ]);
-    //console.log("originalImageB64", originalImageB64);
-    console.log(
-      "newImageElement",
-      newImageElement.width,
-      newImageElement.height
-    );
   }
 
   const { previewOrientation, setPreviewOrientation } =

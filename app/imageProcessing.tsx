@@ -27,7 +27,7 @@ export {
 };
 
 //TODO: poner gap como parametro y luego otras ops
-export async function createCollage(
+export async function createCollage2(
   canvas: HTMLCanvasElement,
   orientation: Orientation,
   collageImages: HTMLImageElement[] | null,
@@ -51,42 +51,34 @@ export async function createCollage(
     );
   }
 
-  console.log("maxImageDataWidth", maxImageDataWidth);
-  console.log("maxImageDataHeight", maxImageDataHeight);
-  //FIXME Revisar por qué no está haciendo que la imagen que pasa a edición (con maxsize 0) se vea a resolución completa, ver que valores de maximagedatawidth y height se estan pasando.
-
   //para collage vertical
   if (orientation === Orientation.vertical) {
-    const imgd1 = await imageB64ToImageDataWithOrientation(
+    const imageData1 = await imageB64ToImageDataWithOrientation(
       collageImages[0].src,
       maxImageDataWidth,
       collageImages[0].height,
       Orientation.vertical
     );
-    const imgd2 = await imageB64ToImageDataWithOrientation(
+    const imageData2 = await imageB64ToImageDataWithOrientation(
       collageImages[1].src,
       maxImageDataWidth,
       collageImages[1].height,
       Orientation.vertical
     );
 
-    let gap = (imgd1.height + imgd2.height) * 0.05;
-    let maxWidth = Math.min(imgd1.width, imgd2.width);
-    let maxHeight = imgd1.height + imgd2.height + gap;
+    let gap = (imageData1.height + imageData2.height) * 0.05;
+    let newCanvasWidth = Math.min(imageData1.width, imageData2.width);
+    let newCanvasHeight = imageData1.height + imageData2.height + gap;
 
-    canvas.width = maxWidth;
-    canvas.height = maxHeight;
+    canvas.width = newCanvasWidth;
+    canvas.height = newCanvasHeight;
 
-    console.log("maxsize", maxSize);
-    console.log("maxWidth", maxWidth);
-    console.log("maxHeight", maxHeight);
-
-    ctx?.createImageData(maxWidth, maxHeight);
+    ctx.createImageData(newCanvasWidth, newCanvasHeight);
     ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, maxWidth, maxHeight);
+    ctx.fillRect(0, 0, newCanvasWidth, newCanvasHeight);
 
-    ctx.putImageData(imgd1 as ImageData, 0, 0);
-    ctx.putImageData(imgd2 as ImageData, 0, imgd1.height + gap);
+    ctx.putImageData(imageData1 as ImageData, 0, 0);
+    ctx.putImageData(imageData2 as ImageData, 0, imageData1.height + gap);
   }
 
   //para collage horizontal
@@ -111,20 +103,99 @@ export async function createCollage(
     canvas.width = maxWidth;
     canvas.height = maxHeight;
 
-    console.log("maxsize", maxSize);
+    ctx.createImageData(maxWidth, maxHeight);
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, maxWidth, maxHeight);
 
-    console.log("maxWidth", maxWidth);
-    console.log("maxHeight", maxHeight);
-
-    ctx?.createImageData(maxWidth, maxHeight);
-    ctx!.fillStyle = "white";
-    ctx!.fillRect(0, 0, maxWidth, maxHeight);
-
-    ctx?.putImageData(imgd1 as ImageData, 0, 0);
-    ctx?.putImageData(imgd2 as ImageData, imgd1.width + gap, 0);
+    ctx.putImageData(imgd1 as ImageData, 0, 0);
+    ctx.putImageData(imgd2 as ImageData, imgd1.width + gap, 0);
   }
 }
 
+export async function createCollage(
+  canvas: HTMLCanvasElement,
+  orientation: Orientation,
+  collageImages: HTMLImageElement[] | null,
+  maxSize: number
+) {
+  const ctx = canvas?.getContext("2d");
+  if (!collageImages || !canvas || !ctx) {
+    return;
+  }
+
+  let maxImageDataWidth = maxSize;
+  let maxImageDataHeight = maxSize;
+  if (maxSize === 0) {
+    maxImageDataWidth = Math.min(
+      collageImages[0].width,
+      collageImages[1].width
+    );
+    maxImageDataHeight = Math.min(
+      collageImages[0].height,
+      collageImages[1].height
+    );
+  }
+
+  //para collage vertical
+  if (orientation === Orientation.vertical) {
+    const imageData1 = await imageB64ToImageDataWithOrientation(
+      collageImages[0].src,
+      maxImageDataWidth,
+      collageImages[0].height,
+      Orientation.vertical
+    );
+    const imageData2 = await imageB64ToImageDataWithOrientation(
+      collageImages[1].src,
+      maxImageDataWidth,
+      collageImages[1].height,
+      Orientation.vertical
+    );
+
+    let gap = (imageData1.height + imageData2.height) * 0.05;
+    let newCanvasWidth = Math.min(imageData1.width, imageData2.width);
+    let newCanvasHeight = imageData1.height + imageData2.height + gap;
+
+    canvas.width = newCanvasWidth;
+    canvas.height = newCanvasHeight;
+
+    ctx.createImageData(newCanvasWidth, newCanvasHeight);
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, newCanvasWidth, newCanvasHeight);
+
+    ctx.putImageData(imageData1 as ImageData, 0, 0);
+    ctx.putImageData(imageData2 as ImageData, 0, imageData1.height + gap);
+  }
+
+  //para collage horizontal
+  if (orientation === Orientation.horizontal) {
+    const imageData1 = await imageB64ToImageDataWithOrientation(
+      collageImages[0].src,
+      collageImages[0].width,
+      maxImageDataHeight,
+      Orientation.horizontal
+    );
+    const imageData2 = await imageB64ToImageDataWithOrientation(
+      collageImages[1].src,
+      collageImages[1].width,
+      maxImageDataHeight,
+      Orientation.horizontal
+    );
+
+    let gap = (imageData1.width + imageData2.width) * 0.05;
+    let newCanvasHeight = Math.min(imageData1.height, imageData2.height);
+    let newCanvasWidth = imageData1.width + imageData2.width + gap;
+
+    canvas.width = newCanvasWidth;
+    canvas.height = newCanvasHeight;
+
+    ctx.createImageData(newCanvasWidth, newCanvasHeight);
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, newCanvasWidth, newCanvasHeight);
+
+    ctx.putImageData(imageData1 as ImageData, 0, 0);
+    ctx.putImageData(imageData2 as ImageData, imageData1.width + gap, 0);
+  }
+}
 /**
  * Función que calcula un nuevo tamaño para la imagen del small canvas teniendo en cuenta el tamaño de la ventana.
  * @param imageWidth - ancho de la imagen original
