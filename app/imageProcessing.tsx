@@ -76,96 +76,102 @@ export async function createCollage(
     maxImageDataHeight = minSize.height;
   }
 
+  let imagesData: ImageData[] = [];
   //para collage vertical
-  if (orientation === Orientation.vertical) {
-    let imagesData: ImageData[] = [];
-    let imagesHeightSum: number = 0;
-    let imagesWidths: number[] = [];
+  let imagesHeightSum: number = 0;
+  let imagesWidths: number[] = [];
+  //para horizontal
+  let imagesWidthSum: number = 0;
+  let imagesHeights: number[] = [];
 
-    await Promise.all(
-      collageImages.map(async (image) => {
-        const imageData = await imageB64ToImageDataWithOrientation(
-          image.src,
-          maxImageDataWidth,
-          image.height,
-          Orientation.vertical
-        );
-        imagesData.push(imageData);
-        imagesWidths.push(imageData.width);
-        imagesHeightSum += imageData.height;
-      })
-    );
-
-    let gap = imagesHeightSum * (gapPc / 100);
-    let newCanvasWidth = Math.min(...imagesWidths);
-    let newCanvasHeight = imagesHeightSum + gap * (collageImages.length - 1);
-
-    canvas.width = newCanvasWidth;
-    canvas.height = newCanvasHeight;
-
-    ctx.createImageData(newCanvasWidth, newCanvasHeight);
-    ctx.fillStyle = gapColor;
-    ctx.fillRect(0, 0, newCanvasWidth, newCanvasHeight);
-
-    let heightPlace = 0;
-    imagesData.forEach((imageData, index) => {
-      if (index === 0) {
-        ctx.putImageData(imageData, 0, 0);
-        heightPlace = imageData.height + gap;
-      } else if (index === imagesData.length - 1) {
-        ctx.putImageData(imageData, 0, heightPlace);
+  //* Se crea un array con todas las imagenes pasadas a ImageData.
+  // Se guardan también los tamaños de las imágenes para usarlos luego en el calculo del tamaño del canvas.
+  await Promise.all(
+    collageImages.map(async (image) => {
+      // Si el collage va ser vertical se establece el ancho de la imagen a maxImageDataWidth, que si no está predefinido un tamaño en maxSize, será el ancho de la imagen más pequeña del collage. La más pequeña para que nada quede pixelado.
+      // Si es horizontal ocurre lo propio pero para determinar el alto de la imagen.
+      // Luego imageB64ToImageDataWithOrientation va a dimensionar las imagenes para adaptarlas a esos límites, también según orientación.
+      let imageDataWidth;
+      let imageDataHeight;
+      if (orientation === Orientation.vertical) {
+        imageDataWidth = maxImageDataWidth;
+        imageDataHeight = image.height;
       } else {
-        ctx.putImageData(imageData, 0, heightPlace);
-        heightPlace += imageData.height + gap;
+        //horizontal
+        imageDataWidth = image.height;
+        imageDataHeight = maxImageDataHeight;
       }
-    });
+
+      const imageData = await imageB64ToImageDataWithOrientation(
+        image.src,
+        imageDataWidth,
+        imageDataHeight,
+        orientation
+      );
+
+      imagesData.push(imageData);
+      imagesWidths.push(imageData.width);
+      imagesHeightSum += imageData.height;
+      imagesHeights.push(imageData.height);
+      imagesWidthSum += imageData.width;
+    })
+  );
+
+  // se calcula el tamaño del gap y el tamaño del canvas según la orientación
+  let gap = 0,
+    newCanvasWidth = 0,
+    newCanvasHeight = 0;
+
+  if (orientation === Orientation.vertical) {
+    gap = imagesHeightSum * (gapPc / 100);
+    newCanvasWidth = Math.min(...imagesWidths);
+    newCanvasHeight = imagesHeightSum + gap * (collageImages.length - 1);
+  } else {
+    //horizontal
+    gap = imagesWidthSum * (gapPc / 100);
+    newCanvasWidth = imagesWidthSum + gap * (collageImages.length - 1);
+    newCanvasHeight = Math.min(...imagesHeights);
   }
 
-  //para collage horizontal
-  if (orientation === Orientation.horizontal) {
-    let imagesData: ImageData[] = [];
-    let imagesWidthSum: number = 0;
-    let imagesHeights: number[] = [];
+  canvas.width = newCanvasWidth;
+  canvas.height = newCanvasHeight;
 
-    await Promise.all(
-      collageImages.map(async (image) => {
-        const imageData = await imageB64ToImageDataWithOrientation(
-          image.src,
-          image.width,
-          maxImageDataHeight,
-          Orientation.horizontal
-        );
-        imagesData.push(imageData);
-        imagesHeights.push(imageData.height);
-        imagesWidthSum += imageData.width;
-      })
-    );
+  ctx.createImageData(newCanvasWidth, newCanvasHeight);
+  ctx.fillStyle = gapColor;
+  ctx.fillRect(0, 0, newCanvasWidth, newCanvasHeight);
 
-    let gap = imagesWidthSum * (gapPc / 100);
-    let newCanvasWidth = imagesWidthSum + gap * (collageImages.length - 1);
-    let newCanvasHeight = Math.min(...imagesHeights);
-
-    canvas.width = newCanvasWidth;
-    canvas.height = newCanvasHeight;
-
-    ctx.createImageData(newCanvasWidth, newCanvasHeight);
-    ctx.fillStyle = gapColor;
-    ctx.fillRect(0, 0, newCanvasWidth, newCanvasHeight);
-
-    let widthPlace = 0;
+  //* Se dibujan las imágenes en el canvas según la orientación.
+  if (orientation === Orientation.vertical) {
+    let heightOffset = 0;
     imagesData.forEach((imageData, index) => {
       if (index === 0) {
         ctx.putImageData(imageData, 0, 0);
-        widthPlace = imageData.width + gap;
+        heightOffset = imageData.height + gap;
       } else if (index === imagesData.length - 1) {
-        ctx.putImageData(imageData, widthPlace, 0);
+        ctx.putImageData(imageData, 0, heightOffset);
       } else {
-        ctx.putImageData(imageData, widthPlace, 0);
-        widthPlace += imageData.width + gap;
+        ctx.putImageData(imageData, 0, heightOffset);
+        heightOffset += imageData.height + gap;
+      }
+    });
+  } else {
+    //horizontal
+    let widthOffset = 0;
+    imagesData.forEach((imageData, index) => {
+      if (index === 0) {
+        ctx.putImageData(imageData, 0, 0);
+        widthOffset = imageData.width + gap;
+      } else if (index === imagesData.length - 1) {
+        ctx.putImageData(imageData, widthOffset, 0);
+      } else {
+        ctx.putImageData(imageData, widthOffset, 0);
+        widthOffset += imageData.width + gap;
       }
     });
   }
 }
+
+
 /**
  * Función que calcula un nuevo tamaño para la imagen del small canvas teniendo en cuenta el tamaño de la ventana.
  * @param imageWidth - ancho de la imagen original
