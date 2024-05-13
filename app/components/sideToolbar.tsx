@@ -109,7 +109,7 @@ function TbCollageOptions() {
 
   function handleOrientation(orientation: Orientation) {
     if (collageImages && collageCanvasRef.current) {
-      createCollage(collageCanvasRef.current, orientation, collageImages);
+      createCollage(collageCanvasRef.current, orientation, collageImages, 200);
     }
   }
   function handlePreview() {
@@ -117,13 +117,14 @@ function TbCollageOptions() {
       createCollage(
         collageCanvasRef.current,
         previewOrientation,
-        collageImages
+        collageImages,
+        200
       );
     }
   }
 
   //TODO: ojo esto está incompleto, no tiene la parte de horizontal como el create preview.
-  async function handleProbar() {
+  async function handleProbar2() {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     if (collageImages) {
@@ -156,6 +157,25 @@ function TbCollageOptions() {
 
       //pasa la imagen al smallCanvas
       loadB64Procedure(canvas.toDataURL("image/jpeg", 1) as string);
+    }
+  }
+  async function handleProbar() {
+    if (collageImages && collageCanvasRef.current) {
+      //hide collagecanvasref
+      collageCanvasRef.current.style.display = "none";
+
+      //  hay que ocultar el canvas para que no se vea que se está creando el collage en grande
+
+      await createCollage(
+        collageCanvasRef.current,
+        previewOrientation,
+        collageImages,
+        0
+      );
+      //pasa la imagen al smallCanvas
+      loadB64Procedure(
+        collageCanvasRef.current.toDataURL("image/jpeg", 1) as string
+      );
     }
   }
 
@@ -194,6 +214,12 @@ function TbCollageOptions() {
         mainCanvasConfig.maxHeight
       )) as ImageData,
     ]);
+    //console.log("originalImageB64", originalImageB64);
+    console.log(
+      "newImageElement",
+      newImageElement.width,
+      newImageElement.height
+    );
   }
 
   const { previewOrientation, setPreviewOrientation } =

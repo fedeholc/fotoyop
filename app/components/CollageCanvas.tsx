@@ -9,7 +9,6 @@ import { CollageContext } from "../providers/CollageProvider";
 export default function CollageCanvas() {
   const { collageImages } = useContext(ImageContext);
 
- 
   const { collageCanvasRef } = useContext(ImageContext);
 
   const [previewOrientation, setPreviewOrientation] = useState<Orientation>(
@@ -27,10 +26,11 @@ export default function CollageCanvas() {
 
   useEffect(() => {
     if (collageImages && collageCanvasRef.current) {
-       createCollage(
+      createCollage(
         collageCanvasRef.current,
         Orientation.vertical,
-        collageImages
+        collageImages,
+        200
       );
     }
   }, [collageImages]);

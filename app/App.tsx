@@ -23,14 +23,13 @@ export default function App() {
 
   return (
     <div className="app-wrapper">
-      <CollageProvider>
-        <main data-testid="main" id="app" className={styles.main}>
-          <section id="section__image">
-            {displays.canvas && <MainCanvas></MainCanvas>}
-            {displays.form && <UploadForm></UploadForm>}
-            {displays.collage && <CollageCanvas></CollageCanvas>}
-          </section>
-
+      <main data-testid="main" id="app" className={styles.main}>
+        <section id="section__image">
+          {displays.canvas && <MainCanvas></MainCanvas>}
+          {displays.form && <UploadForm></UploadForm>}
+          {displays.collage && <CollageCanvas></CollageCanvas>}
+        </section>
+        <CollageProvider>
           <ToolbarProvider>
             <BorderProvider>
               <section id="section__toolbar">
@@ -41,8 +40,8 @@ export default function App() {
               </section>
             </BorderProvider>
           </ToolbarProvider>
-        </main>
-      </CollageProvider>
+        </CollageProvider>
+      </main>
     </div>
   );
 }

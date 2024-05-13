@@ -26,7 +26,7 @@ import { createRef, useRef } from "react";
 export const CollageContext = createContext({
   previewOrientation: Orientation.vertical,
   setPreviewOrientation: (() => {}) as Dispatch<Orientation>,
-  });
+});
 
 export default function CollageProvider({
   children,
@@ -36,17 +36,13 @@ export default function CollageProvider({
   const [previewOrientation, setPreviewOrientation] = useState<Orientation>(
     Orientation.vertical
   );
-  const {collageCanvasRef } = useContext(ImageContext);
-
-  const { collageImages } = useContext(ImageContext);
- 
 
   return (
     <CollageContext.Provider
       value={{
         previewOrientation,
         setPreviewOrientation,
-        }}
+      }}
     >
       {children}
     </CollageContext.Provider>
