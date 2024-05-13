@@ -43,7 +43,7 @@ export async function createCollage(
   orientation: Orientation,
   collageImages: HTMLImageElement[] | null,
   maxSize: number = 0,
-  gapPc: number = 5,
+  gapPc: number = 0,
   gapColor: string = "black"
 ) {
   function getMinSize(images: HTMLImageElement[]): {
@@ -170,7 +170,6 @@ export async function createCollage(
     });
   }
 }
-
 
 /**
  * Función que calcula un nuevo tamaño para la imagen del small canvas teniendo en cuenta el tamaño de la ventana.

@@ -26,6 +26,12 @@ import { createRef, useRef } from "react";
 export const CollageContext = createContext({
   previewOrientation: Orientation.vertical,
   setPreviewOrientation: (() => {}) as Dispatch<Orientation>,
+  gapPixels: 0,
+  setGapPixels: (() => {}) as Dispatch<number>,
+  gapPercent: 0,
+  setGapPercent: (() => {}) as Dispatch<number>,
+  inputGapColor: "#ffffff",
+  setInputGapColor: (() => {}) as Dispatch<string>,
 });
 
 export default function CollageProvider({
@@ -36,12 +42,21 @@ export default function CollageProvider({
   const [previewOrientation, setPreviewOrientation] = useState<Orientation>(
     Orientation.vertical
   );
+  const [gapPixels, setGapPixels] = useState<number>(0);
+  const [gapPercent, setGapPercent] = useState<number>(0);
+  const [inputGapColor, setInputGapColor] = useState<string>("#ffffff");
 
   return (
     <CollageContext.Provider
       value={{
         previewOrientation,
         setPreviewOrientation,
+        gapPixels,
+        setGapPixels,
+        gapPercent,
+        setGapPercent,
+        inputGapColor,
+        setInputGapColor,
       }}
     >
       {children}
