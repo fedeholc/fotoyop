@@ -34,7 +34,7 @@ export {
  * @param orientation
  * @param collageImages
  * @param maxSize maximum size of the collage in pixels (0 for no limit)
- * @param gapPc gap between images in percentage
+ * @param gap gap between images in pixels
  * @param gapColor
  * @returns
  */
@@ -43,7 +43,7 @@ export async function createCollage(
   orientation: Orientation,
   collageImages: HTMLImageElement[] | null,
   maxSize: number = 0,
-  gapPc: number = 0,
+  gap: number = 0,
   gapColor: string = "black"
 ) {
   function getMinSize(images: HTMLImageElement[]): {
@@ -118,17 +118,14 @@ export async function createCollage(
   );
 
   // se calcula el tamaño del gap y el tamaño del canvas según la orientación
-  let gap = 0,
-    newCanvasWidth = 0,
+  let newCanvasWidth = 0,
     newCanvasHeight = 0;
 
   if (orientation === Orientation.vertical) {
-    gap = imagesHeightSum * (gapPc / 100);
     newCanvasWidth = Math.min(...imagesWidths);
     newCanvasHeight = imagesHeightSum + gap * (collageImages.length - 1);
   } else {
     //horizontal
-    gap = imagesWidthSum * (gapPc / 100);
     newCanvasWidth = imagesWidthSum + gap * (collageImages.length - 1);
     newCanvasHeight = Math.min(...imagesHeights);
   }

@@ -115,7 +115,7 @@ function TbCollageOptions() {
         orientation,
         collageImages,
         200,
-        gapPercent,
+        gapPixels,
         inputGapColor
       );
     }
@@ -129,7 +129,7 @@ function TbCollageOptions() {
         previewOrientation,
         collageImages,
         200,
-        gapPercent,
+        gapPixels,
         gapColor
       );
     }
@@ -137,18 +137,17 @@ function TbCollageOptions() {
   function handleGapPercent(gap: number) {
     getCollageGapPx(gap, collageImages, 0, gap).then((res) => {
       setGapPixels(Math.floor(res || 0));
+      if (collageImages && collageCanvasRef.current) {
+        createCollage(
+          collageCanvasRef.current,
+          previewOrientation,
+          collageImages,
+          200,
+          Math.floor(res || 0),
+          inputGapColor
+        );
+      }
     });
-
-    if (collageImages && collageCanvasRef.current) {
-      createCollage(
-        collageCanvasRef.current,
-        previewOrientation,
-        collageImages,
-        200,
-        gap,
-        inputGapColor
-      );
-    }
   }
   function handlePreview() {
     if (collageImages && collageCanvasRef.current) {
@@ -157,7 +156,7 @@ function TbCollageOptions() {
         previewOrientation,
         collageImages,
         200,
-        gapPercent,
+        gapPixels,
         inputGapColor
       );
     }
@@ -173,7 +172,7 @@ function TbCollageOptions() {
         previewOrientation,
         collageImages,
         0,
-        gapPercent,
+        gapPixels,
         inputGapColor
       );
       //pasa la imagen al smallCanvas para trabajar en modo edición
