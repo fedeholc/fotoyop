@@ -194,6 +194,8 @@ export function getCollageData(
       ivWidth: number;
       ihHeight: number;
       ihWidthSum: number;
+      imagesHeightsSum: number;
+      imagesWidthsSum: number;
     }
   | undefined {
   if (!collageImages) {
@@ -210,8 +212,9 @@ export function getCollageData(
   }
 
   let ivHeightSum = 0;
-
+  let imagesHeightsSum = 0;
   let ihWidthSum = 0;
+  let imagesWidthsSum = 0;
 
   collageImages.map((image) => {
     const aspectRatio = image.width / image.height;
@@ -224,6 +227,8 @@ export function getCollageData(
 
     ivHeightSum += ivHeight;
     ihWidthSum += ihWidth;
+    imagesHeightsSum += image.height;
+    imagesWidthsSum += image.width;
   });
 
   return {
@@ -231,6 +236,8 @@ export function getCollageData(
     ivWidth: maxImageDataWidth,
     ihHeight: maxImageDataHeight,
     ihWidthSum: ihWidthSum,
+    imagesHeightsSum: imagesHeightsSum,
+    imagesWidthsSum: imagesWidthsSum,
   };
 }
 

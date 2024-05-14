@@ -163,6 +163,15 @@ function TbCollageOptions() {
     setGapPixels(gapPx);
     if (collageImages && collageCanvasRef.current) {
       console.log(gapMax);
+      let resizedGap = 0;
+
+      if (previewOrientation === Orientation.vertical) {
+        resizedGap =
+          (gapPx * collageData.imagesHeightsSum) / collageData.ivHeightSum;
+      } else {
+        resizedGap =
+          (gapPx * collageData.imagesWidthsSum) / collageData.ihWidthSum;
+      }
       createCollage(
         collageCanvasRef.current,
         previewOrientation,
@@ -171,6 +180,8 @@ function TbCollageOptions() {
         (gapPx * 200) / gapMax,
         inputGapColor
       );
+      //la cuenta para el gap en modo vertical
+      // tendria que ser GapPx * collageData.ivHeight / sumaHeightsImages
     }
     setGapPercent((gapPx / gapMax) * 100);
   }

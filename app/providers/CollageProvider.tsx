@@ -40,12 +40,16 @@ export const CollageContext = createContext({
     ivWidth: 0,
     ihHeight: 0,
     ihWidthSum: 0,
+    imagesHeightsSum: 0,
+    imagesWidthsSum: 0,
   },
   setCollageData: (() => {}) as Dispatch<{
     ivHeightSum: number;
     ivWidth: number;
     ihHeight: number;
     ihWidthSum: number;
+    imagesHeightsSum: number;
+    imagesWidthsSum: number;
   }>,
 });
 
@@ -64,11 +68,15 @@ export default function CollageProvider({
     ivWidth: number;
     ihHeight: number;
     ihWidthSum: number;
+    imagesHeightsSum: number;
+    imagesWidthsSum: number;
   }>({
     ivHeightSum: 0,
     ivWidth: 0,
     ihHeight: 0,
     ihWidthSum: 0,
+    imagesHeightsSum: 0,
+    imagesWidthsSum: 0,
   });
   const [gapPixels, setGapPixels] = useState<number>(0);
   const [gapPercent, setGapPercent] = useState<number>(0);
