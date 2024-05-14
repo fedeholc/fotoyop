@@ -176,7 +176,7 @@ function TbCollageOptions() {
         collageCanvasRef.current,
         previewOrientation,
         collageImages,
-        200,
+        200, //TODO: ojo, se toman los datos de collagedata que fueron calculados en el render inicial del componente con un valor de maxsize 200, si se cambia aca hay que recalcular, o habria que guardar el 200 en el state y tomarlo de ahi
         resizedGap,
         inputGapColor
       );
