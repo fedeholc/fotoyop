@@ -202,37 +202,6 @@ function TbCollageOptions() {
       //la cuenta para el gap en modo vertical
       // tendria que ser GapPx * collageData.ivHeight / sumaHeightsImages
     }
-    setGapPercent((gapPx / gapMax) * 100);
-  }
-
-  function handleGapPercent(gapPc: number) {
-    getCollageGapPx(previewOrientation, collageImages, 0, gapPc).then((res) => {
-      let gap, collageMaxWidth, collageMaxHeight;
-      if (res) {
-        ({
-          gap,
-          collageMaxWidth: collageMaxWidth,
-          collageMaxHeight: collageMaxHeight,
-        } = res);
-
-        if (previewOrientation === Orientation.vertical) {
-          setGapMax(collageMaxHeight);
-        } else {
-          setGapMax(collageMaxWidth);
-        }
-        setGapPixels(gap);
-        if (collageImages && collageCanvasRef.current) {
-          createCollage(
-            collageCanvasRef.current,
-            previewOrientation,
-            collageImages,
-            200,
-            gap,
-            inputGapColor
-          );
-        }
-      }
-    });
   }
 
   function handlePreview() {
@@ -309,8 +278,6 @@ function TbCollageOptions() {
     previewOrientation,
     inputGapColor,
     setInputGapColor,
-    gapPercent,
-    setGapPercent,
     gapPixels,
     setGapPixels,
     setPreviewOrientation,
@@ -460,51 +427,6 @@ function TbCollageOptions() {
 
             handleGapPixels(parseInt((e.target as HTMLInputElement).value));
           }}
-        ></input>
-      </div>
-      <div className={sideToolbar.borderRangesRow}>
-        <input
-          type="number"
-          id="inputGapPercentN"
-          min="0"
-          value={gapPercent}
-          /*      onKeyUp={(e) => {
-        
-            setGapPercent(parseInt(e.currentTarget.value));
-            if (e.key === "Enter") {
-              handleGapPercent(parseInt(e.currentTarget.value));
-            }
-          }} */
-          onChange={(e) => {
-            if (e.currentTarget.value === "") {
-              setGapPercent(0);
-              handleGapPercent(0);
-            } else {
-              setGapPercent(parseInt(e.currentTarget.value));
-              handleGapPercent(parseInt(e.currentTarget.value));
-            }
-          }}
-        ></input>
-        <div>%</div>
-        <input
-          type="range"
-          id="inputGapPercent"
-          min="0"
-          max={100}
-          value={gapPercent}
-          onChange={(e) => setGapPercent(parseInt(e.target.value))}
-          onMouseUp={(e) => {
-            setGapPercent(parseInt((e.target as HTMLInputElement).value));
-
-            handleGapPercent(parseInt((e.target as HTMLInputElement).value));
-          }}
-
-          /*    onMouseUp={(e) =>
-            handleBorderPixelsRange((e.target as HTMLInputElement).value)
-          }
-          onTouchEnd={(e) =>
-            handleBorderPixelsRange((e.target as HTMLInputElement).value)
-          } */
         ></input>
       </div>
     </ToolbarGroup>
