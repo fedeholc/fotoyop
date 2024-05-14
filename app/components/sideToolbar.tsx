@@ -110,7 +110,7 @@ function TbCollageOptions() {
   const { setUndoImageList } = useContext(ProcessContext);
 
   function handleOrientation(orientation: Orientation) {
-    getCollageGapPx(previewOrientation, collageImages, 0, 0).then((res) => {
+    /* getCollageGapPx(previewOrientation, collageImages, 0, 0).then((res) => {
       let gap, collageMaxWidth, collageMaxHeight;
       if (res) {
         ({
@@ -143,7 +143,26 @@ function TbCollageOptions() {
           );
         }
       }
-    });
+    }); */
+    let resizedGap = 0;
+
+    if (orientation === Orientation.vertical) {
+      resizedGap =
+        (gapPixels * collageData.ivHeightSum) / collageData.imagesHeightsSum;
+    } else {
+      resizedGap =
+        (gapPixels * collageData.ihWidthSum) / collageData.imagesWidthsSum;
+    }
+    if (collageImages && collageCanvasRef.current) {
+      createCollage(
+        collageCanvasRef.current,
+        orientation,
+        collageImages,
+        200, //TODO: ojo, se toman los datos de collagedata que fueron calculados en el render inicial del componente con un valor de maxsize 200, si se cambia aca hay que recalcular, o habria que guardar el 200 en el state y tomarlo de ahi
+        resizedGap,
+        inputGapColor
+      );
+    }
   }
 
   function handleGapColor(gapColor: string) {
