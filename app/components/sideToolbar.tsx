@@ -7,6 +7,7 @@ import {
   imageDataToBase64,
   imageB64ToImageData,
   drawImageB64OnCanvas,
+  getCollageGapPx,
 } from "../imageProcessing";
 import { BorderContext } from "../providers/BorderProvider";
 import sideToolbar from "./sideToolbar.module.css";
@@ -134,6 +135,10 @@ function TbCollageOptions() {
     }
   }
   function handleGapPercent(gap: number) {
+    getCollageGapPx(gap, collageImages, 0, gap).then((res) => {
+      setGapPixels(Math.floor(res || 0));
+    });
+
     if (collageImages && collageCanvasRef.current) {
       createCollage(
         collageCanvasRef.current,

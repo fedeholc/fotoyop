@@ -171,6 +171,86 @@ export async function createCollage(
   }
 }
 
+export async function getCollageGapPx(
+  orientation: Orientation,
+  collageImages: HTMLImageElement[] | null,
+  maxSize: number = 0,
+  gapPc: number = 0
+): Promise<number | undefined> {
+  function getMinSize(images: HTMLImageElement[]): {
+    width: number;
+    height: number;
+  } {
+    let minWidth = images[0].width;
+    let minHeight = images[0].height;
+    images.forEach((image) => {
+      if (image.width < minWidth) {
+        minWidth = image.width;
+      }
+      if (image.height < minHeight) {
+        minHeight = image.height;
+      }
+    });
+    return { width: minWidth, height: minHeight };
+  }
+
+  if (!collageImages) {
+    return;
+  }
+
+  let maxImageDataWidth = maxSize;
+  let maxImageDataHeight = maxSize;
+  if (maxSize === 0) {
+    const minSize = getMinSize(collageImages);
+    maxImageDataWidth = minSize.width;
+    maxImageDataHeight = minSize.height;
+  }
+
+  let imagesData: ImageData[] = [];
+  //para collage vertical
+  let imagesHeightSum: number = 0;
+  //para horizontal
+  let imagesWidthSum: number = 0;
+
+  await Promise.all(
+    collageImages.map(async (image) => {
+      let imageDataWidth;
+      let imageDataHeight;
+      if (orientation === Orientation.vertical) {
+        imageDataWidth = maxImageDataWidth;
+        imageDataHeight = image.height;
+      } else {
+        //horizontal
+        imageDataWidth = image.height;
+        imageDataHeight = maxImageDataHeight;
+      }
+
+      const imageData = await imageB64ToImageDataWithOrientation(
+        image.src,
+        imageDataWidth,
+        imageDataHeight,
+        orientation
+      );
+
+      imagesData.push(imageData);
+      imagesHeightSum += imageData.height;
+      imagesWidthSum += imageData.width;
+    })
+  );
+
+  // se calcula el tamaño del gap y el tamaño del canvas según la orientación
+  let gap = 0;
+
+  if (orientation === Orientation.vertical) {
+    gap = imagesHeightSum * (gapPc / 100);
+  } else {
+    //horizontal
+    gap = imagesWidthSum * (gapPc / 100);
+  }
+
+  return gap;
+}
+
 /**
  * Función que calcula un nuevo tamaño para la imagen del small canvas teniendo en cuenta el tamaño de la ventana.
  * @param imageWidth - ancho de la imagen original
