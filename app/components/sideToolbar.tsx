@@ -167,17 +167,17 @@ function TbCollageOptions() {
 
       if (previewOrientation === Orientation.vertical) {
         resizedGap =
-          (gapPx * collageData.imagesHeightsSum) / collageData.ivHeightSum;
+          (gapPx * collageData.ivHeightSum) / collageData.imagesHeightsSum;
       } else {
         resizedGap =
-          (gapPx * collageData.imagesWidthsSum) / collageData.ihWidthSum;
+          (gapPx * collageData.ihWidthSum) / collageData.imagesWidthsSum;
       }
       createCollage(
         collageCanvasRef.current,
         previewOrientation,
         collageImages,
         200,
-        (gapPx * 200) / gapMax,
+        resizedGap,
         inputGapColor
       );
       //la cuenta para el gap en modo vertical
