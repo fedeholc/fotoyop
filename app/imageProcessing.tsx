@@ -189,7 +189,7 @@ export function getCollageData(
   collageImages: HTMLImageElement[] | null,
   maxSize: number
 ):
-   {
+  | {
       ivHeightSum: number;
       ivWidth: number;
       ihHeight: number;
@@ -217,10 +217,10 @@ export function getCollageData(
     const aspectRatio = image.width / image.height;
 
     //Para vertical
-    let ivHeight = image.height / aspectRatio;
+    let ivHeight = maxImageDataWidth / aspectRatio;
 
     //Para horizontal
-    let ihWidth = image.width / aspectRatio;
+    let ihWidth = maxImageDataHeight * aspectRatio;
 
     ivHeightSum += ivHeight;
     ihWidthSum += ihWidth;
