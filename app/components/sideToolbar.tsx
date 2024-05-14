@@ -1,4 +1,4 @@
-import { useRef, useContext, useState, useId } from "react";
+import { useRef, useContext, useState, useId, useEffect } from "react";
 import { ImageContext } from "../providers/ImageProvider";
 import { ProcessContext } from "../providers/ProcessProvider";
 import { ToolbarContext } from "../providers/ToolbarProvider";
@@ -121,7 +121,9 @@ function TbCollageOptions() {
     }
   }
 
-  //TODO: hacer que al cambiar el input del porcentaje, se cambie el de pixels y viceversa
+  //TODO: falta el handlegappixel, que puede que genere conflicto con el Pc, porque al actualizar uno cambia al otro y vuelve a cambiar... ver si se puede solucionar, sino dejar solo el de px.
+  //VER ojo que el calculo de px lo muestra como float en el input
+
   function handleGapColor(gapColor: string) {
     if (collageImages && collageCanvasRef.current) {
       createCollage(
@@ -134,21 +136,51 @@ function TbCollageOptions() {
       );
     }
   }
-  function handleGapPercent(gap: number) {
-    getCollageGapPx(gap, collageImages, 0, gap).then((res) => {
-      setGapPixels(Math.floor(res || 0));
-      if (collageImages && collageCanvasRef.current) {
-        createCollage(
-          collageCanvasRef.current,
-          previewOrientation,
-          collageImages,
-          200,
-          Math.floor(res || 0),
-          inputGapColor
-        );
+
+  function handleGapPixels(gapPx: number) {
+    setGapPixels(gapPx);
+    if (collageImages && collageCanvasRef.current) {
+      createCollage(
+        collageCanvasRef.current,
+        previewOrientation,
+        collageImages,
+        200,
+        gapPx,
+        inputGapColor
+      );
+    }
+  }
+
+  function handleGapPercent(gapPc: number) {
+    getCollageGapPx(previewOrientation, collageImages, 0, gapPc).then((res) => {
+      let gap, collageMaxWidth, collageMaxHeight;
+      if (res) {
+        ({
+          gap,
+          collageMaxWidth: collageMaxWidth,
+          collageMaxHeight: collageMaxHeight,
+        } = res);
+
+        if (previewOrientation === Orientation.vertical) {
+          setGapMax(collageMaxHeight);
+        } else {
+          setGapMax(collageMaxWidth);
+        }
+        setGapPixels(gap);
+        if (collageImages && collageCanvasRef.current) {
+          createCollage(
+            collageCanvasRef.current,
+            previewOrientation,
+            collageImages,
+            200,
+            gap,
+            inputGapColor
+          );
+        }
       }
     });
   }
+
   function handlePreview() {
     if (collageImages && collageCanvasRef.current) {
       createCollage(
@@ -228,9 +260,34 @@ function TbCollageOptions() {
     gapPixels,
     setGapPixels,
     setPreviewOrientation,
+    gapMax,
+    setGapMax,
   } = useContext(CollageContext);
 
   const { collageImages } = useContext(ImageContext);
+
+  useEffect(() => {
+    if (!collageImages) {
+      return;
+    }
+    getCollageGapPx(previewOrientation, collageImages, 0, 0).then((res) => {
+      let gap, collageMaxWidth, collageMaxHeight;
+      if (res) {
+        ({
+          gap,
+          collageMaxWidth: collageMaxWidth,
+          collageMaxHeight: collageMaxHeight,
+        } = res);
+
+        if (previewOrientation === Orientation.vertical) {
+          setGapMax(collageMaxHeight);
+        } else {
+          setGapMax(collageMaxWidth);
+        }
+      }
+    });
+  }, [collageImages, previewOrientation]);
+
   return (
     <ToolbarGroup closedRendering={false} groupTitle="Collage Options">
       <div className={`${sideToolbar.toolbarRow}`}>
@@ -299,22 +356,35 @@ function TbCollageOptions() {
           /*  onChange={(e) => {
           setInputBorderPixels(e.target.value);
         }} */
-          onChange={(e) => setGapPixels(parseInt(e.target.value))}
+          onChange={(e) => {
+            if (e.currentTarget.value === "") {
+              setGapPixels(0);
+              handleGapPixels(0);
+            } else {
+              setGapPixels(parseInt(e.currentTarget.value));
+              handleGapPixels(parseInt(e.currentTarget.value));
+            }
+          }}
         ></input>
         <div>px</div>
         <input
           type="range"
           id="inputGapPixels"
           min="0"
-          max={1000}
+          max={gapMax / 3}
           value={gapPixels}
-          onChange={(e) => setGapPixels(parseInt(e.target.value))}
           /*    onMouseUp={(e) =>
             handleBorderPixelsRange((e.target as HTMLInputElement).value)
           }
           onTouchEnd={(e) =>
             handleBorderPixelsRange((e.target as HTMLInputElement).value)
           } */
+          onChange={(e) => setGapPixels(parseInt(e.target.value))}
+          onMouseUp={(e) => {
+            setGapPixels(parseInt((e.target as HTMLInputElement).value));
+
+            handleGapPixels(parseInt((e.target as HTMLInputElement).value));
+          }}
         ></input>
       </div>
       <div className={sideToolbar.borderRangesRow}>
@@ -323,16 +393,22 @@ function TbCollageOptions() {
           id="inputGapPercentN"
           min="0"
           value={gapPercent}
-          /* onKeyUp={(e) => {
-          setInputBorderPixels((e.target as HTMLInputElement).value);
-          if (e.key === "Enter") {
-            handleBorderPixelsRange((e.target as HTMLInputElement).value);
-          }
-        }} */
-          /*  onChange={(e) => {
-          setInputBorderPixels(e.target.value);
-        }} */
-          onChange={(e) => setGapPercent(parseInt(e.target.value))}
+          /*      onKeyUp={(e) => {
+        
+            setGapPercent(parseInt(e.currentTarget.value));
+            if (e.key === "Enter") {
+              handleGapPercent(parseInt(e.currentTarget.value));
+            }
+          }} */
+          onChange={(e) => {
+            if (e.currentTarget.value === "") {
+              setGapPercent(0);
+              handleGapPercent(0);
+            } else {
+              setGapPercent(parseInt(e.currentTarget.value));
+              handleGapPercent(parseInt(e.currentTarget.value));
+            }
+          }}
         ></input>
         <div>%</div>
         <input
@@ -344,6 +420,7 @@ function TbCollageOptions() {
           onChange={(e) => setGapPercent(parseInt(e.target.value))}
           onMouseUp={(e) => {
             setGapPercent(parseInt((e.target as HTMLInputElement).value));
+
             handleGapPercent(parseInt((e.target as HTMLInputElement).value));
           }}
 

@@ -171,9 +171,11 @@ export async function createCollage(
 export async function getCollageGapPx(
   orientation: Orientation,
   collageImages: HTMLImageElement[] | null,
-  maxSize: number = 0,
-  gapPc: number = 0
-): Promise<number | undefined> {
+  maxSize: number,
+  gapPc: number
+): Promise<
+  { gap: number; collageMaxWidth: number; collageMaxHeight: number } | undefined
+> {
   function getMinSize(images: HTMLImageElement[]): {
     width: number;
     height: number;
@@ -191,6 +193,7 @@ export async function getCollageGapPx(
     return { width: minWidth, height: minHeight };
   }
 
+ 
   if (!collageImages) {
     return;
   }
@@ -245,7 +248,11 @@ export async function getCollageGapPx(
     gap = imagesWidthSum * (gapPc / 100);
   }
 
-  return gap;
+  return {
+    gap: gap,
+    collageMaxWidth: maxImageDataWidth,
+    collageMaxHeight: maxImageDataHeight,
+  };
 }
 
 /**
