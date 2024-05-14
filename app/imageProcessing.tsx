@@ -98,7 +98,7 @@ export async function createCollage(
         imageDataHeight = image.height;
       } else {
         //horizontal
-        imageDataWidth = image.height;
+        imageDataWidth = image.width; //FIXME: estaba height, le puse width porque me parece que estaba mal. Checkiar
         imageDataHeight = maxImageDataHeight;
       }
 
@@ -168,6 +168,72 @@ export async function createCollage(
   }
 }
 
+function getImagesMinSizes(images: HTMLImageElement[]): {
+  width: number;
+  height: number;
+} {
+  let minWidth = images[0].width;
+  let minHeight = images[0].height;
+  images.forEach((image) => {
+    if (image.width < minWidth) {
+      minWidth = image.width;
+    }
+    if (image.height < minHeight) {
+      minHeight = image.height;
+    }
+  });
+  return { width: minWidth, height: minHeight };
+}
+
+export function getCollageData(
+  collageImages: HTMLImageElement[] | null,
+  maxSize: number
+):
+  | {
+      ivHeightSum: number;
+      ivWidth: number;
+      ihHeight: number;
+      ihWidthSum: number;
+    }
+  | undefined {
+  if (!collageImages) {
+    return;
+  }
+
+  //todo: checkiar si no falla cuando la imagen sea más pequeña que maxSize
+  let maxImageDataWidth = maxSize;
+  let maxImageDataHeight = maxSize;
+  if (maxSize === 0) {
+    const minSize = getImagesMinSizes(collageImages);
+    maxImageDataWidth = minSize.width;
+    maxImageDataHeight = minSize.height;
+  }
+
+  let ivHeightSum = 0;
+
+  let ihWidthSum = 0;
+
+  collageImages.map((image) => {
+    const aspectRatio = image.width / image.height;
+
+    //Para vertical
+    let ivHeight = image.height / aspectRatio;
+
+    //Para horizontal
+    let ihWidth = image.width / aspectRatio;
+
+    ivHeightSum += ivHeight;
+    ihWidthSum += ihWidth;
+  });
+
+  return {
+    ivHeightSum: ivHeightSum,
+    ivWidth: maxImageDataWidth,
+    ihHeight: maxImageDataHeight,
+    ihWidthSum: ihWidthSum,
+  };
+}
+
 export async function getCollageGapPx(
   orientation: Orientation,
   collageImages: HTMLImageElement[] | null,
@@ -193,7 +259,6 @@ export async function getCollageGapPx(
     return { width: minWidth, height: minHeight };
   }
 
- 
   if (!collageImages) {
     return;
   }
@@ -250,8 +315,8 @@ export async function getCollageGapPx(
 
   return {
     gap: gap,
-    collageMaxWidth: maxImageDataWidth,
-    collageMaxHeight: maxImageDataHeight,
+    collageMaxWidth: imagesWidthSum,
+    collageMaxHeight: imagesHeightSum,
   };
 }
 

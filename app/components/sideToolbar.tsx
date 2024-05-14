@@ -8,6 +8,7 @@ import {
   imageB64ToImageData,
   drawImageB64OnCanvas,
   getCollageGapPx,
+  getCollageData,
 } from "../imageProcessing";
 import { BorderContext } from "../providers/BorderProvider";
 import sideToolbar from "./sideToolbar.module.css";
@@ -109,20 +110,41 @@ function TbCollageOptions() {
   const { setUndoImageList } = useContext(ProcessContext);
 
   function handleOrientation(orientation: Orientation) {
-    if (collageImages && collageCanvasRef.current) {
-      createCollage(
-        collageCanvasRef.current,
-        orientation,
-        collageImages,
-        200,
-        gapPixels,
-        inputGapColor
-      );
-    }
-  }
+    getCollageGapPx(previewOrientation, collageImages, 0, 0).then((res) => {
+      let gap, collageMaxWidth, collageMaxHeight;
+      if (res) {
+        ({
+          gap,
+          collageMaxWidth: collageMaxWidth,
+          collageMaxHeight: collageMaxHeight,
+        } = res);
+        console.log("useEffect setgap", previewOrientation);
 
-  //TODO: falta el handlegappixel, que puede que genere conflicto con el Pc, porque al actualizar uno cambia al otro y vuelve a cambiar... ver si se puede solucionar, sino dejar solo el de px.
-  //VER ojo que el calculo de px lo muestra como float en el input
+        let tempMax = 0;
+        if (orientation === Orientation.vertical) {
+          tempMax = collageMaxHeight;
+          setGapMax(collageMaxHeight);
+        } else {
+          tempMax = collageMaxWidth;
+          setGapMax(collageMaxWidth);
+        }
+
+        // TODO: el problema que tengo que resolver es si calcular el gap en pixeles fuera o dentro de create collage, cuando no se crea el collage a tamaño máximo. Porque tengo en mi input value el valor en pixeles de la versión final sin reducir, pero quiero que en el preview el gap sea proporcional, para eso tengo que saber tamaño final sin reducir, y tamaño del preview (pero ojo, el límite que se pasa como parametro a createcollage, no es el limite de tamaño del preview sino un alto o ancho máximo para adaptar luego cada imagen, el tamaño final del preview no lo se si no recorro todas las imagenes en su tamaño adaptado). En create collage la adaptación de tamaños se hace mediante la conversión de b64 a image data, pero yo tendría que poder hacer las cuentas de tamaño sin eso para que sea rápido y poder tener el dato antes de llamar a la función. Otra opción sería que el parámetro a create collage sea el tamaño final del preview y que dentro adapte los tamaños de cada imagen y gap proporcionalmente. Contemplar también la posibilidad de que al cargarse por primera vez las imagenes, en el useeffect, hacer ahí algunos calculos de tamaños maximos tanto para horizontal o vertical cosa de no tener que hacerlo luego con cada cambio de parámetros.
+        //VER probar primero lo que está en la última frase.
+
+        if (collageImages && collageCanvasRef.current) {
+          createCollage(
+            collageCanvasRef.current,
+            orientation,
+            collageImages,
+            200,
+            (gapPixels * 200) / tempMax,
+            inputGapColor
+          );
+        }
+      }
+    });
+  }
 
   function handleGapColor(gapColor: string) {
     if (collageImages && collageCanvasRef.current) {
@@ -140,15 +162,17 @@ function TbCollageOptions() {
   function handleGapPixels(gapPx: number) {
     setGapPixels(gapPx);
     if (collageImages && collageCanvasRef.current) {
+      console.log(gapMax);
       createCollage(
         collageCanvasRef.current,
         previewOrientation,
         collageImages,
         200,
-        gapPx,
+        (gapPx * 200) / gapMax,
         inputGapColor
       );
     }
+    setGapPercent((gapPx / gapMax) * 100);
   }
 
   function handleGapPercent(gapPc: number) {
@@ -270,6 +294,13 @@ function TbCollageOptions() {
     if (!collageImages) {
       return;
     }
+
+    //TODO estó está acá para traer el dato del gapMax que uso después para calcular el gap en porcentaje según pixel.
+    //FIXME PERO: el gapMax en realidad debería llamarse collage max (y tal vez debería tenerlo divido en dos H/W), quedo ese nombre porque setea el max del input value.
+    //FIXME y también habría que cambiar el nombre de la función por getcollagedata porque sino si dice solo gap y acá no uso gap confunde.
+    //VER y todavia falta arreglar el cambio de gap con el porcentaje.
+    //VER ojo que el calculo de px lo muestra como float en el input
+
     getCollageGapPx(previewOrientation, collageImages, 0, 0).then((res) => {
       let gap, collageMaxWidth, collageMaxHeight;
       if (res) {
@@ -278,6 +309,7 @@ function TbCollageOptions() {
           collageMaxWidth: collageMaxWidth,
           collageMaxHeight: collageMaxHeight,
         } = res);
+        console.log("useEffect setgap", previewOrientation);
 
         if (previewOrientation === Orientation.vertical) {
           setGapMax(collageMaxHeight);
@@ -286,6 +318,8 @@ function TbCollageOptions() {
         }
       }
     });
+    let a = getCollageData(collageImages, 200);
+    console.log("collage data", a);
   }, [collageImages, previewOrientation]);
 
   return (
@@ -347,6 +381,12 @@ function TbCollageOptions() {
           id="inputGapPixelsN"
           min="0"
           value={gapPixels}
+          /*     onClick={(e) => {
+            console.log("click");
+          }}
+          onKeyUp={(e) => {
+            console.log("ku ");
+          }} */
           /* onKeyUp={(e) => {
           setInputBorderPixels((e.target as HTMLInputElement).value);
           if (e.key === "Enter") {

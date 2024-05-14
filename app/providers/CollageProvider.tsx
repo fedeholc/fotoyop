@@ -28,7 +28,7 @@ export const CollageContext = createContext({
   setPreviewOrientation: (() => {}) as Dispatch<Orientation>,
   gapPixels: 0,
   setGapPixels: (() => {}) as Dispatch<number>,
-  gapMax: 500,
+  gapMax: 0,
   setGapMax: (() => {}) as Dispatch<number>,
 
   gapPercent: 0,
