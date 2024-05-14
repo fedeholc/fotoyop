@@ -189,7 +189,7 @@ export function getCollageData(
   collageImages: HTMLImageElement[] | null,
   maxSize: number
 ):
-  | {
+   {
       ivHeightSum: number;
       ivWidth: number;
       ihHeight: number;

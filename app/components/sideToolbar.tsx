@@ -286,6 +286,8 @@ function TbCollageOptions() {
     setPreviewOrientation,
     gapMax,
     setGapMax,
+    collageData,
+    setCollageData,
   } = useContext(CollageContext);
 
   const { collageImages } = useContext(ImageContext);
@@ -318,8 +320,11 @@ function TbCollageOptions() {
         }
       }
     });
-    let a = getCollageData(collageImages, 200);
-    console.log("collage data", a);
+    let data = getCollageData(collageImages, 200);
+    if (data) {
+      setCollageData(data);
+      console.log("collage data", data);
+    }
   }, [collageImages, previewOrientation]);
 
   return (
