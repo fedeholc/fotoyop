@@ -196,7 +196,6 @@ export function getCollageData(
   imagesHeightsSum: number;
   imagesWidthsSum: number;
 } {
-  //TODO: checkiar si no falla cuando la imagen sea más pequeña que maxSize
   let maxImageDataWidth = maxSize;
   let maxImageDataHeight = maxSize;
   if (maxSize === 0) {

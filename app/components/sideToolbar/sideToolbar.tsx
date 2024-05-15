@@ -2,7 +2,6 @@
 import { useContext } from "react";
 //Providers
 import { ImageContext } from "../../providers/ImageProvider";
-
 //CSS
 import sideToolbar from "./sideToolbar.module.css";
 //Buttons
