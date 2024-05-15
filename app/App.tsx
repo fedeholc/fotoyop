@@ -2,7 +2,7 @@
 import styles from "./page.module.css";
 import { CanvasConfig } from "./types";
 import { BottomToolbar } from "./components/BottomToolbar";
-import { SideToolbar } from "./components/sideToolbar";
+import { SideToolbar } from "./components/sideToolbar/sideToolbar";
 import { ImageContext } from "./providers/ImageProvider";
 import { useContext } from "react";
 import BorderProvider from "./providers/BorderProvider";

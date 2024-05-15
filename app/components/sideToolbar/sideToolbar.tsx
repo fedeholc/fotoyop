@@ -1,29 +1,30 @@
 import { useRef, useContext, useState, useId, useEffect } from "react";
-import { ImageContext } from "../providers/ImageProvider";
-import { ProcessContext } from "../providers/ProcessProvider";
-import { ToolbarContext } from "../providers/ToolbarProvider";
-import { CollageContext } from "../providers/CollageProvider";
+import { ImageContext } from "../../providers/ImageProvider";
+import { ProcessContext } from "../../providers/ProcessProvider";
+import { ToolbarContext } from "../../providers/ToolbarProvider";
+import { CollageContext } from "../../providers/CollageProvider";
 import {
   imageDataToBase64,
   imageB64ToImageData,
   drawImageB64OnCanvas,
   getCollageGapPx,
   getCollageData,
-} from "../imageProcessing";
-import { BorderContext } from "../providers/BorderProvider";
+} from "../../imageProcessing";
+import { BorderContext } from "../../providers/BorderProvider";
 import sideToolbar from "./sideToolbar.module.css";
-import ButtonUndo from "./buttons/buttonUndo";
-import ButtonNew from "./buttons/buttonNew";
-import ButtonDownload from "./buttons/buttonDownload";
-import ButtonApply from "./buttons/buttonApply";
-import ButtonDiscard from "./buttons/buttonDiscard";
-import ButtonGrayscale from "./buttons/buttonGrayscale";
-import toolbar from "./BottomToolbar.module.css";
-import { Orientation } from "../types";
-import useWindowsSize from "./hooks/useWindowsSize";
-import { mainCanvasConfig } from "../App";
-import { calcResizeToWindow } from "../imageProcessing";
-import { createCollage } from "../imageProcessing";
+import ButtonUndo from "../buttons/buttonUndo";
+import ButtonNew from "../buttons/buttonNew";
+import ButtonDownload from "../buttons/buttonDownload";
+import ButtonApply from "../buttons/buttonApply";
+import ButtonDiscard from "../buttons/buttonDiscard";
+import ButtonGrayscale from "../buttons/buttonGrayscale";
+import toolbar from "../BottomToolbar.module.css";
+import { Orientation } from "../../types";
+import useWindowsSize from "../hooks/useWindowsSize";
+import { mainCanvasConfig } from "../../App";
+import { calcResizeToWindow } from "../../imageProcessing";
+import { createCollage } from "../../imageProcessing";
+import collage from "../CollageCanvas.module.css";
 
 export function SideToolbar() {
   const { originalImg } = useContext(ImageContext);
@@ -52,8 +53,6 @@ export function SideToolbar() {
     </>
   );
 }
-
-import collage from "./CollageCanvas.module.css";
 
 function ToolbarGroup({
   className = "",
