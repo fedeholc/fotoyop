@@ -244,10 +244,9 @@ export default function BorderProvider({
     // Si ya se vienen haciendo modificaciones al canvas (aún no aplicadas) se descarta la última modificación y se agrega la nueva.
     //todo: ver, esto no se va a aplicar creo, no va a haber modificaciones sin aplicar como en borde
     if (currentProcess === ImageProcess.Canvas && undoImageList.length > 1) {
-      const newUndoImageList = [...undoImageList];
-      newUndoImageList.pop();
+      undoImageList.pop();
       putImageDataOnCanvas(
-        newUndoImageList[newUndoImageList.length - 1],
+        undoImageList[undoImageList.length - 1],
         smallCanvasRef.current!
       );
 
@@ -258,12 +257,11 @@ export default function BorderProvider({
         options
       );
 
-      setUndoImageList([...newUndoImageList, newImageData]);
+      setUndoImageList([...undoImageList, newImageData]);
 
-      const tempProcessList = [...processList];
-      tempProcessList.pop();
+      processList.pop();
       setProcessList([
-        ...tempProcessList,
+        ...processList,
         (imageData) => imgAddCanvas(imageData, options),
       ]);
     }
@@ -332,20 +330,18 @@ export default function BorderProvider({
    * Handler del botón descartar borde. Descarta las últimas modificaciones recuperando el snapshot anterior.
    */
   function handleDiscardBorder() {
-    const newUndoImageList = [...undoImageList];
     if (currentProcess === ImageProcess.Border && undoImageList.length > 1) {
-      newUndoImageList.pop();
-      setUndoImageList(newUndoImageList);
+      undoImageList.pop();
+      setUndoImageList([...undoImageList]);
 
       putImageDataOnCanvas(
-        newUndoImageList[newUndoImageList.length - 1],
+        undoImageList[undoImageList.length - 1],
         smallCanvasRef.current!
       );
 
-      const newProcessList = [...processList];
-      newProcessList.pop();
+      processList.pop();
 
-      setProcessList(newProcessList);
+      setProcessList([...processList]);
     }
 
     setInputBorderColor("#ffffff");
