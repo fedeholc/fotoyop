@@ -350,21 +350,6 @@ function TbCollageOptions() {
           id="inputGapPixelsN"
           min="0"
           value={gapPixels}
-          /*     onClick={(e) => {
-            console.log("click");
-          }}
-          onKeyUp={(e) => {
-            console.log("ku ");
-          }} */
-          /* onKeyUp={(e) => {
-          setInputBorderPixels((e.target as HTMLInputElement).value);
-          if (e.key === "Enter") {
-            handleBorderPixelsRange((e.target as HTMLInputElement).value);
-          }
-        }} */
-          /*  onChange={(e) => {
-          setInputBorderPixels(e.target.value);
-        }} */
           onChange={(e) => {
             if (e.currentTarget.value === "") {
               setGapPixels(0);
@@ -386,12 +371,11 @@ function TbCollageOptions() {
               : collageData.imagesWidthsSum
           }
           value={gapPixels}
-          /*    onMouseUp={(e) =>
-            handleBorderPixelsRange((e.target as HTMLInputElement).value)
-          }
-          onTouchEnd={(e) =>
-            handleBorderPixelsRange((e.target as HTMLInputElement).value)
-          } */
+          onTouchEnd={(e) => {
+            setGapPixels(parseInt((e.target as HTMLInputElement).value));
+
+            handleGapPixels(parseInt((e.target as HTMLInputElement).value));
+          }}
           onChange={(e) => setGapPixels(parseInt(e.target.value))}
           onMouseUp={(e) => {
             setGapPixels(parseInt((e.target as HTMLInputElement).value));
