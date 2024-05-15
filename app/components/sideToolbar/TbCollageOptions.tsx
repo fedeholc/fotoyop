@@ -174,8 +174,7 @@ export default function TbCollageOptions() {
 
   useEffect(() => {
     if (collageImages) {
-      let data = getCollageData(collageImages, 200);
-      data ? setCollageData(data) : null;
+      setCollageData(getCollageData(collageImages, 200));
     }
   }, [collageImages, previewOrientation]);
 

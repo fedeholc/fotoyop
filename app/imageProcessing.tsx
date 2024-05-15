@@ -186,23 +186,17 @@ function getImagesMinSizes(images: HTMLImageElement[]): {
 }
 
 export function getCollageData(
-  collageImages: HTMLImageElement[] | null,
+  collageImages: HTMLImageElement[],
   maxSize: number
-):
-  | {
-      ivHeightSum: number;
-      ivWidth: number;
-      ihHeight: number;
-      ihWidthSum: number;
-      imagesHeightsSum: number;
-      imagesWidthsSum: number;
-    }
-  | undefined {
-  if (!collageImages) {
-    return;
-  }
-
-  //todo: checkiar si no falla cuando la imagen sea más pequeña que maxSize
+): {
+  ivHeightSum: number;
+  ivWidth: number;
+  ihHeight: number;
+  ihWidthSum: number;
+  imagesHeightsSum: number;
+  imagesWidthsSum: number;
+} {
+  //TODO: checkiar si no falla cuando la imagen sea más pequeña que maxSize
   let maxImageDataWidth = maxSize;
   let maxImageDataHeight = maxSize;
   if (maxSize === 0) {
