@@ -32,61 +32,76 @@ export default function TbCollageOptions() {
       return;
     }
 
-    let resizedGap = 0;
-    if (orientation === Orientation.vertical) {
-      resizedGap =
-        (gapPixels * collageData.ivHeightSum) / collageData.imagesHeightsSum;
-    } else {
-      resizedGap =
-        (gapPixels * collageData.ihWidthSum) / collageData.imagesWidthsSum;
-    }
-
     createCollage(
       collageCanvasRef.current,
       orientation,
       collageImages,
-      200, //TODO: ojo, se toman los datos de collagedata que fueron calculados en el render inicial del componente con un valor de maxsize 200, si se cambia aca hay que recalcular, o habria que guardar el 200 en el state y tomarlo de ahi
-      resizedGap,
+      mainCanvasConfig.collagePreviewSize,
+      getResizedGap(
+        gapPixels,
+        orientation,
+        collageImages,
+        mainCanvasConfig.collagePreviewSize
+      ),
       inputGapColor
     );
   }
 
+  function getResizedGap(
+    gapPx: number,
+    orientation: Orientation,
+    collageImages: HTMLImageElement[],
+    maxSize: number
+  ) {
+    let resizedGap = 0;
+    let data = getCollageData(collageImages, maxSize);
+    if (orientation === Orientation.vertical) {
+      resizedGap = (gapPx * data.ivHeightSum) / data.imagesHeightsSum;
+    } else {
+      resizedGap = (gapPx * data.ihWidthSum) / data.imagesWidthsSum;
+    }
+    return resizedGap;
+  }
+
   function handleGapColor(gapColor: string) {
-    if (collageImages && collageCanvasRef.current) {
-      createCollage(
-        collageCanvasRef.current,
+    if (!collageImages || !collageCanvasRef.current) {
+      return;
+    }
+
+    createCollage(
+      collageCanvasRef.current,
+      previewOrientation,
+      collageImages,
+      mainCanvasConfig.collagePreviewSize,
+      getResizedGap(
+        gapPixels,
         previewOrientation,
         collageImages,
-        200,
-        gapPixels,
-        gapColor
-      );
-    }
+        mainCanvasConfig.collagePreviewSize
+      ),
+      gapColor
+    );
   }
 
   function handleGapPixels(gapPx: number) {
+    if (!collageImages || !collageCanvasRef.current) {
+      return;
+    }
     setGapPixels(gapPx);
-    if (collageImages && collageCanvasRef.current) {
-      let resizedGap = 0;
 
-      if (previewOrientation === Orientation.vertical) {
-        resizedGap =
-          (gapPx * collageData.ivHeightSum) / collageData.imagesHeightsSum;
-      } else {
-        resizedGap =
-          (gapPx * collageData.ihWidthSum) / collageData.imagesWidthsSum;
-      }
-      createCollage(
-        collageCanvasRef.current,
+    createCollage(
+      collageCanvasRef.current,
+      previewOrientation,
+      collageImages,
+      mainCanvasConfig.collagePreviewSize,
+      getResizedGap(
+        gapPx,
         previewOrientation,
         collageImages,
-        200, //TODO: ojo, se toman los datos de collagedata que fueron calculados en el render inicial del componente con un valor de maxsize 200, si se cambia aca hay que recalcular, o habria que guardar el 200 en el state y tomarlo de ahi
-        resizedGap,
-        inputGapColor
-      );
-      //la cuenta para el gap en modo vertical
-      // tendria que ser GapPx * collageData.ivHeight / sumaHeightsImages
-    }
+        mainCanvasConfig.collagePreviewSize
+      ),
+      inputGapColor
+    );
   }
 
   function handlePreview() {

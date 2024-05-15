@@ -32,6 +32,7 @@ export type CanvasConfig = {
   maxWidth: number;
   maxHeight: number;
   margin: number;
+  collagePreviewSize: number;
 };
 
 //? Sería mejor usar enums?

@@ -16,6 +16,7 @@ export const mainCanvasConfig: CanvasConfig = {
   maxWidth: 600,
   maxHeight: 600,
   margin: 32,
+  collagePreviewSize: 200,
 };
 
 export default function App() {
