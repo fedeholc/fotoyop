@@ -147,7 +147,6 @@ function TbCollageOptions() {
   function handleGapPixels(gapPx: number) {
     setGapPixels(gapPx);
     if (collageImages && collageCanvasRef.current) {
-      console.log(gapMax);
       let resizedGap = 0;
 
       if (previewOrientation === Orientation.vertical) {
@@ -247,8 +246,7 @@ function TbCollageOptions() {
     gapPixels,
     setGapPixels,
     setPreviewOrientation,
-    gapMax,
-    setGapMax,
+
     collageData,
     setCollageData,
   } = useContext(CollageContext);
@@ -260,29 +258,6 @@ function TbCollageOptions() {
       return;
     }
 
-    //TODO estó está acá para traer el dato del gapMax que uso después para calcular el gap en porcentaje según pixel.
-    //FIXME PERO: el gapMax en realidad debería llamarse collage max (y tal vez debería tenerlo divido en dos H/W), quedo ese nombre porque setea el max del input value.
-    //FIXME y también habría que cambiar el nombre de la función por getcollagedata porque sino si dice solo gap y acá no uso gap confunde.
-    //VER y todavia falta arreglar el cambio de gap con el porcentaje.
-    //VER ojo que el calculo de px lo muestra como float en el input
-
-    getCollageGapPx(previewOrientation, collageImages, 0, 0).then((res) => {
-      let gap, collageMaxWidth, collageMaxHeight;
-      if (res) {
-        ({
-          gap,
-          collageMaxWidth: collageMaxWidth,
-          collageMaxHeight: collageMaxHeight,
-        } = res);
-        console.log("useEffect setgap", previewOrientation);
-
-        if (previewOrientation === Orientation.vertical) {
-          setGapMax(collageMaxHeight);
-        } else {
-          setGapMax(collageMaxWidth);
-        }
-      }
-    });
     let data = getCollageData(collageImages, 200);
     if (data) {
       setCollageData(data);

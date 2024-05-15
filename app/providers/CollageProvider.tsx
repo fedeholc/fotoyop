@@ -28,10 +28,8 @@ export const CollageContext = createContext({
   setPreviewOrientation: (() => {}) as Dispatch<Orientation>,
   gapPixels: 0,
   setGapPixels: (() => {}) as Dispatch<number>,
-  gapMax: 0,
-  setGapMax: (() => {}) as Dispatch<number>,
 
-    inputGapColor: "#ffffff",
+  inputGapColor: "#ffffff",
   setInputGapColor: (() => {}) as Dispatch<string>,
   collageData: {
     ivHeightSum: 0,
@@ -59,7 +57,6 @@ export default function CollageProvider({
   const [previewOrientation, setPreviewOrientation] = useState<Orientation>(
     Orientation.vertical
   );
-  const [gapMax, setGapMax] = useState<number>(0);
 
   const [collageData, setCollageData] = useState<{
     ivHeightSum: number;
@@ -86,10 +83,9 @@ export default function CollageProvider({
         setPreviewOrientation,
         gapPixels,
         setGapPixels,
-         inputGapColor,
+        inputGapColor,
         setInputGapColor,
-        gapMax,
-        setGapMax,
+
         collageData,
         setCollageData,
       }}
