@@ -32,6 +32,7 @@ function ToolbarRow({
 
 export function BottomToolbar() {
   const { setDisplays } = useContext(ImageContext);
+  const { collageImages } = useContext(ImageContext);
 
   function showToolbarRow(row: toolbarRow) {
     let toolbar = {
@@ -268,7 +269,6 @@ export function BottomToolbar() {
           <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
         </ToolbarRow>
       )}
-
       {toolbarDisplay.borderPc && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
           <ButtonBack onClick={() => showToolbarRow(toolbarRow.border)} />
@@ -281,7 +281,6 @@ export function BottomToolbar() {
           <ButtonDiscard onClick={handleDiscardBorder} />
         </ToolbarRow>
       )}
-
       {toolbarDisplay.border && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
           <ButtonBack
@@ -314,7 +313,6 @@ export function BottomToolbar() {
           <ButtonDiscard onClick={handleDiscardCanvas}></ButtonDiscard>
         </ToolbarRow>
       )}
-
       {toolbarDisplay.collage && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
           <ButtonBack
@@ -336,7 +334,6 @@ export function BottomToolbar() {
           ></ButtonDiscard>
         </ToolbarRow>
       )}
-
       {toolbarDisplay.edit && originalImg?.src && (
         <ToolbarRow>
           <ButtonBorder
@@ -362,7 +359,6 @@ export function BottomToolbar() {
           ></ButtonCollage>
         </ToolbarRow>
       )}
-
       {toolbarDisplay.mainMenu && originalImg?.src && (
         <ToolbarRow className={toolbar.mainMenu}>
           <ButtonDownload></ButtonDownload>
@@ -371,44 +367,17 @@ export function BottomToolbar() {
           <ButtonEdit
             onClick={() => showToolbarRow(toolbarRow.edit)}
           ></ButtonEdit>
-
-          {/* FIXME: no funciona la ubicacion del popover justo arriba del boton */}
-          {/* @ts-ignore */}
-          {/*  <button className={toolbar.popoverButton} popovertarget="my-popover">
-            Open Popover
-          </button> */}
-          {/* @ts-ignore */}
-          {/* <div id="my-popover" className={toolbar.popoverInfo} popover="auto">
-            <div className={sideToolbar.toolbarRow}>
-              <div className={sideToolbar.imageInfoGroup}>
-                <div>
-                  <strong>{originalFile?.name}</strong>
-                </div>
-                {originalFile && (
-                  <div>
-                    {originalImg?.width} x {originalImg?.height} pixels
-                  </div>
-                )}
-                {originalFile && (
-                  <div>
-                    {Math.floor(originalFile.size / 1000).toString()} Kbytes
-                  </div>
-                )}
-            
-              </div>
-            </div>
-          </div> */}
-
-          {/* TODO: barra de info, hacerla popover */}
-          {/*  {originalFile && (
-            <div className={toolbar.imageInfo}>
-              <span>
-                {originalImg?.width} x {originalImg?.height} px
-              </span>
-              <span>{Math.floor(originalFile.size / 1000).toString()} Kb</span>
-              <span>{originalFile?.name}</span>
-            </div>
-          )} */}
+        </ToolbarRow>
+      )}
+      /* TODO: ojo, hay que cambiar los botones porque acá hacen otra cosa */
+      {toolbarDisplay.mainMenu && collageImages && (
+        <ToolbarRow className={toolbar.mainMenu}>
+          <ButtonDownload></ButtonDownload>
+          <ButtonNew></ButtonNew>
+          <ButtonUndo></ButtonUndo>
+          <ButtonEdit
+            onClick={() => showToolbarRow(toolbarRow.edit)}
+          ></ButtonEdit>
         </ToolbarRow>
       )}
     </div>

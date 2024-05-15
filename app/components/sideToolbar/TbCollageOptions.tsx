@@ -29,7 +29,6 @@ export default function TbCollageOptions() {
 
   const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
   const { setUndoImageList } = useContext(ProcessContext);
-  const { setCollageImages } = useContext(ImageContext);
   const {
     previewOrientation,
     inputGapColor,
