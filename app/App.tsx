@@ -25,12 +25,13 @@ export default function App() {
   return (
     <div className="app-wrapper">
       <main data-testid="main" id="app" className={styles.main}>
-        <section id="section__image">
-          {displays.canvas && <MainCanvas></MainCanvas>}
-          {displays.form && <UploadForm></UploadForm>}
-          {displays.collage && <CollageCanvas></CollageCanvas>}
-        </section>
         <CollageProvider>
+          <section id="section__image">
+            {displays.canvas && <MainCanvas></MainCanvas>}
+            {displays.form && <UploadForm></UploadForm>}
+            {displays.collage && <CollageCanvas></CollageCanvas>}
+          </section>
+
           <ToolbarProvider>
             <BorderProvider>
               <section id="section__toolbar">

@@ -25,9 +25,25 @@ export {
   imageB64ToImageDataWithOrientation,
   imageDataToBase64,
   calcResizeToWindow,
+  getResizedGap
 };
 
-//TODO: poner gap como parametro y luego otras ops
+   function getResizedGap(
+   gapPx: number,
+   orientation: Orientation,
+   collageImages: HTMLImageElement[],
+   maxSize: number
+ ) {
+   let resizedGap = 0;
+   let data = getCollageData(collageImages, maxSize);
+   if (orientation === Orientation.vertical) {
+     resizedGap = (gapPx * data.ivHeightSum) / data.imagesHeightsSum;
+   } else {
+     resizedGap = (gapPx * data.ihWidthSum) / data.imagesWidthsSum;
+   }
+   return resizedGap;
+ }
+
 /**
  *
  * @param canvas
@@ -42,9 +58,9 @@ export async function createCollage(
   canvas: HTMLCanvasElement,
   orientation: Orientation,
   collageImages: HTMLImageElement[] | null,
-  maxSize: number = 0,
-  gap: number = 0,
-  gapColor: string = "black"
+  maxSize: number,
+  gap: number,
+  gapColor: string
 ) {
   function getMinSize(images: HTMLImageElement[]): {
     width: number;

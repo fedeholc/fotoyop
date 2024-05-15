@@ -3,14 +3,17 @@ import { ImageContext } from "../../providers/ImageProvider";
 import { CollageContext } from "../../providers/CollageProvider";
 import { ProcessContext } from "../../providers/ProcessProvider";
 import { Orientation } from "../../types";
-import { createCollage, getCollageData } from "../../imageProcessing";
+import {
+  createCollage,
+  getCollageData,
+  drawImageB64OnCanvas,
+  imageB64ToImageData,
+  getResizedGap,
+} from "../../imageProcessing";
 import useWindowsSize from "../hooks/useWindowsSize";
 import sideToolbar from "./sideToolbar.module.css";
 import ToolbarGroup from "./ToolbarGroup";
-import {
-  drawImageB64OnCanvas,
-  imageB64ToImageData,
-} from "../../imageProcessing";
+
 import { calcResizeToWindow } from "../../imageProcessing";
 import { appConfig } from "../../App";
 
@@ -26,12 +29,25 @@ export default function TbCollageOptions() {
 
   const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
   const { setUndoImageList } = useContext(ProcessContext);
+  const { setCollageImages } = useContext(ImageContext);
+  const {
+    previewOrientation,
+    inputGapColor,
+    setInputGapColor,
+    gapPixels,
+    setGapPixels,
+    setPreviewOrientation,
+    collageData,
+    setCollageData,
+  } = useContext(CollageContext);
 
-  function handleOrientation(orientation: Orientation) {
+  const { collageImages } = useContext(ImageContext);
+
+  async function handleOrientation(orientation: Orientation) {
     if (!collageImages || !collageCanvasRef.current) {
       return;
     }
-    createCollage(
+    await createCollage(
       collageCanvasRef.current,
       orientation,
       collageImages,
@@ -44,22 +60,6 @@ export default function TbCollageOptions() {
       ),
       inputGapColor
     );
-  }
-
-  function getResizedGap(
-    gapPx: number,
-    orientation: Orientation,
-    collageImages: HTMLImageElement[],
-    maxSize: number
-  ) {
-    let resizedGap = 0;
-    let data = getCollageData(collageImages, maxSize);
-    if (orientation === Orientation.vertical) {
-      resizedGap = (gapPx * data.ivHeightSum) / data.imagesHeightsSum;
-    } else {
-      resizedGap = (gapPx * data.ihWidthSum) / data.imagesWidthsSum;
-    }
-    return resizedGap;
   }
 
   function handleGapColor(gapColor: string) {
@@ -157,19 +157,6 @@ export default function TbCollageOptions() {
       )) as ImageData,
     ]);
   }
-
-  const {
-    previewOrientation,
-    inputGapColor,
-    setInputGapColor,
-    gapPixels,
-    setGapPixels,
-    setPreviewOrientation,
-    collageData,
-    setCollageData,
-  } = useContext(CollageContext);
-
-  const { collageImages } = useContext(ImageContext);
 
   useEffect(() => {
     if (collageImages) {
