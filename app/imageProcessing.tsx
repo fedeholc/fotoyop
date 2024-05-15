@@ -3,7 +3,7 @@ import {
   ProcessFunction,
   BorderOptionsType,
   CanvasOptions,
-  CanvasConfig,
+  AppConfig,
   WindowsDimensions,
   Orientation,
 } from "./types";
@@ -333,7 +333,7 @@ function calcResizeToWindow(
   imageWidth: number,
   imageHeight: number,
   windowDimensions: WindowsDimensions,
-  mainCanvasConfig: CanvasConfig
+  mainCanvasConfig: AppConfig
 ): { newWidth: number; newHeight: number } {
   let ratio = imageWidth / imageHeight;
   let newWidth = 0;
@@ -343,11 +343,12 @@ function calcResizeToWindow(
   if (ratio > 1) {
     if (
       windowDimensions.width <
-      mainCanvasConfig.maxWidth - mainCanvasConfig.margin
+      mainCanvasConfig.canvasMaxWidth - mainCanvasConfig.canvasMargin
     ) {
-      newWidth = windowDimensions.width - mainCanvasConfig.margin;
+      newWidth = windowDimensions.width - mainCanvasConfig.canvasMargin;
     } else {
-      newWidth = mainCanvasConfig.maxWidth - mainCanvasConfig.margin;
+      newWidth =
+        mainCanvasConfig.canvasMaxWidth - mainCanvasConfig.canvasMargin;
     }
     newHeight = newWidth / ratio;
 
@@ -355,12 +356,12 @@ function calcResizeToWindow(
       newHeight >
       windowDimensions.height -
         windowDimensions.mobileToolbarHeight -
-        mainCanvasConfig.margin
+        mainCanvasConfig.canvasMargin
     ) {
       newHeight =
         windowDimensions.height -
         windowDimensions.mobileToolbarHeight -
-        mainCanvasConfig.margin;
+        mainCanvasConfig.canvasMargin;
       newWidth = newHeight * ratio;
     }
   }
@@ -369,20 +370,21 @@ function calcResizeToWindow(
     if (
       windowDimensions.height -
         windowDimensions.mobileToolbarHeight -
-        mainCanvasConfig.margin <
-      mainCanvasConfig.maxHeight
+        mainCanvasConfig.canvasMargin <
+      mainCanvasConfig.canvasMaxHeight
     ) {
       newHeight =
         windowDimensions.height -
         windowDimensions.mobileToolbarHeight -
-        mainCanvasConfig.margin;
+        mainCanvasConfig.canvasMargin;
     } else {
-      newHeight = mainCanvasConfig.maxHeight - mainCanvasConfig.margin;
+      newHeight =
+        mainCanvasConfig.canvasMaxHeight - mainCanvasConfig.canvasMargin;
     }
     newWidth = newHeight * ratio;
 
     if (newWidth > windowDimensions.width) {
-      newWidth = windowDimensions.width - mainCanvasConfig.margin;
+      newWidth = windowDimensions.width - mainCanvasConfig.canvasMargin;
       newHeight = newWidth / ratio;
     }
   }

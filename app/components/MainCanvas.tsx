@@ -2,7 +2,7 @@
 import { ImageContext } from "../providers/ImageProvider";
 import { useContext, useEffect } from "react";
 import useWindowsSize from "./hooks/useWindowsSize";
-import { mainCanvasConfig } from "../App";
+import { appConfig } from "../App";
 import { ProcessContext } from "../providers/ProcessProvider";
 import { calcResizeToWindow } from "../imageProcessing";
 
@@ -27,7 +27,7 @@ export default function MainCanvas() {
         undoImageList[undoImageList.length - 1].width,
         undoImageList[undoImageList.length - 1].height,
         windowDimensions,
-        mainCanvasConfig
+        appConfig
       );
 
       document

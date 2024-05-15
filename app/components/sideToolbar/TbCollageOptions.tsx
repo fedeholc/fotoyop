@@ -12,7 +12,7 @@ import {
   imageB64ToImageData,
 } from "../../imageProcessing";
 import { calcResizeToWindow } from "../../imageProcessing";
-import { mainCanvasConfig } from "../../App";
+import { appConfig } from "../../App";
 
 export default function TbCollageOptions() {
   const {
@@ -35,12 +35,12 @@ export default function TbCollageOptions() {
       collageCanvasRef.current,
       orientation,
       collageImages,
-      mainCanvasConfig.collagePreviewSize,
+      appConfig.collagePreviewSize,
       getResizedGap(
         gapPixels,
         orientation,
         collageImages,
-        mainCanvasConfig.collagePreviewSize
+        appConfig.collagePreviewSize
       ),
       inputGapColor
     );
@@ -70,12 +70,12 @@ export default function TbCollageOptions() {
       collageCanvasRef.current,
       previewOrientation,
       collageImages,
-      mainCanvasConfig.collagePreviewSize,
+      appConfig.collagePreviewSize,
       getResizedGap(
         gapPixels,
         previewOrientation,
         collageImages,
-        mainCanvasConfig.collagePreviewSize
+        appConfig.collagePreviewSize
       ),
       gapColor
     );
@@ -90,12 +90,12 @@ export default function TbCollageOptions() {
       collageCanvasRef.current,
       previewOrientation,
       collageImages,
-      mainCanvasConfig.collagePreviewSize,
+      appConfig.collagePreviewSize,
       getResizedGap(
         gapPx,
         previewOrientation,
         collageImages,
-        mainCanvasConfig.collagePreviewSize
+        appConfig.collagePreviewSize
       ),
       inputGapColor
     );
@@ -138,7 +138,7 @@ export default function TbCollageOptions() {
         newImageElement.width,
         newImageElement.height,
         windowDimensions,
-        mainCanvasConfig
+        appConfig
       );
 
       drawImageB64OnCanvas(
@@ -152,8 +152,8 @@ export default function TbCollageOptions() {
     setUndoImageList([
       (await imageB64ToImageData(
         originalImageB64,
-        mainCanvasConfig.maxWidth,
-        mainCanvasConfig.maxHeight
+        appConfig.canvasMaxWidth,
+        appConfig.canvasMaxHeight
       )) as ImageData,
     ]);
   }

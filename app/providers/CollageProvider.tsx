@@ -13,7 +13,7 @@ import {
   imageB64ToImageData,
   imageB64ToImageDataWithOrientation,
 } from "../imageProcessing";
-import { mainCanvasConfig } from "../App";
+import { appConfig } from "../App";
 import { ImageProcess } from "../types";
 import {
   applyProcessFunction,

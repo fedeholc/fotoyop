@@ -28,10 +28,10 @@ export type WindowsDimensions = {
 /**
  * Define la configuración del canvas principal.
  */
-export type CanvasConfig = {
-  maxWidth: number;
-  maxHeight: number;
-  margin: number;
+export type AppConfig = {
+  canvasMaxWidth: number;
+  canvasMaxHeight: number;
+  canvasMargin: number;
   collagePreviewSize: number;
 };
 

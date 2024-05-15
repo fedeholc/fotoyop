@@ -8,7 +8,7 @@ import {
 import { ImageContext } from "./ImageProvider";
 import { ProcessContext } from "./ProcessProvider";
 import { BorderOptionsType, CanvasOptions, ProcessFunction } from "../types";
-import { mainCanvasConfig } from "../App";
+import { appConfig } from "../App";
 import { ImageProcess } from "../types";
 import {
   applyProcessFunction,
@@ -78,10 +78,7 @@ export default function BorderProvider({
 
   const [selectAspectRatio, setSelectAspectRatio] = useState<string>("1:1");
 
-  const {
-    originalImg,
-    smallCanvasRef,
-  } = useContext(ImageContext);
+  const { originalImg, smallCanvasRef } = useContext(ImageContext);
 
   const {
     processList,
@@ -170,11 +167,11 @@ export default function BorderProvider({
     if (parseInt(borderOptions.BorderPixels!) > 0) {
       if (undoImageList[0].width > undoImageList[0].height) {
         newBorderPixels =
-          (parseInt(borderOptions.BorderPixels!) * mainCanvasConfig.maxWidth) /
+          (parseInt(borderOptions.BorderPixels!) * appConfig.canvasMaxWidth) /
           originalImg!.width;
       } else {
         newBorderPixels =
-          (parseInt(borderOptions.BorderPixels!) * mainCanvasConfig.maxHeight) /
+          (parseInt(borderOptions.BorderPixels!) * appConfig.canvasMaxHeight) /
           originalImg!.height;
       }
     }

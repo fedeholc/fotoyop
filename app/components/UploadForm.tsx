@@ -8,7 +8,7 @@ import {
 } from "../imageProcessing";
 import { ProcessContext } from "../providers/ProcessProvider";
 import useWindowsSize from "./hooks/useWindowsSize";
-import { mainCanvasConfig } from "../App";
+import { appConfig } from "../App";
 import { calcResizeToWindow, getCollageGapPx } from "../imageProcessing";
 import upForm from "./UploadForm.module.css";
 import { CollageContext } from "../providers/CollageProvider";
@@ -84,7 +84,7 @@ export default function UploadForm({}) {
           newImageElement.width,
           newImageElement.height,
           windowDimensions,
-          mainCanvasConfig
+          appConfig
         );
 
         drawImageB64OnCanvas(
@@ -98,8 +98,8 @@ export default function UploadForm({}) {
       setUndoImageList([
         (await imageB64ToImageData(
           originalImageB64,
-          mainCanvasConfig.maxWidth,
-          mainCanvasConfig.maxHeight
+          appConfig.canvasMaxWidth,
+          appConfig.canvasMaxHeight
         )) as ImageData,
       ]);
     }

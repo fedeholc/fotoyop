@@ -1,6 +1,6 @@
 "use client";
 import styles from "./page.module.css";
-import { CanvasConfig } from "./types";
+import { AppConfig } from "./types";
 import { BottomToolbar } from "./components/BottomToolbar";
 import { SideToolbar } from "./components/sideToolbar/sideToolbar";
 import { ImageContext } from "./providers/ImageProvider";
@@ -12,10 +12,10 @@ import MainCanvas from "./components/MainCanvas";
 import CollageCanvas from "./components/CollageCanvas";
 import CollageProvider from "./providers/CollageProvider";
 
-export const mainCanvasConfig: CanvasConfig = {
-  maxWidth: 600,
-  maxHeight: 600,
-  margin: 32,
+export const appConfig: AppConfig = {
+  canvasMaxWidth: 600,
+  canvasMaxHeight: 600,
+  canvasMargin: 32,
   collagePreviewSize: 200,
 };
 
