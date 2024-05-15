@@ -196,10 +196,9 @@ export default function BorderProvider({
 
     // Si ya se vienen haciendo modificaciones al borde (aún no aplicadas) se descarta la última modificación y se agrega la nueva.
     if (currentProcess === ImageProcess.Border && undoImageList.length > 1) {
-      const newUndoImageList = [...undoImageList];
-      newUndoImageList.pop();
+      undoImageList.pop();
       putImageDataOnCanvas(
-        newUndoImageList[newUndoImageList.length - 1],
+        undoImageList[undoImageList.length - 1],
         smallCanvasRef.current!
       );
 
@@ -210,12 +209,10 @@ export default function BorderProvider({
         smallCanvasBorderOptions
       );
 
-      setUndoImageList([...newUndoImageList, newImageData]);
-
-      const tempProcessList = [...processList];
-      tempProcessList.pop();
+      setUndoImageList([...undoImageList, newImageData]);
+      processList.pop();
       setProcessList([
-        ...tempProcessList,
+        ...processList,
         (imageData) => imgAddBorder(imageData, borderOptions),
       ]);
     }
