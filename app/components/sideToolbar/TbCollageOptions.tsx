@@ -31,7 +31,6 @@ export default function TbCollageOptions() {
     if (!collageImages || !collageCanvasRef.current) {
       return;
     }
-
     createCollage(
       collageCanvasRef.current,
       orientation,
@@ -67,7 +66,6 @@ export default function TbCollageOptions() {
     if (!collageImages || !collageCanvasRef.current) {
       return;
     }
-
     createCollage(
       collageCanvasRef.current,
       previewOrientation,
@@ -88,7 +86,6 @@ export default function TbCollageOptions() {
       return;
     }
     setGapPixels(gapPx);
-
     createCollage(
       collageCanvasRef.current,
       previewOrientation,
@@ -104,20 +101,7 @@ export default function TbCollageOptions() {
     );
   }
 
-  function handlePreview() {
-    if (collageImages && collageCanvasRef.current) {
-      createCollage(
-        collageCanvasRef.current,
-        previewOrientation,
-        collageImages,
-        200,
-        gapPixels,
-        inputGapColor
-      );
-    }
-  }
-
-  async function handleProbar() {
+  async function handleEdit() {
     if (collageImages && collageCanvasRef.current) {
       //  hay que ocultar el canvas para que no se vea que se está creando el collage en grande
       collageCanvasRef.current.style.display = "none";
@@ -242,8 +226,7 @@ export default function TbCollageOptions() {
           ></input>
         </div>
 
-        <button onClick={handleProbar}>probar</button>
-        <button onClick={handlePreview}>preview</button>
+        <button onClick={handleEdit}>EDITAR</button>
       </div>
 
       <div className={sideToolbar.borderRangesRow}>
