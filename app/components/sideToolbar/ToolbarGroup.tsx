@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import sideToolbar from "./sideToolbar.module.css";
 
-export function ToolbarGroup({
+export default function ToolbarGroup({
   className = "",
   groupTitle = "",
   closedRendering = true,

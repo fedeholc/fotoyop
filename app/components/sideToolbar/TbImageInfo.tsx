@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
-import  sideToolbar  from "./sideToolbar.module.css";
-import { ToolbarGroup } from "./ToolbarGroup";
-import { ImageContext } from "../../providers/ImageProvider";
+import sideToolbar from "./sideToolbar.module.css";
+import ToolbarGroup from "./ToolbarGroup";
+import { ImageContext } from "@/app/providers/ImageProvider";
 
-export function TbImageInfo() {
+export default function TbImageInfo() {
   const { originalFile, originalImg } = useContext(ImageContext);
 
   return (
@@ -23,7 +23,10 @@ export function TbImageInfo() {
           )}
           <img
             id="imagenPreview"
-            style={{ maxWidth: "200px", maxHeight: "200px" }}
+            style={{
+              maxWidth: "200px",
+              maxHeight: "200px",
+            }} /* TODO: ver si fijar acá o entro lado el max */
             src={originalImg?.src}
           ></img>
         </div>
