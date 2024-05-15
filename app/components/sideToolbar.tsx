@@ -110,40 +110,6 @@ function TbCollageOptions() {
   const { setUndoImageList } = useContext(ProcessContext);
 
   function handleOrientation(orientation: Orientation) {
-    /* getCollageGapPx(previewOrientation, collageImages, 0, 0).then((res) => {
-      let gap, collageMaxWidth, collageMaxHeight;
-      if (res) {
-        ({
-          gap,
-          collageMaxWidth: collageMaxWidth,
-          collageMaxHeight: collageMaxHeight,
-        } = res);
-        console.log("useEffect setgap", previewOrientation);
-
-        let tempMax = 0;
-        if (orientation === Orientation.vertical) {
-          tempMax = collageMaxHeight;
-          setGapMax(collageMaxHeight);
-        } else {
-          tempMax = collageMaxWidth;
-          setGapMax(collageMaxWidth);
-        }
-
-        // TODO: el problema que tengo que resolver es si calcular el gap en pixeles fuera o dentro de create collage, cuando no se crea el collage a tamaño máximo. Porque tengo en mi input value el valor en pixeles de la versión final sin reducir, pero quiero que en el preview el gap sea proporcional, para eso tengo que saber tamaño final sin reducir, y tamaño del preview (pero ojo, el límite que se pasa como parametro a createcollage, no es el limite de tamaño del preview sino un alto o ancho máximo para adaptar luego cada imagen, el tamaño final del preview no lo se si no recorro todas las imagenes en su tamaño adaptado). En create collage la adaptación de tamaños se hace mediante la conversión de b64 a image data, pero yo tendría que poder hacer las cuentas de tamaño sin eso para que sea rápido y poder tener el dato antes de llamar a la función. Otra opción sería que el parámetro a create collage sea el tamaño final del preview y que dentro adapte los tamaños de cada imagen y gap proporcionalmente. Contemplar también la posibilidad de que al cargarse por primera vez las imagenes, en el useeffect, hacer ahí algunos calculos de tamaños maximos tanto para horizontal o vertical cosa de no tener que hacerlo luego con cada cambio de parámetros.
-        //VER probar primero lo que está en la última frase.
-
-        if (collageImages && collageCanvasRef.current) {
-          createCollage(
-            collageCanvasRef.current,
-            orientation,
-            collageImages,
-            200,
-            (gapPixels * 200) / tempMax,
-            inputGapColor
-          );
-        }
-      }
-    }); */
     let resizedGap = 0;
 
     if (orientation === Orientation.vertical) {
@@ -321,6 +287,7 @@ function TbCollageOptions() {
     if (data) {
       setCollageData(data);
       console.log("collage data", data);
+      console.log("prev: ", previewOrientation);
     }
   }, [collageImages, previewOrientation]);
 
@@ -413,7 +380,11 @@ function TbCollageOptions() {
           type="range"
           id="inputGapPixels"
           min="0"
-          max={gapMax / 3}
+          max={
+            previewOrientation === Orientation.vertical
+              ? collageData.imagesHeightsSum
+              : collageData.imagesWidthsSum
+          }
           value={gapPixels}
           /*    onMouseUp={(e) =>
             handleBorderPixelsRange((e.target as HTMLInputElement).value)
