@@ -7,7 +7,10 @@ import { createCollage, getCollageData } from "../../imageProcessing";
 import useWindowsSize from "../hooks/useWindowsSize";
 import sideToolbar from "./sideToolbar.module.css";
 import ToolbarGroup from "./ToolbarGroup";
-import { drawImageB64OnCanvas, imageB64ToImageData } from "../../imageProcessing";
+import {
+  drawImageB64OnCanvas,
+  imageB64ToImageData,
+} from "../../imageProcessing";
 import { calcResizeToWindow } from "../../imageProcessing";
 import { mainCanvasConfig } from "../../App";
 
@@ -25,8 +28,11 @@ export default function TbCollageOptions() {
   const { setUndoImageList } = useContext(ProcessContext);
 
   function handleOrientation(orientation: Orientation) {
-    let resizedGap = 0;
+    if (!collageImages || !collageCanvasRef.current) {
+      return;
+    }
 
+    let resizedGap = 0;
     if (orientation === Orientation.vertical) {
       resizedGap =
         (gapPixels * collageData.ivHeightSum) / collageData.imagesHeightsSum;
@@ -34,16 +40,15 @@ export default function TbCollageOptions() {
       resizedGap =
         (gapPixels * collageData.ihWidthSum) / collageData.imagesWidthsSum;
     }
-    if (collageImages && collageCanvasRef.current) {
-      createCollage(
-        collageCanvasRef.current,
-        orientation,
-        collageImages,
-        200, //TODO: ojo, se toman los datos de collagedata que fueron calculados en el render inicial del componente con un valor de maxsize 200, si se cambia aca hay que recalcular, o habria que guardar el 200 en el state y tomarlo de ahi
-        resizedGap,
-        inputGapColor
-      );
-    }
+
+    createCollage(
+      collageCanvasRef.current,
+      orientation,
+      collageImages,
+      200, //TODO: ojo, se toman los datos de collagedata que fueron calculados en el render inicial del componente con un valor de maxsize 200, si se cambia aca hay que recalcular, o habria que guardar el 200 en el state y tomarlo de ahi
+      resizedGap,
+      inputGapColor
+    );
   }
 
   function handleGapColor(gapColor: string) {
@@ -161,7 +166,6 @@ export default function TbCollageOptions() {
     gapPixels,
     setGapPixels,
     setPreviewOrientation,
-
     collageData,
     setCollageData,
   } = useContext(CollageContext);
@@ -169,15 +173,9 @@ export default function TbCollageOptions() {
   const { collageImages } = useContext(ImageContext);
 
   useEffect(() => {
-    if (!collageImages) {
-      return;
-    }
-
-    let data = getCollageData(collageImages, 200);
-    if (data) {
-      setCollageData(data);
-      console.log("collage data", data);
-      console.log("prev: ", previewOrientation);
+    if (collageImages) {
+      let data = getCollageData(collageImages, 200);
+      data ? setCollageData(data) : null;
     }
   }, [collageImages, previewOrientation]);
 
@@ -263,13 +261,11 @@ export default function TbCollageOptions() {
           value={gapPixels}
           onTouchEnd={(e) => {
             setGapPixels(parseInt((e.target as HTMLInputElement).value));
-
             handleGapPixels(parseInt((e.target as HTMLInputElement).value));
           }}
           onChange={(e) => setGapPixels(parseInt(e.target.value))}
           onMouseUp={(e) => {
             setGapPixels(parseInt((e.target as HTMLInputElement).value));
-
             handleGapPixels(parseInt((e.target as HTMLInputElement).value));
           }}
         ></input>
