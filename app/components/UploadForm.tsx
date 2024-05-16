@@ -272,6 +272,11 @@ export default function UploadForm({}) {
           multiple={true}
         ></input>
       </div>
+      <span className={`${upForm.dropInfo} ${upForm.unselectable}`}>
+        <div>1 file for single edit</div>
+        <div>or more for collage creation</div>
+      </span>
+      <span className={`${upForm.dropInfo} ${upForm.unselectable}`}></span>
     </form>
   );
 }

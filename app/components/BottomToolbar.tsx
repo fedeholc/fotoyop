@@ -74,55 +74,15 @@ export function BottomToolbar() {
   });
 
   const {
-    inputAspectRatioX,
-    inputAspectRatioY,
-    handleInputAspectRatioX,
-    handleInputAspectRatioY,
-
     handleApplyBorder,
     handleDiscardBorder,
     handleApplyCanvas,
     handleDiscardCanvas,
-    selectAspectRatio,
-    handleSelectAspectRatio,
   } = useContext(BorderContext);
-
-  //todo: pasar lo que es de canvas a un canvas context
 
   const { originalImg } = useContext(ImageContext);
 
   const { handleToGrayscale } = useContext(ToolbarContext);
-
-  //? A diferencia de lo que sucede con los componentes de inputs de borde, acá no puedo hacer que el state del valor sea propio del componente. En el otro podía porque ese valor se pasaba a un state general via el mouseUp, por lo que cuando era hora de aplicar el cambio se hacía con ese valor que ya se había pasado. Acá como no hay mouseUp sino que luego de modificarse los inputs nada cambia hasta que no se dispara el aplicar cambios, no habría forma de que el state local actualice al global. Hay que dejarlo así, o hay que hacer un componente que incluya los inputs junto con el aplicar cambios para que el state este a ese nivel. Modificar el de bordes no se puede porque el state local es lo que evita que se frene el slider por un rerender disparado por la modificacion del state global (todo esto para mantener la opción de "preview" del borde antes de aplicar cambios... otra posibilidad sería renuncia a esa funcionalidad)
-
-  function AspectRatioInputs() {
-    const id = useId();
-
-    return (
-      <div className={toolbar.canvasInputs}>
-        <label>Custom</label>
-        <input
-          className={toolbar.aspectRatioInput}
-          type="number"
-          id={`${id}inputAspectRatioX`}
-          min="0"
-          value={inputAspectRatioX}
-          onKeyUp={handleInputAspectRatioX}
-          onChange={handleInputAspectRatioX}
-        ></input>
-        <span>: </span>
-        <input
-          className={toolbar.aspectRatioInput}
-          type="number"
-          id={`${id}inputAspectRatioY`}
-          min="0"
-          value={inputAspectRatioY}
-          onKeyUp={handleInputAspectRatioY}
-          onChange={handleInputAspectRatioY}
-        ></input>
-      </div>
-    );
-  }
 
   const { mobileToolbarRef } = useContext(ImageContext);
 
@@ -170,9 +130,7 @@ export function BottomToolbar() {
             onClick={() => showToolbarRow(toolbarRow.edit)}
           ></ButtonBack>
           <span></span>
-          {/* el span es un separador para generar gap */}
-          {/* <BorderColorInputs /> */}
-          {/* <CanvasColorInputs /> */}
+
           <BtCanvasColorInputs />
           <BtAspectRatioPresets />
           <BtAspectRatioInputs />
