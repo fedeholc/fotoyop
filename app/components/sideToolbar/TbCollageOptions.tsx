@@ -8,13 +8,11 @@ import {
   getCollageData,
   drawImageB64OnCanvas,
   imageB64ToImageData,
-  getResizedGap,
+  calcResizeToWindow,
 } from "../../imageProcessing";
 import useWindowsSize from "../hooks/useWindowsSize";
 import sideToolbar from "./sideToolbar.module.css";
 import ToolbarGroup from "./ToolbarGroup";
-
-import { calcResizeToWindow } from "../../imageProcessing";
 import { appConfig } from "../../App";
 
 export default function TbCollageOptions() {
@@ -27,7 +25,6 @@ export default function TbCollageOptions() {
     mobileToolbarRef,
   } = useContext(ImageContext);
 
-  const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
   const { setUndoImageList } = useContext(ProcessContext);
   const {
     previewOrientation,
@@ -40,105 +37,11 @@ export default function TbCollageOptions() {
     setCollageData,
     handleGapColor,
     handleGapPixels,
+    handleOrientation,
+    handleSaveToEdit,
   } = useContext(CollageContext);
 
   const { collageImages } = useContext(ImageContext);
-
-  async function handleOrientation(orientation: Orientation) {
-    if (!collageImages || !collageCanvasRef.current) {
-      return;
-    }
-    await createCollage(
-      collageCanvasRef.current,
-      orientation,
-      collageImages,
-      appConfig.collagePreviewSize,
-      getResizedGap(
-        gapPixels,
-        orientation,
-        collageImages,
-        appConfig.collagePreviewSize
-      ),
-      inputGapColor
-    );
-  }
-
-  function handleGapPixels2(gapPx: number) {
-    if (!collageImages || !collageCanvasRef.current) {
-      return;
-    }
-    setGapPixels(gapPx);
-    createCollage(
-      collageCanvasRef.current,
-      previewOrientation,
-      collageImages,
-      appConfig.collagePreviewSize,
-      getResizedGap(
-        gapPx,
-        previewOrientation,
-        collageImages,
-        appConfig.collagePreviewSize
-      ),
-      inputGapColor
-    );
-  }
-
-  async function handleEdit() {
-    if (collageImages && collageCanvasRef.current) {
-      //  hay que ocultar el canvas para que no se vea que se está creando el collage en grande
-      collageCanvasRef.current.style.display = "none";
-
-      await createCollage(
-        collageCanvasRef.current,
-        previewOrientation,
-        collageImages,
-        0,
-        gapPixels,
-        inputGapColor
-      );
-      //pasa la imagen al smallCanvas para trabajar en modo edición
-      loadB64Procedure(
-        collageCanvasRef.current.toDataURL("image/jpeg", 1) as string
-      );
-    }
-  }
-
-  async function loadB64Procedure(originalImageB64: string) {
-    setDisplays((prev) => {
-      return {
-        canvas: true,
-        form: false,
-        resizeTrigger: !prev.resizeTrigger,
-        collage: false,
-      };
-    });
-
-    const newImageElement = new window.Image();
-    newImageElement.src = originalImageB64;
-    newImageElement.onload = () => {
-      const { newWidth, newHeight } = calcResizeToWindow(
-        newImageElement.width,
-        newImageElement.height,
-        windowDimensions,
-        appConfig
-      );
-
-      drawImageB64OnCanvas(
-        originalImageB64,
-        smallCanvasRef.current as HTMLCanvasElement,
-        newWidth,
-        newHeight
-      );
-    };
-    setOriginalImg(newImageElement);
-    setUndoImageList([
-      (await imageB64ToImageData(
-        originalImageB64,
-        appConfig.canvasMaxWidth,
-        appConfig.canvasMaxHeight
-      )) as ImageData,
-    ]);
-  }
 
   useEffect(() => {
     if (collageImages) {
@@ -195,7 +98,7 @@ export default function TbCollageOptions() {
           ></input>
         </div>
 
-        <button onClick={handleEdit}>EDITAR</button>
+        <button onClick={() => handleSaveToEdit()}>EDITAR</button>
       </div>
 
       <div className={sideToolbar.borderRangesRow}>
