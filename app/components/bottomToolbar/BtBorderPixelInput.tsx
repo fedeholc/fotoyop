@@ -7,8 +7,7 @@ export default function BtBorderPixelInputs({
 }: {
   maxRange: string;
 }) {
-  const { BorderPixels, handleBorderPixelsRange, handleInputBorderColor } =
-    useContext(BorderContext);
+  const { BorderPixels, handleBorderPixelsRange } = useContext(BorderContext);
   const id = useId();
   const [inputBorderPixels, setInputBorderPixels] = useState(BorderPixels);
   return (
