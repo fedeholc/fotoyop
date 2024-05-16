@@ -94,33 +94,18 @@ export default function BorderProvider({
     setInputAspectRatioX(0);
     setInputAspectRatioY(0);
 
-    if (
-      e.target.value === "" &&
-      inputAspectRatioX > 0 &&
-      inputAspectRatioY > 0
-    ) {
+    let arX = parseInt(e.target.value.split(":")[0]);
+    let arY = parseInt(e.target.value.split(":")[1]);
+
+    if (arX > 0 && arY > 0) {
       handleCanvasChange(
         {
           CanvasColor: inputBorderColor,
-          ratioX: inputAspectRatioX,
-          ratioY: inputAspectRatioY,
+          ratioX: arX,
+          ratioY: arY,
         },
         smallCanvasRef
       );
-    } else {
-      let arX = parseInt(e.target.value.split(":")[0]);
-      let arY = parseInt(e.target.value.split(":")[1]);
-
-      if (arX > 0 && arY > 0) {
-        handleCanvasChange(
-          {
-            CanvasColor: inputBorderColor,
-            ratioX: arX,
-            ratioY: arY,
-          },
-          smallCanvasRef
-        );
-      }
     }
   }
 
