@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { BorderContext } from "../../providers/BorderProvider";
 import sideToolbar from "./sideToolbar.module.css";
 import ToolbarGroup from "./ToolbarGroup";
-import BorderColorInputs from "./BorderColorInputs";
+import CanvasColorInputs from "./CanvasColorInputs";
 import AspectRatioInputs from "./AspectRatioInputs";
 import ButtonApply from "../buttons/buttonApply";
 import ButtonDiscard from "../buttons/buttonDiscard";
@@ -13,7 +13,7 @@ export default function TbCanvas() {
     <ToolbarGroup groupTitle="Canvas">
       <div className={sideToolbar.toolbarRow}>
         <div className={sideToolbar.rowTitle}>Color</div>
-        <BorderColorInputs />
+        <CanvasColorInputs />
       </div>
 
       <div className={sideToolbar.toolbarRow}>

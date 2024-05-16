@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useContext, useEffect, useId } from "react";
+import { useState, useContext, useId } from "react";
 import toolbar from "./BottomToolbar.module.css";
 import { BorderContext } from "../providers/BorderProvider";
 import { ImageContext } from "../providers/ImageProvider";
@@ -20,6 +20,10 @@ import ButtonCanvas from "./buttons/buttonCanvas";
 import ButtonCollage from "./buttons/buttonCollage";
 import BtBorderPixelInputs from "./bottomToolbar/BtBorderPixelInput";
 import BtBorderPercentInput from "./bottomToolbar/BtBorderPercentInput";
+import BtCanvasColorInputs from "./bottomToolbar/BtCanvasColorInputs";
+import BtBorderColorInputs from "./bottomToolbar/BtBorderColorInputs";
+import BtAspectRatioPresets from "./bottomToolbar/BtAspectRatioPresets";
+import BtAspectRatioInputs from "./bottomToolbar/BtAspectRatioInputs";
 
 function ToolbarRow({
   className = "",
@@ -70,18 +74,11 @@ export function BottomToolbar() {
   });
 
   const {
-    inputBorderColor,
-    inputCanvasColor,
-    BorderPixels,
-    BorderPercent,
     inputAspectRatioX,
     inputAspectRatioY,
     handleInputAspectRatioX,
     handleInputAspectRatioY,
-    handleInputBorderColor,
-    handleInputCanvasColor,
-    handleBorderPixelsRange,
-    handleBorderPercentRange,
+
     handleApplyBorder,
     handleDiscardBorder,
     handleApplyCanvas,
@@ -95,91 +92,6 @@ export function BottomToolbar() {
   const { originalImg } = useContext(ImageContext);
 
   const { handleToGrayscale } = useContext(ToolbarContext);
-
-  //!sería bueno poder ponerlo en componente para poder armarlo con una label y usando useId, de modo de no repetir el id en el html (no en este caso que creo que no se repite pero en el input de color sí... aunque habría que ver si el input de color no debería modificar un state distinto según donde se use)
-
-  function BorderPixelInputs({ maxRange }: { maxRange: string }) {
-    const id = useId();
-    const [inputBorderPixels, setInputBorderPixels] = useState(BorderPixels);
-    return (
-      <div className={toolbar.borderRanges}>
-        <input
-          type="range"
-          id={`${id}inputBorderPixels}`}
-          min="0"
-          max={maxRange}
-          value={inputBorderPixels}
-          onChange={(e) => setInputBorderPixels(e.target.value)}
-          onMouseUp={(e) =>
-            handleBorderPixelsRange((e.target as HTMLInputElement).value)
-          }
-          onTouchEnd={(e) =>
-            handleBorderPixelsRange((e.target as HTMLInputElement).value)
-          }
-        ></input>
-        <input
-          type="number"
-          id={`${id}inputBorderPixelsN}`}
-          min="0"
-          value={inputBorderPixels}
-          onKeyUp={(e) => {
-            setInputBorderPixels((e.target as HTMLInputElement).value);
-            if (e.key === "Enter") {
-              handleBorderPixelsRange((e.target as HTMLInputElement).value);
-            }
-          }}
-          onChange={(e) => {
-            setInputBorderPixels(e.target.value);
-          }}
-        ></input>{" "}
-        <div className="toolbar_row__units">px</div>{" "}
-      </div>
-    );
-  }
-
-  //!TODO: ahora que funciona esto componentizado podría hacer lo de las labels en componente con useID
-  //!   y hacer lo mismo con la side toolbar
-  function BorderPercentInputs({ maxRange }: { maxRange: string }) {
-    const id = useId();
-
-    const [inputBorderPercent, setInputBorderPercent] = useState(BorderPercent);
-    return (
-      <div className={toolbar.borderRanges}>
-        <input
-          type="range"
-          id={`${id}inputBorderPercent}`}
-          max={maxRange}
-          min="0"
-          value={inputBorderPercent}
-          onChange={(e) => {
-            setInputBorderPercent(e.target.value);
-          }}
-          onMouseUp={(e) =>
-            handleBorderPercentRange((e.target as HTMLInputElement).value)
-          }
-          onTouchEnd={(e) =>
-            handleBorderPercentRange((e.target as HTMLInputElement).value)
-          }
-        ></input>
-        <input
-          type="number"
-          id={`${id}inputBorderPercentN}`}
-          min="0"
-          value={inputBorderPercent}
-          onKeyUp={(e) => {
-            setInputBorderPercent((e.target as HTMLInputElement).value);
-            if (e.key === "Enter") {
-              handleBorderPercentRange((e.target as HTMLInputElement).value);
-            }
-          }}
-          onChange={(e) => {
-            setInputBorderPercent(e.target.value);
-          }}
-        ></input>
-        <div className="toolbar_row__units">%</div>
-      </div>
-    );
-  }
 
   //? A diferencia de lo que sucede con los componentes de inputs de borde, acá no puedo hacer que el state del valor sea propio del componente. En el otro podía porque ese valor se pasaba a un state general via el mouseUp, por lo que cuando era hora de aplicar el cambio se hacía con ese valor que ya se había pasado. Acá como no hay mouseUp sino que luego de modificarse los inputs nada cambia hasta que no se dispara el aplicar cambios, no habría forma de que el state local actualice al global. Hay que dejarlo así, o hay que hacer un componente que incluya los inputs junto con el aplicar cambios para que el state este a ese nivel. Modificar el de bordes no se puede porque el state local es lo que evita que se frene el slider por un rerender disparado por la modificacion del state global (todo esto para mantener la opción de "preview" del borde antes de aplicar cambios... otra posibilidad sería renuncia a esa funcionalidad)
 
@@ -209,78 +121,6 @@ export function BottomToolbar() {
           onChange={handleInputAspectRatioY}
         ></input>
       </div>
-    );
-  }
-  function AspectRatioPresets() {
-    const id = useId();
-    return (
-      <div className={toolbar.canvasInputs}>
-        <label htmlFor={`${id}inputAspectRatioPresets`}>
-          Aspect
-          <br />
-          Ratio
-        </label>
-        <select
-          className={toolbar.aspectRatioInput}
-          value={selectAspectRatio}
-          id={`${id}inputAspectRatioPresets`}
-          onChange={handleSelectAspectRatio}
-        >
-          <option value="1:1">1:1</option>
-          <option value="16:9">16:9</option>
-          <option value="5:4">5:4</option>
-          <option value="4:3">4:3</option>
-          <option value="3:2">3:2</option>
-          <option value="2:3">2:3</option>
-          <option value="3:4">3:4</option>
-          <option value="4:5">4:5</option>
-          <option value="9:16">9:16</option>
-          <option value="">Custom</option>
-        </select>
-      </div>
-    );
-  }
-
-  function BorderColorInputs() {
-    const id = useId();
-    return (
-      <>
-        <input
-          id={`${id}inputBorderColorT`}
-          type="Text"
-          min="0"
-          value={inputBorderColor}
-          onChange={handleInputBorderColor}
-        />
-        <input
-          id={`${id}inputBorderColor`}
-          type="color"
-          list="true"
-          value={inputBorderColor}
-          onChange={handleInputBorderColor}
-        />
-      </>
-    );
-  }
-  function CanvasColorInputs() {
-    const id = useId();
-    return (
-      <>
-        <input
-          id={`${id}inputCanvasColorT`}
-          type="Text"
-          min="0"
-          value={inputCanvasColor}
-          onChange={handleInputCanvasColor}
-        />
-        <input
-          id={`${id}inputCanvasColor`}
-          type="color"
-          list="true"
-          value={inputCanvasColor}
-          onChange={handleInputCanvasColor}
-        />
-      </>
     );
   }
 
@@ -315,7 +155,7 @@ export function BottomToolbar() {
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.edit)}
           ></ButtonBack>
-          <BorderColorInputs />
+          <BtBorderColorInputs />
           <ButtonBorderPc
             onClick={() => showToolbarRow(toolbarRow.borderPc)}
           ></ButtonBorderPc>
@@ -332,9 +172,10 @@ export function BottomToolbar() {
           <span></span>
           {/* el span es un separador para generar gap */}
           {/* <BorderColorInputs /> */}
-          <CanvasColorInputs />
-          <AspectRatioPresets />
-          <AspectRatioInputs />
+          {/* <CanvasColorInputs /> */}
+          <BtCanvasColorInputs />
+          <BtAspectRatioPresets />
+          <BtAspectRatioInputs />
           <ButtonApply
             onClick={() => {
               handleApplyCanvas();
@@ -399,7 +240,8 @@ export function BottomToolbar() {
           ></ButtonEdit>
         </ToolbarRow>
       )}
-      /* TODO: ojo, hay que cambiar los botones porque acá hacen otra cosa */
+      {/*   TODO: ojo, hay que cambiar los botones porque acá hacen otra cosa
+       */}
       {toolbarDisplay.mainMenu && collageImages && (
         <ToolbarRow className={toolbar.mainMenu}>
           <ButtonDownload></ButtonDownload>
