@@ -71,6 +71,7 @@ export function BottomToolbar() {
 
   const {
     inputBorderColor,
+    inputCanvasColor,
     BorderPixels,
     BorderPercent,
     inputAspectRatioX,
@@ -78,6 +79,7 @@ export function BottomToolbar() {
     handleInputAspectRatioX,
     handleInputAspectRatioY,
     handleInputBorderColor,
+    handleInputCanvasColor,
     handleBorderPixelsRange,
     handleBorderPercentRange,
     handleApplyBorder,
@@ -260,6 +262,27 @@ export function BottomToolbar() {
       </>
     );
   }
+  function CanvasColorInputs() {
+    const id = useId();
+    return (
+      <>
+        <input
+          id={`${id}inputCanvasColorT`}
+          type="Text"
+          min="0"
+          value={inputCanvasColor}
+          onChange={handleInputCanvasColor}
+        />
+        <input
+          id={`${id}inputCanvasColor`}
+          type="color"
+          list="true"
+          value={inputCanvasColor}
+          onChange={handleInputCanvasColor}
+        />
+      </>
+    );
+  }
 
   const { mobileToolbarRef } = useContext(ImageContext);
 
@@ -308,7 +331,8 @@ export function BottomToolbar() {
           ></ButtonBack>
           <span></span>
           {/* el span es un separador para generar gap */}
-          <BorderColorInputs />
+          {/* <BorderColorInputs /> */}
+          <CanvasColorInputs />
           <AspectRatioPresets />
           <AspectRatioInputs />
           <ButtonApply

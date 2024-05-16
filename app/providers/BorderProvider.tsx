@@ -21,6 +21,8 @@ export const BorderContext = createContext({
   BorderPixels: "0",
   BorderPercent: "0",
   inputBorderColor: "#ffffff",
+  inputCanvasColor: "#ffffff",
+
   inputAspectRatioX: 0,
   inputAspectRatioY: 0,
   selectAspectRatio: "",
@@ -33,6 +35,7 @@ export const BorderContext = createContext({
   setBorderPixels: (() => {}) as Dispatch<SetStateAction<string>>,
   setBorderPercent: (() => {}) as Dispatch<SetStateAction<string>>,
   setInputBorderColor: (() => {}) as Dispatch<SetStateAction<string>>,
+  setInputCanvasColor: (() => {}) as Dispatch<SetStateAction<string>>,
   handleInputAspectRatioX: (() => {}) as (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -44,6 +47,9 @@ export const BorderContext = createContext({
       | React.KeyboardEvent<HTMLInputElement>
   ) => void,
   handleInputBorderColor: (() => {}) as (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => void,
+  handleInputCanvasColor: (() => {}) as (
     e: React.ChangeEvent<HTMLInputElement>
   ) => void,
 
@@ -72,10 +78,9 @@ export default function BorderProvider({
   const [BorderPixels, setBorderPixels] = useState<string>("0");
   const [BorderPercent, setBorderPercent] = useState<string>("0");
   const [inputBorderColor, setInputBorderColor] = useState<string>("#ffffff");
-
+  const [inputCanvasColor, setInputCanvasColor] = useState<string>("#ffffff");
   const [inputAspectRatioX, setInputAspectRatioX] = useState<number>(0);
   const [inputAspectRatioY, setInputAspectRatioY] = useState<number>(0);
-
   const [selectAspectRatio, setSelectAspectRatio] = useState<string>("1:1");
 
   const { originalImg, smallCanvasRef } = useContext(ImageContext);
@@ -100,7 +105,7 @@ export default function BorderProvider({
     if (arX > 0 && arY > 0) {
       handleCanvasChange(
         {
-          CanvasColor: inputBorderColor,
+          CanvasColor: inputCanvasColor,
           ratioX: arX,
           ratioY: arY,
         },
@@ -111,6 +116,45 @@ export default function BorderProvider({
 
   function handleInputBorderColor(e: React.ChangeEvent<HTMLInputElement>) {
     setInputBorderColor(e.target.value);
+    handleBorderChange(
+      {
+        BorderColor: e.target.value,
+        BorderPixels: BorderPixels,
+        BorderPercent: BorderPercent,
+      },
+      smallCanvasRef
+    );
+  }
+  function handleInputCanvasColor(e: React.ChangeEvent<HTMLInputElement>) {
+    setInputCanvasColor(e.target.value);
+    if (
+      selectAspectRatio === "" &&
+      inputAspectRatioX > 0 &&
+      inputAspectRatioY > 0
+    ) {
+      handleCanvasChange(
+        {
+          CanvasColor: e.target.value,
+          ratioX: inputAspectRatioX,
+          ratioY: inputAspectRatioY,
+        },
+        smallCanvasRef
+      );
+    } else {
+      let arX = parseInt(selectAspectRatio.split(":")[0]);
+      let arY = parseInt(selectAspectRatio.split(":")[1]);
+
+      if (arX > 0 && arY > 0) {
+        handleCanvasChange(
+          {
+            CanvasColor: e.target.value,
+            ratioX: arX,
+            ratioY: arY,
+          },
+          smallCanvasRef
+        );
+      }
+    }
   }
 
   function handleInputAspectRatioX(
@@ -123,7 +167,7 @@ export default function BorderProvider({
     if (inputAspectRatioY > 0) {
       handleCanvasChange(
         {
-          CanvasColor: inputBorderColor,
+          CanvasColor: inputCanvasColor,
           ratioX: parseInt((e.target as HTMLInputElement).value),
           ratioY: inputAspectRatioY,
         },
@@ -143,7 +187,7 @@ export default function BorderProvider({
     if (inputAspectRatioX > 0) {
       handleCanvasChange(
         {
-          CanvasColor: inputBorderColor,
+          CanvasColor: inputCanvasColor,
           ratioX: inputAspectRatioX,
           ratioY: parseInt((e.target as HTMLInputElement).value),
         },
@@ -328,7 +372,7 @@ export default function BorderProvider({
     ) {
       handleCanvasChange(
         {
-          CanvasColor: inputBorderColor,
+          CanvasColor: inputCanvasColor,
           ratioX: inputAspectRatioX,
           ratioY: inputAspectRatioY,
         },
@@ -341,7 +385,7 @@ export default function BorderProvider({
       if (arX > 0 && arY > 0) {
         handleCanvasChange(
           {
-            CanvasColor: inputBorderColor,
+            CanvasColor: inputCanvasColor,
             ratioX: arX,
             ratioY: arY,
           },
@@ -354,7 +398,20 @@ export default function BorderProvider({
   }
 
   function handleDiscardCanvas() {
-    setInputBorderColor("#ffffff");
+    if (currentProcess === ImageProcess.Canvas && undoImageList.length > 1) {
+      undoImageList.pop();
+      setUndoImageList([...undoImageList]);
+
+      putImageDataOnCanvas(
+        undoImageList[undoImageList.length - 1],
+        smallCanvasRef.current!
+      );
+
+      processList.pop();
+
+      setProcessList([...processList]);
+    }
+    setInputCanvasColor("#ffffff");
     setSelectAspectRatio("1:1");
     setInputAspectRatioX(0);
     setInputAspectRatioY(0);
@@ -390,6 +447,7 @@ export default function BorderProvider({
         BorderPixels,
         BorderPercent,
         inputBorderColor,
+        inputCanvasColor,
         inputAspectRatioX,
         inputAspectRatioY,
         selectAspectRatio,
@@ -402,11 +460,11 @@ export default function BorderProvider({
         setBorderPixels,
         setBorderPercent,
         setInputBorderColor,
+        setInputCanvasColor,
         handleInputBorderColor,
-
+        handleInputCanvasColor,
         handleBorderChange,
         handleBorderPixelsRange,
-
         handleBorderPercentRange,
         handleApplyBorder,
         handleDiscardBorder,
