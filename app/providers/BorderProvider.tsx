@@ -93,6 +93,35 @@ export default function BorderProvider({
     setSelectAspectRatio(e.target.value);
     setInputAspectRatioX(0);
     setInputAspectRatioY(0);
+
+    if (
+      e.target.value === "" &&
+      inputAspectRatioX > 0 &&
+      inputAspectRatioY > 0
+    ) {
+      handleCanvasChange(
+        {
+          CanvasColor: inputBorderColor,
+          ratioX: inputAspectRatioX,
+          ratioY: inputAspectRatioY,
+        },
+        smallCanvasRef
+      );
+    } else {
+      let arX = parseInt(e.target.value.split(":")[0]);
+      let arY = parseInt(e.target.value.split(":")[1]);
+
+      if (arX > 0 && arY > 0) {
+        handleCanvasChange(
+          {
+            CanvasColor: inputBorderColor,
+            ratioX: arX,
+            ratioY: arY,
+          },
+          smallCanvasRef
+        );
+      }
+    }
   }
 
   function handleInputBorderColor(e: React.ChangeEvent<HTMLInputElement>) {
@@ -106,6 +135,16 @@ export default function BorderProvider({
   ) {
     setSelectAspectRatio("");
     setInputAspectRatioX(parseInt((e.target as HTMLInputElement).value));
+    if (inputAspectRatioY > 0) {
+      handleCanvasChange(
+        {
+          CanvasColor: inputBorderColor,
+          ratioX: parseInt((e.target as HTMLInputElement).value),
+          ratioY: inputAspectRatioY,
+        },
+        smallCanvasRef
+      );
+    }
   }
 
   function handleInputAspectRatioY(
@@ -116,6 +155,16 @@ export default function BorderProvider({
     setSelectAspectRatio("");
 
     setInputAspectRatioY(parseInt((e.target as HTMLInputElement).value));
+    if (inputAspectRatioX > 0) {
+      handleCanvasChange(
+        {
+          CanvasColor: inputBorderColor,
+          ratioX: inputAspectRatioX,
+          ratioY: parseInt((e.target as HTMLInputElement).value),
+        },
+        smallCanvasRef
+      );
+    }
   }
 
   /**
