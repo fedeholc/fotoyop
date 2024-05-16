@@ -18,6 +18,7 @@ import ButtonBorderPc from "./buttons/buttonBorderPc";
 import ButtonGrayscale from "./buttons/buttonGrayscale";
 import ButtonCanvas from "./buttons/buttonCanvas";
 import ButtonCollage from "./buttons/buttonCollage";
+import BtBorderPixelInputs from "./bottomToolbar/BtBorderPixelInput";
 
 function ToolbarRow({
   className = "",
@@ -268,7 +269,7 @@ export function BottomToolbar() {
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.border)}
           ></ButtonBack>
-          <BorderPixelInputs maxRange={(originalImg.width / 2).toString()} />
+          <BtBorderPixelInputs maxRange={(originalImg.width / 2).toString()} />
           <ButtonApply onClick={handleApplyBorder}></ButtonApply>
           <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
         </ToolbarRow>
