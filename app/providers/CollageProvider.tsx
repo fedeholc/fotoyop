@@ -19,7 +19,10 @@ import {
   applyProcessFunction,
   putImageDataOnCanvas,
   imgAddBorder,
+  getResizedGap,
   imgAddCanvas,
+  getCollageData,
+  createCollage,
 } from "../imageProcessing";
 import { createRef, useRef } from "react";
 
@@ -28,6 +31,8 @@ export const CollageContext = createContext({
   setPreviewOrientation: (() => {}) as Dispatch<Orientation>,
   gapPixels: 0,
   setGapPixels: (() => {}) as Dispatch<number>,
+  handleGapColor: (() => {}) as Dispatch<string>,
+  handleGapPixels: (() => {}) as Dispatch<number>,
 
   inputGapColor: "#ffffff",
   setInputGapColor: (() => {}) as Dispatch<string>,
@@ -73,19 +78,62 @@ export default function CollageProvider({
     imagesHeightsSum: 0,
     imagesWidthsSum: 0,
   });
+
   const [gapPixels, setGapPixels] = useState<number>(0);
   const [inputGapColor, setInputGapColor] = useState<string>("#ffffff");
+  const { collageImages } = useContext(ImageContext);
+  const { collageCanvasRef } = useContext(ImageContext);
+
+  function handleGapPixels(gapPx: number) {
+    if (!collageImages || !collageCanvasRef.current) {
+      return;
+    }
+    setGapPixels(gapPx);
+    createCollage(
+      collageCanvasRef.current,
+      previewOrientation,
+      collageImages,
+      appConfig.collagePreviewSize,
+      getResizedGap(
+        gapPx,
+        previewOrientation,
+        collageImages,
+        appConfig.collagePreviewSize
+      ),
+      inputGapColor
+    );
+  }
+
+  function handleGapColor(gapColor: string) {
+    if (!collageImages || !collageCanvasRef.current) {
+      return;
+    }
+    createCollage(
+      collageCanvasRef.current,
+      previewOrientation,
+      collageImages,
+      appConfig.collagePreviewSize,
+      getResizedGap(
+        gapPixels,
+        previewOrientation,
+        collageImages,
+        appConfig.collagePreviewSize
+      ),
+      gapColor
+    );
+  }
 
   return (
     <CollageContext.Provider
       value={{
         previewOrientation,
         setPreviewOrientation,
+        handleGapColor,
+        handleGapPixels,
         gapPixels,
         setGapPixels,
         inputGapColor,
         setInputGapColor,
-
         collageData,
         setCollageData,
       }}

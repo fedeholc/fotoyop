@@ -38,6 +38,8 @@ export default function TbCollageOptions() {
     setPreviewOrientation,
     collageData,
     setCollageData,
+    handleGapColor,
+    handleGapPixels,
   } = useContext(CollageContext);
 
   const { collageImages } = useContext(ImageContext);
@@ -61,26 +63,7 @@ export default function TbCollageOptions() {
     );
   }
 
-  function handleGapColor(gapColor: string) {
-    if (!collageImages || !collageCanvasRef.current) {
-      return;
-    }
-    createCollage(
-      collageCanvasRef.current,
-      previewOrientation,
-      collageImages,
-      appConfig.collagePreviewSize,
-      getResizedGap(
-        gapPixels,
-        previewOrientation,
-        collageImages,
-        appConfig.collagePreviewSize
-      ),
-      gapColor
-    );
-  }
-
-  function handleGapPixels(gapPx: number) {
+  function handleGapPixels2(gapPx: number) {
     if (!collageImages || !collageCanvasRef.current) {
       return;
     }

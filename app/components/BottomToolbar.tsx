@@ -202,12 +202,19 @@ export function BottomToolbar() {
        */}
       {toolbarDisplay.mainMenu && collageImages && (
         <ToolbarRow className={toolbar.mainMenu}>
-          <ButtonDownload></ButtonDownload>
           <ButtonNew></ButtonNew>
-          <ButtonUndo></ButtonUndo>
-          <ButtonEdit
+        </ToolbarRow>
+      )}
+
+      {toolbarDisplay.mainMenu && collageImages && (
+        <ToolbarRow className={toolbar.mainMenu}>
+          {/* <ButtonDownload></ButtonDownload> */}
+          <ButtonNew></ButtonNew>
+          {/*           <ButtonUndo></ButtonUndo>
+           */}{" "}
+          {/*  <ButtonEdit
             onClick={() => showToolbarRow(toolbarRow.edit)}
-          ></ButtonEdit>
+          ></ButtonEdit> */}
         </ToolbarRow>
       )}
     </div>
