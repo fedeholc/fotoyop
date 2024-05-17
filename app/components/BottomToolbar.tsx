@@ -24,6 +24,7 @@ import BtCanvasColorInputs from "./bottomToolbar/BtCanvasColorInputs";
 import BtBorderColorInputs from "./bottomToolbar/BtBorderColorInputs";
 import BtAspectRatioPresets from "./bottomToolbar/BtAspectRatioPresets";
 import BtAspectRatioInputs from "./bottomToolbar/BtAspectRatioInputs";
+import BtCollageOrientation from "./bottomToolbar/BtCollageOrientation";
 
 function ToolbarRow({
   className = "",
@@ -202,6 +203,8 @@ export function BottomToolbar() {
        */}
       {toolbarDisplay.mainMenu && collageImages && (
         <ToolbarRow className={toolbar.mainMenu}>
+          <BtCollageOrientation ></BtCollageOrientation>
+
           <ButtonNew></ButtonNew>
         </ToolbarRow>
       )}

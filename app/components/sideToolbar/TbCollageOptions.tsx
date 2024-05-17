@@ -16,16 +16,7 @@ import ToolbarGroup from "./ToolbarGroup";
 import { appConfig } from "../../App";
 
 export default function TbCollageOptions() {
-  const {
-    setOriginalImg,
-    smallCanvasRef,
-    collageCanvasRef,
-    displays,
-    setDisplays,
-    mobileToolbarRef,
-  } = useContext(ImageContext);
-
-  const { setUndoImageList } = useContext(ProcessContext);
+ 
   const {
     previewOrientation,
     inputGapColor,

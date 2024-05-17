@@ -1,48 +1,119 @@
 import React, { useState, useId, useContext } from "react";
 import toolbar from "../BottomToolbar.module.css";
 import { BorderContext } from "@/app/providers/BorderProvider";
+import { CollageContext } from "@/app/providers/CollageProvider";
+import { Orientation } from "@/app/types";
+import sideToolbar from "../sideToolbar/sideToolbar.module.css";
 
-export default function BorderPercentInputs({
-  maxRange,
-}: {
-  maxRange: string;
-}) {
+export default function BtCollageOrientation() {
   const id = useId();
   const { BorderPercent, handleBorderPercentRange } = useContext(BorderContext);
   const [inputBorderPercent, setInputBorderPercent] = useState(BorderPercent);
+  const {
+    handleSaveToEdit,
+    previewOrientation,
+    setPreviewOrientation,
+    handleOrientation,
+    handleGapColor,
+    handleGapPixels,
+    setGapPixels,
+    setCollageData,
+    setInputGapColor,
+    gapPixels,
+    inputGapColor,
+    collageData,
+  } = useContext(CollageContext);
+
   return (
     <div className={toolbar.borderRanges}>
-      <input
-        type="range"
-        id={`${id}inputBorderPercent}`}
-        max={maxRange}
-        min="0"
-        value={inputBorderPercent}
-        onChange={(e) => {
-          setInputBorderPercent(e.target.value);
-        }}
-        onMouseUp={(e) =>
-          handleBorderPercentRange((e.target as HTMLInputElement).value)
-        }
-        onTouchEnd={(e) =>
-          handleBorderPercentRange((e.target as HTMLInputElement).value)
-        }
-      ></input>
-      <input
-        type="number"
-        id={`${id}inputBorderPercentN}`}
-        min="0"
-        value={inputBorderPercent}
-        onKeyUp={(e) => {
-          setInputBorderPercent((e.target as HTMLInputElement).value);
-          handleBorderPercentRange((e.target as HTMLInputElement).value);
-        }}
-        onChange={(e) => {
-          setInputBorderPercent(e.target.value);
-          handleBorderPercentRange((e.target as HTMLInputElement).value);
-        }}
-      ></input>
-      <div className="toolbar_row__units">%</div>
+      <div className={`${sideToolbar.toolbarRow}`}>
+        <input
+          type="radio"
+          name="collage"
+          value="vertical"
+          onChange={() => {
+            setPreviewOrientation(Orientation.vertical);
+            handleOrientation(Orientation.vertical);
+          }}
+          checked={previewOrientation === Orientation.vertical}
+        />
+        <label>Vertical</label>
+        <input
+          type="radio"
+          name="collage"
+          value="horizontal"
+          onChange={() => {
+            setPreviewOrientation(Orientation.horizontal);
+            handleOrientation(Orientation.horizontal);
+          }}
+          checked={previewOrientation === Orientation.horizontal}
+        />
+        <label>Horizontal</label>
+        <div className={sideToolbar.borderColorRow}>
+          <input
+            id="inputGapColor"
+            type="color"
+            list="true"
+            value={inputGapColor}
+            onChange={(e) => {
+              setInputGapColor((e.target as HTMLInputElement).value);
+              handleGapColor((e.target as HTMLInputElement).value);
+            }}
+          />
+
+          <input
+            id="inputGapColorT"
+            type="Text"
+            min="0"
+            onChange={(e) => {
+              setInputGapColor((e.target as HTMLInputElement).value);
+              handleGapColor((e.target as HTMLInputElement).value);
+            }}
+            value={inputGapColor}
+          ></input>
+        </div>
+
+        <button onClick={() => handleSaveToEdit()}>EDITAR</button>
+      </div>
+
+      <div className={sideToolbar.borderRangesRow}>
+        <input
+          type="number"
+          id="inputGapPixelsN"
+          min="0"
+          value={gapPixels}
+          onChange={(e) => {
+            if (e.currentTarget.value === "") {
+              setGapPixels(0);
+              handleGapPixels(0);
+            } else {
+              setGapPixels(parseInt(e.currentTarget.value));
+              handleGapPixels(parseInt(e.currentTarget.value));
+            }
+          }}
+        ></input>
+        <div>px</div>
+        <input
+          type="range"
+          id="inputGapPixels"
+          min="0"
+          max={
+            previewOrientation === Orientation.vertical
+              ? collageData.imagesHeightsSum
+              : collageData.imagesWidthsSum
+          }
+          value={gapPixels}
+          onTouchEnd={(e) => {
+            setGapPixels(parseInt((e.target as HTMLInputElement).value));
+            handleGapPixels(parseInt((e.target as HTMLInputElement).value));
+          }}
+          onChange={(e) => setGapPixels(parseInt(e.target.value))}
+          onMouseUp={(e) => {
+            setGapPixels(parseInt((e.target as HTMLInputElement).value));
+            handleGapPixels(parseInt((e.target as HTMLInputElement).value));
+          }}
+        ></input>
+      </div>
     </div>
   );
 }
