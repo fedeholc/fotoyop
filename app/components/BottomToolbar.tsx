@@ -18,13 +18,15 @@ import ButtonBorderPc from "./buttons/buttonBorderPc";
 import ButtonGrayscale from "./buttons/buttonGrayscale";
 import ButtonCanvas from "./buttons/buttonCanvas";
 import ButtonCollage from "./buttons/buttonCollage";
+import ButtonSaveToEdit from "./buttons/buttonSaveToEdit";
+import ButtonDownloadFromCollage from "./buttons/buttonDownloadFromCollage";
 import BtBorderPixelInputs from "./bottomToolbar/BtBorderPixelInput";
 import BtBorderPercentInput from "./bottomToolbar/BtBorderPercentInput";
 import BtCanvasColorInputs from "./bottomToolbar/BtCanvasColorInputs";
 import BtBorderColorInputs from "./bottomToolbar/BtBorderColorInputs";
 import BtAspectRatioPresets from "./bottomToolbar/BtAspectRatioPresets";
 import BtAspectRatioInputs from "./bottomToolbar/BtAspectRatioInputs";
-import BtCollageOrientation from "./bottomToolbar/BtCollageOrientation";
+import BtCollageOptions from "./bottomToolbar/BtCollageOptions";
 
 function ToolbarRow({
   className = "",
@@ -174,7 +176,7 @@ export function BottomToolbar() {
           <ButtonCanvas
             onClick={() => showToolbarRow(toolbarRow.canvas)}
           ></ButtonCanvas>
-          <ButtonCollage
+          {/*  <ButtonCollage
             onClick={() => {
               showToolbarRow(toolbarRow.collage);
               setDisplays((prev) => {
@@ -186,7 +188,7 @@ export function BottomToolbar() {
                 };
               });
             }}
-          ></ButtonCollage>
+          ></ButtonCollage> */}
         </ToolbarRow>
       )}
       {toolbarDisplay.mainMenu && originalImg?.src && (
@@ -202,10 +204,8 @@ export function BottomToolbar() {
       {/*   TODO: ojo, hay que cambiar los botones porque acá hacen otra cosa
        */}
       {toolbarDisplay.mainMenu && collageImages && (
-        <ToolbarRow className={toolbar.mainMenu}>
-          <BtCollageOrientation ></BtCollageOrientation>
-
-          <ButtonNew></ButtonNew>
+        <ToolbarRow className={toolbar.border__row}>
+          <BtCollageOptions></BtCollageOptions>
         </ToolbarRow>
       )}
 
@@ -213,6 +213,8 @@ export function BottomToolbar() {
         <ToolbarRow className={toolbar.mainMenu}>
           {/* <ButtonDownload></ButtonDownload> */}
           <ButtonNew></ButtonNew>
+          <ButtonSaveToEdit></ButtonSaveToEdit>
+          <ButtonDownloadFromCollage></ButtonDownloadFromCollage>
           {/*           <ButtonUndo></ButtonUndo>
            */}{" "}
           {/*  <ButtonEdit

@@ -31,7 +31,8 @@ import { createRef, useRef } from "react";
 
 export const CollageContext = createContext({
   previewOrientation: Orientation.vertical,
-  handleSaveToEdit: (() => {}) as Dispatch<void>,
+  handleDownloadFromCollage: () => {},
+  handleSaveToEdit: () => {},
   setPreviewOrientation: (() => {}) as Dispatch<Orientation>,
   gapPixels: 0,
   setGapPixels: (() => {}) as Dispatch<number>,
@@ -98,6 +99,34 @@ export default function CollageProvider({
 
   const { collageCanvasRef, smallCanvasRef } = useContext(ImageContext);
 
+  async function handleDownloadFromCollage() {
+    if (collageImages && collageCanvasRef.current) {
+      //  hay que ocultar el canvas para que no se vea que se está creando el collage en grande
+      collageCanvasRef.current.style.display = "none";
+
+      await createCollage(
+        collageCanvasRef.current,
+        previewOrientation,
+        collageImages,
+        0,
+        gapPixels,
+        inputGapColor
+      );
+
+      let downloadDataURL = collageCanvasRef.current.toDataURL(
+        "image/jpeg",
+        1
+      ) as string;
+      const enlaceDescarga = document.createElement("a");
+      enlaceDescarga.href = downloadDataURL || "";
+      enlaceDescarga.download = "image.jpg";
+
+      document.body.appendChild(enlaceDescarga);
+      enlaceDescarga.click();
+      document.body.removeChild(enlaceDescarga);
+      collageCanvasRef.current.style.display = "block";
+    }
+  }
   async function handleSaveToEdit() {
     if (collageImages && collageCanvasRef.current) {
       //  hay que ocultar el canvas para que no se vea que se está creando el collage en grande
@@ -227,6 +256,7 @@ export default function CollageProvider({
         setInputGapColor,
         collageData,
         setCollageData,
+        handleDownloadFromCollage,
       }}
     >
       {children}
