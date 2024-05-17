@@ -2,6 +2,7 @@ import { createContext, useContext } from "react";
 import { ImageContext } from "./ImageProvider";
 import { ProcessContext } from "./ProcessProvider";
 import { BorderContext } from "./BorderProvider";
+import { CollageContext } from "./CollageProvider";
 
 import { ImageProcess } from "../types";
 import {
@@ -11,6 +12,7 @@ import {
   processToNewImageData,
   processImgToCanvas,
 } from "../imageProcessing";
+import CollageCanvas from "../components/CollageCanvas";
 
 export const ToolbarContext = createContext({
   handleDownload: () => {},
@@ -31,7 +33,17 @@ export default function ToolbarProvider({
     setOriginalImg,
     smallCanvasRef,
     setDisplays,
+    collageImages,
+    setCollageFiles,
+    setCollageImages,
   } = useContext(ImageContext);
+
+  const {
+    setPreviewOrientation,
+    setCollageData,
+    setGapPixels,
+    setInputGapColor,
+  } = useContext(CollageContext);
 
   const {
     processList,
@@ -86,7 +98,6 @@ export default function ToolbarProvider({
 
     setOriginalFile(null);
     setOriginalImg(null);
-    /*  setOriginalImg(new window.Image() as HTMLImageElement); */
 
     setProcessList([]);
     setUndoImageList([]);
@@ -94,6 +105,11 @@ export default function ToolbarProvider({
     setBorderPixels("0");
     setBorderPercent("0");
     setInputBorderColor("#ffffff");
+
+    setGapPixels(0);
+    setInputGapColor("#ffffff");
+    setCollageFiles([]);
+    setCollageImages([]);
   }
 
   /**
