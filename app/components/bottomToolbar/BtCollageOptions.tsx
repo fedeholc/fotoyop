@@ -80,7 +80,6 @@ export default function BtCollageOptions() {
           }}
           value={inputGapColor}
         ></input>
-        <button onClick={() => handleSaveToEdit()}>EDITAR</button>
       </div>
 
       <div className={`${toolbar.collageOptions__row} ${toolbar.canvasInputs}`}>
