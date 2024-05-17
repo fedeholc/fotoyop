@@ -16,7 +16,6 @@ import ToolbarGroup from "./ToolbarGroup";
 import { appConfig } from "../../App";
 
 export default function TbCollageOptions() {
- 
   const {
     previewOrientation,
     inputGapColor,
@@ -88,8 +87,6 @@ export default function TbCollageOptions() {
             value={inputGapColor}
           ></input>
         </div>
-
-        <button onClick={() => handleSaveToEdit()}>EDITAR</button>
       </div>
 
       <div className={sideToolbar.borderRangesRow}>

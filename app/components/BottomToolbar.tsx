@@ -213,8 +213,8 @@ export function BottomToolbar() {
         <ToolbarRow className={toolbar.mainMenu}>
           {/* <ButtonDownload></ButtonDownload> */}
           <ButtonNew></ButtonNew>
-          <ButtonSaveToEdit></ButtonSaveToEdit>
           <ButtonDownloadFromCollage></ButtonDownloadFromCollage>
+          <ButtonSaveToEdit></ButtonSaveToEdit>
           {/*           <ButtonUndo></ButtonUndo>
            */}{" "}
           {/*  <ButtonEdit
