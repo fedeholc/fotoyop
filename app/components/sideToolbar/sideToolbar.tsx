@@ -50,7 +50,7 @@ export function SideToolbar() {
           <TbChangesHistory></TbChangesHistory>
         </div>
       )}
-      {collageImages && (
+      {collageImages && collageImages.length > 0 && (
         <div className={sideToolbar.groupContainer}>
           <TbCollageImages></TbCollageImages>
           <TbCollageOptions></TbCollageOptions>
