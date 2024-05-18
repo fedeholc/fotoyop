@@ -39,6 +39,7 @@ export const CollageContext = createContext({
   handleGapColor: (() => {}) as Dispatch<string>,
   handleGapPixels: (() => {}) as Dispatch<number>,
   handleOrientation: (() => {}) as Dispatch<Orientation>,
+  resizeCollageContainer: () => {},
 
   inputGapColor: "#ffffff",
   setInputGapColor: (() => {}) as Dispatch<string>,
@@ -95,6 +96,7 @@ export default function CollageProvider({
     setOriginalImg,
     displays,
     mobileToolbarRef,
+    containerRef,
   } = useContext(ImageContext);
   const { setUndoImageList } = useContext(ProcessContext);
   const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
@@ -189,12 +191,12 @@ export default function CollageProvider({
     }
   }
 
-  function handleGapPixels(gapPx: number) {
+  async function handleGapPixels(gapPx: number) {
     if (!collageImages || !collageCanvasRef.current) {
       return;
     }
     setGapPixels(gapPx);
-    createCollage(
+    await createCollage(
       collageCanvasRef.current,
       previewOrientation,
       collageImages,
@@ -207,6 +209,21 @@ export default function CollageProvider({
       ),
       inputGapColor
     );
+    await resizeCollageContainer();
+  }
+
+  async function resizeCollageContainer() {
+    if (!collageImages || !collageCanvasRef.current || !containerRef.current) {
+      return;
+    }
+    const { newWidth, newHeight } = calcResizeToWindow(
+      collageCanvasRef.current.width,
+      collageCanvasRef.current.height,
+      windowDimensions,
+      appConfig
+    );
+    containerRef.current.style.width = `${newWidth}px`;
+    containerRef.current.style.height = `${newHeight}px`;
   }
   async function handleOrientation(orientation: Orientation) {
     if (!collageImages || !collageCanvasRef.current) {
@@ -225,6 +242,7 @@ export default function CollageProvider({
       ),
       inputGapColor
     );
+    await resizeCollageContainer();
   }
 
   function handleGapColor(gapColor: string) {
@@ -262,6 +280,7 @@ export default function CollageProvider({
         collageData,
         setCollageData,
         handleDownloadFromCollage,
+        resizeCollageContainer,
       }}
     >
       {children}

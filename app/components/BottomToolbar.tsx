@@ -47,7 +47,6 @@ export function BottomToolbar() {
     setBottomToolbarDisplay,
   } = useContext(ImageContext);
 
-  
   function showToolbarRow(row: toolbarRow) {
     let toolbar = {
       mainMenu: true,
@@ -171,19 +170,6 @@ export function BottomToolbar() {
           <ButtonCanvas
             onClick={() => showToolbarRow(toolbarRow.canvas)}
           ></ButtonCanvas>
-          {/*  <ButtonCollage
-            onClick={() => {
-              showToolbarRow(toolbarRow.collage);
-              setDisplays((prev) => {
-                return {
-                  canvas: false,
-                  form: false,
-                  resizeTrigger: !prev.resizeTrigger,
-                  collage: true,
-                };
-              });
-            }}
-          ></ButtonCollage> */}
         </ToolbarRow>
       )}
       {bottomToolbarDisplay.mainMenu && originalImg?.src && (
@@ -196,8 +182,7 @@ export function BottomToolbar() {
           ></ButtonEdit>
         </ToolbarRow>
       )}
-      {/*   TODO: ojo, hay que cambiar los botones porque acá hacen otra cosa
-       */}
+
       {bottomToolbarDisplay.mainMenu &&
         collageImages &&
         collageImages.length > 0 && (
@@ -210,15 +195,9 @@ export function BottomToolbar() {
         collageImages &&
         collageImages.length > 0 && (
           <ToolbarRow className={toolbar.mainMenu}>
-            {/* <ButtonDownload></ButtonDownload> */}
             <ButtonNew></ButtonNew>
             <ButtonDownloadFromCollage></ButtonDownloadFromCollage>
             <ButtonSaveToEdit></ButtonSaveToEdit>
-            {/*           <ButtonUndo></ButtonUndo>
-             */}{" "}
-            {/*  <ButtonEdit
-            onClick={() => showToolbarRow(toolbarRow.edit)}
-          ></ButtonEdit> */}
           </ToolbarRow>
         )}
     </div>

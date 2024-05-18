@@ -7,7 +7,6 @@ export default function CollageOrientationInputs() {
   const { previewOrientation, setPreviewOrientation, handleOrientation } =
     useContext(CollageContext);
 
-  console.log("CollageOrientationInputs", previewOrientation);
   return (
     <>
       <input

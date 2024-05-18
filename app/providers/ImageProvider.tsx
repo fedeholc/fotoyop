@@ -17,6 +17,7 @@ export const ImageContext = createContext({
   setOriginalFile: (() => {}) as Dispatch<SetStateAction<File | null>>,
   smallCanvasRef: createRef<HTMLCanvasElement>(),
   collageCanvasRef: createRef<HTMLCanvasElement>(),
+  containerRef: createRef<HTMLDivElement>(),
 
   displays: {} as DisplaySections,
   setDisplays: (() => {}) as Dispatch<SetStateAction<DisplaySections>>,
@@ -48,6 +49,7 @@ export default function ImageProvider({
   );
   const smallCanvasRef = useRef<HTMLCanvasElement>(null);
   const collageCanvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const [displays, setDisplays] = useState<DisplaySections>({
     canvas: false,
@@ -96,6 +98,7 @@ export default function ImageProvider({
         setOriginalFile,
         smallCanvasRef,
         collageCanvasRef,
+        containerRef,
         displays,
         setDisplays,
         mobileToolbarRef,
