@@ -155,3 +155,12 @@
    margin-bottom: 1rem;
    max-height: 500px;
  }
+
+ .collageOrientationRow {
+   display: flex;
+   flex-direction: row;
+   justify-content: start;
+   gap: 1rem;
+   accent-color: var(--accentColor);
+
+ }

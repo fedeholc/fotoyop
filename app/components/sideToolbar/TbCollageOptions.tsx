@@ -1,19 +1,13 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { ImageContext } from "../../providers/ImageProvider";
 import { CollageContext } from "../../providers/CollageProvider";
 import { ProcessContext } from "../../providers/ProcessProvider";
 import { Orientation } from "../../types";
-import {
-  createCollage,
-  getCollageData,
-  drawImageB64OnCanvas,
-  imageB64ToImageData,
-  calcResizeToWindow,
-} from "../../imageProcessing";
-import useWindowsSize from "../hooks/useWindowsSize";
+import { createCollage, getCollageData } from "../../imageProcessing";
 import sideToolbar from "./sideToolbar.module.css";
 import ToolbarGroup from "./ToolbarGroup";
 import { appConfig } from "../../App";
+import CollageOrientationInputs from "./CollageOrientationInputs";
 
 export default function TbCollageOptions() {
   const {
@@ -28,7 +22,6 @@ export default function TbCollageOptions() {
     handleGapColor,
     handleGapPixels,
     handleOrientation,
-    handleSaveToEdit,
   } = useContext(CollageContext);
 
   const { collageImages } = useContext(ImageContext);
@@ -42,28 +35,13 @@ export default function TbCollageOptions() {
   return (
     <ToolbarGroup closedRendering={false} groupTitle="Collage Options">
       <div className={`${sideToolbar.toolbarRow}`}>
-        <input
-          type="radio"
-          name="collage"
-          value="vertical"
-          onChange={() => {
-            setPreviewOrientation(Orientation.vertical);
-            handleOrientation(Orientation.vertical);
-          }}
-          checked={previewOrientation === Orientation.vertical}
-        />
-        <label>Vertical</label>
-        <input
-          type="radio"
-          name="collage"
-          value="horizontal"
-          onChange={() => {
-            setPreviewOrientation(Orientation.horizontal);
-            handleOrientation(Orientation.horizontal);
-          }}
-          checked={previewOrientation === Orientation.horizontal}
-        />
-        <label>Horizontal</label>
+        <div className={sideToolbar.rowTitle}>Orientation</div>
+        <div className={sideToolbar.collageOrientationRow}>
+          <CollageOrientationInputs />
+        </div>
+      </div>
+      <div className={`${sideToolbar.toolbarRow}`}>
+        <div className={sideToolbar.rowTitle}>Gap Color</div>
         <div className={sideToolbar.borderColorRow}>
           <input
             id="inputGapColor"
@@ -89,43 +67,47 @@ export default function TbCollageOptions() {
         </div>
       </div>
 
-      <div className={sideToolbar.borderRangesRow}>
-        <input
-          type="number"
-          id="inputGapPixelsN"
-          min="0"
-          value={gapPixels}
-          onChange={(e) => {
-            if (e.currentTarget.value === "") {
-              setGapPixels(0);
-              handleGapPixels(0);
-            } else {
-              setGapPixels(parseInt(e.currentTarget.value));
-              handleGapPixels(parseInt(e.currentTarget.value));
+      <div className={`${sideToolbar.toolbarRow}`}>
+        <div className={sideToolbar.rowTitle}>Gap Size</div>
+
+        <div className={sideToolbar.borderRangesRow}>
+          <input
+            type="number"
+            id="inputGapPixelsN"
+            min="0"
+            value={gapPixels}
+            onChange={(e) => {
+              if (e.currentTarget.value === "") {
+                setGapPixels(0);
+                handleGapPixels(0);
+              } else {
+                setGapPixels(parseInt(e.currentTarget.value));
+                handleGapPixels(parseInt(e.currentTarget.value));
+              }
+            }}
+          ></input>
+          <div>px</div>
+          <input
+            type="range"
+            id="inputGapPixels"
+            min="0"
+            max={
+              previewOrientation === Orientation.vertical
+                ? collageData.imagesHeightsSum
+                : collageData.imagesWidthsSum
             }
-          }}
-        ></input>
-        <div>px</div>
-        <input
-          type="range"
-          id="inputGapPixels"
-          min="0"
-          max={
-            previewOrientation === Orientation.vertical
-              ? collageData.imagesHeightsSum
-              : collageData.imagesWidthsSum
-          }
-          value={gapPixels}
-          onTouchEnd={(e) => {
-            setGapPixels(parseInt((e.target as HTMLInputElement).value));
-            handleGapPixels(parseInt((e.target as HTMLInputElement).value));
-          }}
-          onChange={(e) => setGapPixels(parseInt(e.target.value))}
-          onMouseUp={(e) => {
-            setGapPixels(parseInt((e.target as HTMLInputElement).value));
-            handleGapPixels(parseInt((e.target as HTMLInputElement).value));
-          }}
-        ></input>
+            value={gapPixels}
+            onTouchEnd={(e) => {
+              setGapPixels(parseInt((e.target as HTMLInputElement).value));
+              handleGapPixels(parseInt((e.target as HTMLInputElement).value));
+            }}
+            onChange={(e) => setGapPixels(parseInt(e.target.value))}
+            onMouseUp={(e) => {
+              setGapPixels(parseInt((e.target as HTMLInputElement).value));
+              handleGapPixels(parseInt((e.target as HTMLInputElement).value));
+            }}
+          ></input>
+        </div>
       </div>
     </ToolbarGroup>
   );

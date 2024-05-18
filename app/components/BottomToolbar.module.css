@@ -205,6 +205,7 @@ input.aspectRatioInput {
   justify-content: center;
   color: var(--lightFont);
   align-items: center;
+  accent-color: var(--accentColor);
 }
 
 .collageOptions__row input[type="Number"] {

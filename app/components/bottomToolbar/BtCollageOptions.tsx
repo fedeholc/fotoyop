@@ -4,20 +4,16 @@ import { BorderContext } from "@/app/providers/BorderProvider";
 import { CollageContext } from "@/app/providers/CollageProvider";
 import { Orientation } from "@/app/types";
 import sideToolbar from "../sideToolbar/sideToolbar.module.css";
+import CollageOrientationInputs from "../sideToolbar/CollageOrientationInputs";
 
 export default function BtCollageOptions() {
-  const id = useId();
-  const { BorderPercent, handleBorderPercentRange } = useContext(BorderContext);
-  const [inputBorderPercent, setInputBorderPercent] = useState(BorderPercent);
   const {
-    handleSaveToEdit,
     previewOrientation,
     setPreviewOrientation,
     handleOrientation,
     handleGapColor,
     handleGapPixels,
     setGapPixels,
-    setCollageData,
     setInputGapColor,
     gapPixels,
     inputGapColor,
