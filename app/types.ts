@@ -72,9 +72,13 @@ export type DisplaySections = {
   collage: boolean;
 };
 
-export type DisplayToolbars = {
+export type BottomToolbarDisplay = {
+  mainMenu: boolean;
+  edit: boolean;
   border: boolean;
-  borderPixels: boolean
-  gray: boolean;
+  borderPx: boolean;
+  borderPc: boolean;
+  canvas: boolean;
   collage: boolean;
-}
+};
+

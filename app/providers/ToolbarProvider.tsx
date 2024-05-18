@@ -27,20 +27,16 @@ export default function ToolbarProvider({
   children: React.ReactNode;
 }) {
   const {
-    originalFile,
     originalImg,
     setOriginalFile,
     setOriginalImg,
     smallCanvasRef,
     setDisplays,
-    collageImages,
     setCollageFiles,
     setCollageImages,
   } = useContext(ImageContext);
 
   const {
-    setPreviewOrientation,
-    setCollageData,
     setGapPixels,
     setInputGapColor,
   } = useContext(CollageContext);

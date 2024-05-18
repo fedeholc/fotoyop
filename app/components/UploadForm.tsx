@@ -25,6 +25,7 @@ export default function UploadForm({}) {
     event.preventDefault();
     const files = (event.target as HTMLFormElement).files;
 
+    //Un solo archivo --> edición simple
     if (files.length == 1) {
       await loadFileProcedure(files[0] as File);
 
@@ -36,7 +37,19 @@ export default function UploadForm({}) {
           collage: false,
         };
       });
-    } else if (files.length > 1) {
+      setBottomToolbarDisplay({
+        mainMenu: true,
+        edit: false,
+        border: false,
+        borderPx: false,
+        borderPc: false,
+        canvas: false,
+        collage: false,
+      });
+    }
+
+    //Máss de un archivo --> collage
+    if (files.length > 1) {
       await loadMultipleFilesProcedure(files as File[]);
 
       setDisplays((prev) => {
@@ -46,6 +59,15 @@ export default function UploadForm({}) {
           resizeTrigger: !prev.resizeTrigger,
           collage: true,
         };
+      });
+      setBottomToolbarDisplay({
+        mainMenu: true,
+        edit: false,
+        border: false,
+        borderPx: false,
+        borderPc: false,
+        canvas: false,
+        collage: false,
       });
     }
 
@@ -225,6 +247,7 @@ export default function UploadForm({}) {
     mobileToolbarRef,
     setCollageFiles,
     setCollageImages,
+    setBottomToolbarDisplay,
   } = useContext(ImageContext);
 
   const windowDimensions = useWindowsSize(displays, mobileToolbarRef);

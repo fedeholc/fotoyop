@@ -6,7 +6,7 @@ import {
   useRef,
   createRef,
 } from "react";
-import { DisplaySections } from "../types";
+import { BottomToolbarDisplay, DisplaySections } from "../types";
 
 export const ImageContext = createContext({
   originalImg: null as HTMLImageElement | null,
@@ -20,6 +20,11 @@ export const ImageContext = createContext({
 
   displays: {} as DisplaySections,
   setDisplays: (() => {}) as Dispatch<SetStateAction<DisplaySections>>,
+  bottomToolbarDisplay: {} as BottomToolbarDisplay,
+  setBottomToolbarDisplay: (() => {}) as Dispatch<
+    SetStateAction<BottomToolbarDisplay>
+  >,
+
   mobileToolbarRef: createRef<HTMLDivElement>(),
   collageImages: null as HTMLImageElement[] | null,
   collageFiles: null as File[] | null,
@@ -49,6 +54,18 @@ export default function ImageProvider({
     resizeTrigger: false,
     collage: false,
   });
+
+  const [bottomToolbarDisplay, setBottomToolbarDisplay] =
+    useState<BottomToolbarDisplay>({
+      mainMenu: false,
+      edit: false,
+      border: false,
+      borderPx: false,
+      borderPc: false,
+      canvas: false,
+      collage: false,
+    });
+
   const mobileToolbarRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -67,6 +84,8 @@ export default function ImageProvider({
         collageFiles,
         setCollageImages,
         setCollageFiles,
+        bottomToolbarDisplay,
+        setBottomToolbarDisplay,
       }}
     >
       {children}

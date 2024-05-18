@@ -40,9 +40,14 @@ function ToolbarRow({
 }
 
 export function BottomToolbar() {
-  const { setDisplays } = useContext(ImageContext);
-  const { collageImages } = useContext(ImageContext);
+  const {
+    collageImages,
+    setDisplays,
+    bottomToolbarDisplay,
+    setBottomToolbarDisplay,
+  } = useContext(ImageContext);
 
+  
   function showToolbarRow(row: toolbarRow) {
     let toolbar = {
       mainMenu: true,
@@ -54,8 +59,8 @@ export function BottomToolbar() {
       collage: false,
     };
     // funciona como toggle, si se vuelve a hacer click en el mismo boton, se oculta (por ahora solo para Edit)
-    toolbar[row] = toolbarDisplay[row] === true ? false : true;
-    setToolbarDisplay(toolbar);
+    toolbar[row] = bottomToolbarDisplay[row] === true ? false : true;
+    setBottomToolbarDisplay(toolbar);
     setDisplays((prev) => {
       return {
         canvas: prev.canvas,
@@ -65,16 +70,6 @@ export function BottomToolbar() {
       };
     });
   }
-
-  const [toolbarDisplay, setToolbarDisplay] = useState({
-    mainMenu: true,
-    edit: false,
-    border: false,
-    borderPx: false,
-    borderPc: false,
-    canvas: false,
-    collage: false,
-  });
 
   const {
     handleApplyBorder,
@@ -91,7 +86,7 @@ export function BottomToolbar() {
 
   return (
     <div ref={mobileToolbarRef}>
-      {toolbarDisplay.borderPx && originalImg?.src && (
+      {bottomToolbarDisplay.borderPx && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.border)}
@@ -101,7 +96,7 @@ export function BottomToolbar() {
           <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
         </ToolbarRow>
       )}
-      {toolbarDisplay.borderPc && originalImg?.src && (
+      {bottomToolbarDisplay.borderPc && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
           <ButtonBack onClick={() => showToolbarRow(toolbarRow.border)} />
           <BtBorderPercentInput maxRange="100" />
@@ -113,7 +108,7 @@ export function BottomToolbar() {
           <ButtonDiscard onClick={handleDiscardBorder} />
         </ToolbarRow>
       )}
-      {toolbarDisplay.border && originalImg?.src && (
+      {bottomToolbarDisplay.border && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.edit)}
@@ -127,7 +122,7 @@ export function BottomToolbar() {
           ></ButtonBorderPx>
         </ToolbarRow>
       )}
-      {toolbarDisplay.canvas && originalImg?.src && (
+      {bottomToolbarDisplay.canvas && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.edit)}
@@ -145,7 +140,7 @@ export function BottomToolbar() {
           <ButtonDiscard onClick={handleDiscardCanvas}></ButtonDiscard>
         </ToolbarRow>
       )}
-      {toolbarDisplay.collage && originalImg?.src && (
+      {bottomToolbarDisplay.collage && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
           <ButtonBack
             onClick={() => showToolbarRow(toolbarRow.edit)}
@@ -166,7 +161,7 @@ export function BottomToolbar() {
           ></ButtonDiscard>
         </ToolbarRow>
       )}
-      {toolbarDisplay.edit && originalImg?.src && (
+      {bottomToolbarDisplay.edit && originalImg?.src && (
         <ToolbarRow>
           <ButtonBorder
             onClick={() => showToolbarRow(toolbarRow.border)}
@@ -191,7 +186,7 @@ export function BottomToolbar() {
           ></ButtonCollage> */}
         </ToolbarRow>
       )}
-      {toolbarDisplay.mainMenu && originalImg?.src && (
+      {bottomToolbarDisplay.mainMenu && originalImg?.src && (
         <ToolbarRow className={toolbar.mainMenu}>
           <ButtonDownload></ButtonDownload>
           <ButtonNew></ButtonNew>
@@ -203,25 +198,29 @@ export function BottomToolbar() {
       )}
       {/*   TODO: ojo, hay que cambiar los botones porque acá hacen otra cosa
        */}
-      {toolbarDisplay.mainMenu && collageImages && collageImages.length > 0 && (
-        <ToolbarRow className={toolbar.border__row}>
-          <BtCollageOptions></BtCollageOptions>
-        </ToolbarRow>
-      )}
+      {bottomToolbarDisplay.mainMenu &&
+        collageImages &&
+        collageImages.length > 0 && (
+          <ToolbarRow className={toolbar.border__row}>
+            <BtCollageOptions></BtCollageOptions>
+          </ToolbarRow>
+        )}
 
-      {toolbarDisplay.mainMenu && collageImages && collageImages.length > 0 && (
-        <ToolbarRow className={toolbar.mainMenu}>
-          {/* <ButtonDownload></ButtonDownload> */}
-          <ButtonNew></ButtonNew>
-          <ButtonDownloadFromCollage></ButtonDownloadFromCollage>
-          <ButtonSaveToEdit></ButtonSaveToEdit>
-          {/*           <ButtonUndo></ButtonUndo>
-           */}{" "}
-          {/*  <ButtonEdit
+      {bottomToolbarDisplay.mainMenu &&
+        collageImages &&
+        collageImages.length > 0 && (
+          <ToolbarRow className={toolbar.mainMenu}>
+            {/* <ButtonDownload></ButtonDownload> */}
+            <ButtonNew></ButtonNew>
+            <ButtonDownloadFromCollage></ButtonDownloadFromCollage>
+            <ButtonSaveToEdit></ButtonSaveToEdit>
+            {/*           <ButtonUndo></ButtonUndo>
+             */}{" "}
+            {/*  <ButtonEdit
             onClick={() => showToolbarRow(toolbarRow.edit)}
           ></ButtonEdit> */}
-        </ToolbarRow>
-      )}
+          </ToolbarRow>
+        )}
     </div>
   );
 }
