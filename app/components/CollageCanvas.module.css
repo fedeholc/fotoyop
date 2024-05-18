@@ -1,0 +1,23 @@
+.imagesGroup {
+  overflow: auto;
+}
+
+.imagesGroup img {
+  box-shadow: 1px 1px 8px 1px rgb(12, 12, 12);
+  width: 100%;
+}
+
+.imagesGroup span {
+  width: 120px;
+}
+
+.imagesList {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-content: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  max-height: 500px;
+}

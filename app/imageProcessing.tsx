@@ -1,9 +1,11 @@
+import { i } from "vitest/dist/reporters-yx5ZTtEV.js";
 import {
   ProcessFunction,
   BorderOptionsType,
   CanvasOptions,
-  CanvasConfig,
+  AppConfig,
   WindowsDimensions,
+  Orientation,
 } from "./types";
 
 export {
@@ -20,9 +22,319 @@ export {
   processToNewImageData,
   putImageDataOnCanvas,
   imageB64ToImageData,
+  imageB64ToImageDataWithOrientation,
   imageDataToBase64,
   calcResizeToWindow,
+  getResizedGap,
 };
+
+function getResizedGap(
+  gapPx: number,
+  orientation: Orientation,
+  collageImages: HTMLImageElement[],
+  maxSize: number
+) {
+  let resizedGap = 0;
+  let data = getCollageData(collageImages, maxSize);
+  if (orientation === Orientation.vertical) {
+    resizedGap = (gapPx * data.ivHeightSum) / data.imagesHeightsSum;
+  } else {
+    resizedGap = (gapPx * data.ihWidthSum) / data.imagesWidthsSum;
+  }
+  return resizedGap;
+}
+
+function getMinSize(images: HTMLImageElement[]): {
+  width: number;
+  height: number;
+} {
+  let minWidth = images[0].width;
+  let minHeight = images[0].height;
+  images.forEach((image) => {
+    if (image.width < minWidth) {
+      minWidth = image.width;
+    }
+    if (image.height < minHeight) {
+      minHeight = image.height;
+    }
+  });
+  return { width: minWidth, height: minHeight };
+}
+
+/**
+ *
+ * @param canvas
+ * @param orientation
+ * @param collageImages
+ * @param maxSize maximum size of the collage in pixels (0 for no limit)
+ * @param gap gap between images in pixels
+ * @param gapColor
+ * @returns
+ */
+export async function createCollage(
+  canvas: HTMLCanvasElement,
+  orientation: Orientation,
+  collageImages: HTMLImageElement[] | null,
+  maxSize: number,
+  gap: number,
+  gapColor: string
+) {
+  const ctx = canvas?.getContext("2d");
+  if (!collageImages || collageImages.length < 2 || !canvas || !ctx) {
+    return;
+  }
+
+  let maxImageDataWidth = maxSize;
+  let maxImageDataHeight = maxSize;
+  if (maxSize === 0) {
+    const minSize = getMinSize(collageImages);
+    maxImageDataWidth = minSize.width;
+    maxImageDataHeight = minSize.height;
+  }
+
+  let imagesData: ImageData[] = [];
+  //para collage vertical
+  let imagesHeightSum: number = 0;
+  let imagesWidths: number[] = [];
+  //para horizontal
+  let imagesWidthSum: number = 0;
+  let imagesHeights: number[] = [];
+
+  //* Se crea un array con todas las imagenes pasadas a ImageData.
+  // Se guardan también los tamaños de las imágenes para usarlos luego en el calculo del tamaño del canvas.
+  await Promise.all(
+    collageImages.map(async (image) => {
+      // Si el collage va ser vertical se establece el ancho de la imagen a maxImageDataWidth, que si no está predefinido un tamaño en maxSize, será el ancho de la imagen más pequeña del collage. La más pequeña para que nada quede pixelado.
+      // Si es horizontal ocurre lo propio pero para determinar el alto de la imagen.
+      // Luego imageB64ToImageDataWithOrientation va a dimensionar las imagenes para adaptarlas a esos límites, también según orientación.
+      let imageDataWidth;
+      let imageDataHeight;
+      if (orientation === Orientation.vertical) {
+        imageDataWidth = maxImageDataWidth;
+        imageDataHeight = image.height;
+      } else {
+        //horizontal
+        imageDataWidth = image.width; //FIXME: estaba height, le puse width porque me parece que estaba mal. Checkiar
+        imageDataHeight = maxImageDataHeight;
+      }
+
+      const imageData = await imageB64ToImageDataWithOrientation(
+        image.src,
+        imageDataWidth,
+        imageDataHeight,
+        orientation
+      );
+
+      imagesData.push(imageData);
+      imagesWidths.push(imageData.width);
+      imagesHeightSum += imageData.height;
+      imagesHeights.push(imageData.height);
+      imagesWidthSum += imageData.width;
+    })
+  );
+
+  // se calcula el tamaño del gap y el tamaño del canvas según la orientación
+  let newCanvasWidth = 0,
+    newCanvasHeight = 0;
+
+  if (orientation === Orientation.vertical) {
+    newCanvasWidth = Math.min(...imagesWidths);
+    newCanvasHeight = imagesHeightSum + gap * (collageImages.length - 1);
+  } else {
+    //horizontal
+    newCanvasWidth = imagesWidthSum + gap * (collageImages.length - 1);
+    newCanvasHeight = Math.min(...imagesHeights);
+  }
+
+  canvas.width = newCanvasWidth;
+  canvas.height = newCanvasHeight;
+
+  ctx.createImageData(newCanvasWidth, newCanvasHeight);
+  ctx.fillStyle = gapColor;
+  ctx.fillRect(0, 0, newCanvasWidth, newCanvasHeight);
+
+  //* Se dibujan las imágenes en el canvas según la orientación.
+  if (orientation === Orientation.vertical) {
+    let heightOffset = 0;
+    imagesData.forEach((imageData, index) => {
+      if (index === 0) {
+        ctx.putImageData(imageData, 0, 0);
+        heightOffset = imageData.height + gap;
+      } else if (index === imagesData.length - 1) {
+        ctx.putImageData(imageData, 0, heightOffset);
+      } else {
+        ctx.putImageData(imageData, 0, heightOffset);
+        heightOffset += imageData.height + gap;
+      }
+    });
+  } else {
+    //horizontal
+    let widthOffset = 0;
+    imagesData.forEach((imageData, index) => {
+      if (index === 0) {
+        ctx.putImageData(imageData, 0, 0);
+        widthOffset = imageData.width + gap;
+      } else if (index === imagesData.length - 1) {
+        ctx.putImageData(imageData, widthOffset, 0);
+      } else {
+        ctx.putImageData(imageData, widthOffset, 0);
+        widthOffset += imageData.width + gap;
+      }
+    });
+  }
+}
+
+function getImagesMinSizes(images: HTMLImageElement[]): {
+  width: number;
+  height: number;
+} {
+  let minWidth = images[0].width;
+  let minHeight = images[0].height;
+  images.forEach((image) => {
+    if (image.width < minWidth) {
+      minWidth = image.width;
+    }
+    if (image.height < minHeight) {
+      minHeight = image.height;
+    }
+  });
+  return { width: minWidth, height: minHeight };
+}
+
+export function getCollageData(
+  collageImages: HTMLImageElement[],
+  maxSize: number
+): {
+  ivHeightSum: number;
+  ivWidth: number;
+  ihHeight: number;
+  ihWidthSum: number;
+  imagesHeightsSum: number;
+  imagesWidthsSum: number;
+} {
+  let maxImageDataWidth = maxSize;
+  let maxImageDataHeight = maxSize;
+  if (maxSize === 0) {
+    const minSize = getImagesMinSizes(collageImages);
+    maxImageDataWidth = minSize.width;
+    maxImageDataHeight = minSize.height;
+  }
+
+  let ivHeightSum = 0;
+  let imagesHeightsSum = 0;
+  let ihWidthSum = 0;
+  let imagesWidthsSum = 0;
+
+  collageImages.map((image) => {
+    const aspectRatio = image.width / image.height;
+
+    //Para vertical
+    let ivHeight = maxImageDataWidth / aspectRatio;
+
+    //Para horizontal
+    let ihWidth = maxImageDataHeight * aspectRatio;
+
+    ivHeightSum += ivHeight;
+    ihWidthSum += ihWidth;
+    imagesHeightsSum += image.height;
+    imagesWidthsSum += image.width;
+  });
+
+  return {
+    ivHeightSum: ivHeightSum,
+    ivWidth: maxImageDataWidth,
+    ihHeight: maxImageDataHeight,
+    ihWidthSum: ihWidthSum,
+    imagesHeightsSum: imagesHeightsSum,
+    imagesWidthsSum: imagesWidthsSum,
+  };
+}
+
+export async function getCollageGapPx(
+  orientation: Orientation,
+  collageImages: HTMLImageElement[] | null,
+  maxSize: number,
+  gapPc: number
+): Promise<
+  { gap: number; collageMaxWidth: number; collageMaxHeight: number } | undefined
+> {
+  function getMinSize(images: HTMLImageElement[]): {
+    width: number;
+    height: number;
+  } {
+    let minWidth = images[0].width;
+    let minHeight = images[0].height;
+    images.forEach((image) => {
+      if (image.width < minWidth) {
+        minWidth = image.width;
+      }
+      if (image.height < minHeight) {
+        minHeight = image.height;
+      }
+    });
+    return { width: minWidth, height: minHeight };
+  }
+
+  if (!collageImages) {
+    return;
+  }
+
+  let maxImageDataWidth = maxSize;
+  let maxImageDataHeight = maxSize;
+  if (maxSize === 0) {
+    const minSize = getMinSize(collageImages);
+    maxImageDataWidth = minSize.width;
+    maxImageDataHeight = minSize.height;
+  }
+
+  let imagesData: ImageData[] = [];
+  //para collage vertical
+  let imagesHeightSum: number = 0;
+  //para horizontal
+  let imagesWidthSum: number = 0;
+
+  await Promise.all(
+    collageImages.map(async (image) => {
+      let imageDataWidth;
+      let imageDataHeight;
+      if (orientation === Orientation.vertical) {
+        imageDataWidth = maxImageDataWidth;
+        imageDataHeight = image.height;
+      } else {
+        //horizontal
+        imageDataWidth = image.height;
+        imageDataHeight = maxImageDataHeight;
+      }
+
+      const imageData = await imageB64ToImageDataWithOrientation(
+        image.src,
+        imageDataWidth,
+        imageDataHeight,
+        orientation
+      );
+
+      imagesData.push(imageData);
+      imagesHeightSum += imageData.height;
+      imagesWidthSum += imageData.width;
+    })
+  );
+
+  // se calcula el tamaño del gap y el tamaño del canvas según la orientación
+  let gap = 0;
+
+  if (orientation === Orientation.vertical) {
+    gap = imagesHeightSum * (gapPc / 100);
+  } else {
+    //horizontal
+    gap = imagesWidthSum * (gapPc / 100);
+  }
+
+  return {
+    gap: gap,
+    collageMaxWidth: imagesWidthSum,
+    collageMaxHeight: imagesHeightSum,
+  };
+}
 
 /**
  * Función que calcula un nuevo tamaño para la imagen del small canvas teniendo en cuenta el tamaño de la ventana.
@@ -36,7 +348,7 @@ function calcResizeToWindow(
   imageWidth: number,
   imageHeight: number,
   windowDimensions: WindowsDimensions,
-  mainCanvasConfig: CanvasConfig
+  mainCanvasConfig: AppConfig
 ): { newWidth: number; newHeight: number } {
   let ratio = imageWidth / imageHeight;
   let newWidth = 0;
@@ -46,11 +358,12 @@ function calcResizeToWindow(
   if (ratio > 1) {
     if (
       windowDimensions.width <
-      mainCanvasConfig.maxWidth - mainCanvasConfig.margin
+      mainCanvasConfig.canvasMaxWidth - mainCanvasConfig.canvasMargin
     ) {
-      newWidth = windowDimensions.width - mainCanvasConfig.margin;
+      newWidth = windowDimensions.width - mainCanvasConfig.canvasMargin;
     } else {
-      newWidth = mainCanvasConfig.maxWidth - mainCanvasConfig.margin;
+      newWidth =
+        mainCanvasConfig.canvasMaxWidth - mainCanvasConfig.canvasMargin;
     }
     newHeight = newWidth / ratio;
 
@@ -58,12 +371,12 @@ function calcResizeToWindow(
       newHeight >
       windowDimensions.height -
         windowDimensions.mobileToolbarHeight -
-        mainCanvasConfig.margin
+        mainCanvasConfig.canvasMargin
     ) {
       newHeight =
         windowDimensions.height -
         windowDimensions.mobileToolbarHeight -
-        mainCanvasConfig.margin;
+        mainCanvasConfig.canvasMargin;
       newWidth = newHeight * ratio;
     }
   }
@@ -72,20 +385,21 @@ function calcResizeToWindow(
     if (
       windowDimensions.height -
         windowDimensions.mobileToolbarHeight -
-        mainCanvasConfig.margin <
-      mainCanvasConfig.maxHeight
+        mainCanvasConfig.canvasMargin <
+      mainCanvasConfig.canvasMaxHeight
     ) {
       newHeight =
         windowDimensions.height -
         windowDimensions.mobileToolbarHeight -
-        mainCanvasConfig.margin;
+        mainCanvasConfig.canvasMargin;
     } else {
-      newHeight = mainCanvasConfig.maxHeight - mainCanvasConfig.margin;
+      newHeight =
+        mainCanvasConfig.canvasMaxHeight - mainCanvasConfig.canvasMargin;
     }
     newWidth = newHeight * ratio;
 
     if (newWidth > windowDimensions.width) {
-      newWidth = windowDimensions.width - mainCanvasConfig.margin;
+      newWidth = windowDimensions.width - mainCanvasConfig.canvasMargin;
       newHeight = newWidth / ratio;
     }
   }
@@ -443,6 +757,7 @@ function drawImageB64OnCanvas(
   };
 }
 
+// TODO: no debería usar un offline canvas acá?
 async function imageB64ToImageData(
   imageB64: string,
   canvasMaxWidth: number,
@@ -459,6 +774,49 @@ async function imageB64ToImageData(
         canvas.width = canvasMaxWidth;
         canvas.height = canvasMaxWidth / aspectRatio;
       } else {
+        canvas.height = canvasMaxHeight;
+        canvas.width = canvasMaxHeight * aspectRatio;
+      }
+
+      canvas
+        .getContext("2d")
+        ?.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
+
+      resolve();
+    };
+
+    imgElement.onerror = function () {
+      reject(new Error("Error al cargar la imagen"));
+    };
+
+    imgElement.src = imageB64;
+  });
+
+  await loadImage;
+  return canvas
+    .getContext("2d")
+    ?.getImageData(0, 0, canvas.width, canvas.height)!;
+}
+
+async function imageB64ToImageDataWithOrientation(
+  imageB64: string,
+  canvasMaxWidth: number,
+  canvasMaxHeight: number,
+  orientation: Orientation
+): Promise<ImageData> {
+  const canvas = document.createElement("canvas");
+  const imgElement = new window.Image();
+
+  const loadImage = new Promise<void>((resolve, reject) => {
+    imgElement.onload = function () {
+      const aspectRatio = imgElement.width / imgElement.height;
+
+      //para collage vertical
+      if (orientation === Orientation.vertical) {
+        canvas.width = canvasMaxWidth;
+        canvas.height = canvasMaxWidth / aspectRatio;
+      } else if (orientation === Orientation.horizontal) {
+        //para collage horizontal
         canvas.height = canvasMaxHeight;
         canvas.width = canvasMaxHeight * aspectRatio;
       }

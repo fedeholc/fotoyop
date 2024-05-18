@@ -8,7 +8,7 @@ import {
 import { ImageContext } from "./ImageProvider";
 import { ProcessContext } from "./ProcessProvider";
 import { BorderOptionsType, CanvasOptions, ProcessFunction } from "../types";
-import { mainCanvasConfig } from "../App";
+import { appConfig } from "../App";
 import { ImageProcess } from "../types";
 import {
   applyProcessFunction,
@@ -21,6 +21,8 @@ export const BorderContext = createContext({
   BorderPixels: "0",
   BorderPercent: "0",
   inputBorderColor: "#ffffff",
+  inputCanvasColor: "#ffffff",
+
   inputAspectRatioX: 0,
   inputAspectRatioY: 0,
   selectAspectRatio: "",
@@ -33,6 +35,7 @@ export const BorderContext = createContext({
   setBorderPixels: (() => {}) as Dispatch<SetStateAction<string>>,
   setBorderPercent: (() => {}) as Dispatch<SetStateAction<string>>,
   setInputBorderColor: (() => {}) as Dispatch<SetStateAction<string>>,
+  setInputCanvasColor: (() => {}) as Dispatch<SetStateAction<string>>,
   handleInputAspectRatioX: (() => {}) as (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -44,6 +47,9 @@ export const BorderContext = createContext({
       | React.KeyboardEvent<HTMLInputElement>
   ) => void,
   handleInputBorderColor: (() => {}) as (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => void,
+  handleInputCanvasColor: (() => {}) as (
     e: React.ChangeEvent<HTMLInputElement>
   ) => void,
 
@@ -72,19 +78,12 @@ export default function BorderProvider({
   const [BorderPixels, setBorderPixels] = useState<string>("0");
   const [BorderPercent, setBorderPercent] = useState<string>("0");
   const [inputBorderColor, setInputBorderColor] = useState<string>("#ffffff");
-
+  const [inputCanvasColor, setInputCanvasColor] = useState<string>("#ffffff");
   const [inputAspectRatioX, setInputAspectRatioX] = useState<number>(0);
   const [inputAspectRatioY, setInputAspectRatioY] = useState<number>(0);
-
   const [selectAspectRatio, setSelectAspectRatio] = useState<string>("1:1");
 
-  const {
-    originalFile,
-    originalImg,
-    setOriginalFile,
-    setOriginalImg,
-    smallCanvasRef,
-  } = useContext(ImageContext);
+  const { originalImg, smallCanvasRef } = useContext(ImageContext);
 
   const {
     processList,
@@ -99,10 +98,63 @@ export default function BorderProvider({
     setSelectAspectRatio(e.target.value);
     setInputAspectRatioX(0);
     setInputAspectRatioY(0);
+
+    let arX = parseInt(e.target.value.split(":")[0]);
+    let arY = parseInt(e.target.value.split(":")[1]);
+
+    if (arX > 0 && arY > 0) {
+      handleCanvasChange(
+        {
+          CanvasColor: inputCanvasColor,
+          ratioX: arX,
+          ratioY: arY,
+        },
+        smallCanvasRef
+      );
+    }
   }
 
   function handleInputBorderColor(e: React.ChangeEvent<HTMLInputElement>) {
     setInputBorderColor(e.target.value);
+    handleBorderChange(
+      {
+        BorderColor: e.target.value,
+        BorderPixels: BorderPixels,
+        BorderPercent: BorderPercent,
+      },
+      smallCanvasRef
+    );
+  }
+  function handleInputCanvasColor(e: React.ChangeEvent<HTMLInputElement>) {
+    setInputCanvasColor(e.target.value);
+    if (
+      selectAspectRatio === "" &&
+      inputAspectRatioX > 0 &&
+      inputAspectRatioY > 0
+    ) {
+      handleCanvasChange(
+        {
+          CanvasColor: e.target.value,
+          ratioX: inputAspectRatioX,
+          ratioY: inputAspectRatioY,
+        },
+        smallCanvasRef
+      );
+    } else {
+      let arX = parseInt(selectAspectRatio.split(":")[0]);
+      let arY = parseInt(selectAspectRatio.split(":")[1]);
+
+      if (arX > 0 && arY > 0) {
+        handleCanvasChange(
+          {
+            CanvasColor: e.target.value,
+            ratioX: arX,
+            ratioY: arY,
+          },
+          smallCanvasRef
+        );
+      }
+    }
   }
 
   function handleInputAspectRatioX(
@@ -112,6 +164,16 @@ export default function BorderProvider({
   ) {
     setSelectAspectRatio("");
     setInputAspectRatioX(parseInt((e.target as HTMLInputElement).value));
+    if (inputAspectRatioY > 0) {
+      handleCanvasChange(
+        {
+          CanvasColor: inputCanvasColor,
+          ratioX: parseInt((e.target as HTMLInputElement).value),
+          ratioY: inputAspectRatioY,
+        },
+        smallCanvasRef
+      );
+    }
   }
 
   function handleInputAspectRatioY(
@@ -122,6 +184,16 @@ export default function BorderProvider({
     setSelectAspectRatio("");
 
     setInputAspectRatioY(parseInt((e.target as HTMLInputElement).value));
+    if (inputAspectRatioX > 0) {
+      handleCanvasChange(
+        {
+          CanvasColor: inputCanvasColor,
+          ratioX: inputAspectRatioX,
+          ratioY: parseInt((e.target as HTMLInputElement).value),
+        },
+        smallCanvasRef
+      );
+    }
   }
 
   /**
@@ -163,7 +235,7 @@ export default function BorderProvider({
     borderOptions: BorderOptionsType,
     smallCanvasRef: React.RefObject<HTMLCanvasElement>
   ) {
-    if (!originalFile) {
+    if (!originalImg) {
       return;
     }
     // El borderOptions como viene lo uso para guardar en processList, ya que el borde en pixels se aplica tal cual a la imagen final con la resolución original. Pero para el small canvas, que es el que se muestra, el borde en pixels se tiene que ajustar a la resolución del canvas.
@@ -173,11 +245,11 @@ export default function BorderProvider({
     if (parseInt(borderOptions.BorderPixels!) > 0) {
       if (undoImageList[0].width > undoImageList[0].height) {
         newBorderPixels =
-          (parseInt(borderOptions.BorderPixels!) * mainCanvasConfig.maxWidth) /
+          (parseInt(borderOptions.BorderPixels!) * appConfig.canvasMaxWidth) /
           originalImg!.width;
       } else {
         newBorderPixels =
-          (parseInt(borderOptions.BorderPixels!) * mainCanvasConfig.maxHeight) /
+          (parseInt(borderOptions.BorderPixels!) * appConfig.canvasMaxHeight) /
           originalImg!.height;
       }
     }
@@ -202,10 +274,9 @@ export default function BorderProvider({
 
     // Si ya se vienen haciendo modificaciones al borde (aún no aplicadas) se descarta la última modificación y se agrega la nueva.
     if (currentProcess === ImageProcess.Border && undoImageList.length > 1) {
-      const newUndoImageList = [...undoImageList];
-      newUndoImageList.pop();
+      undoImageList.pop();
       putImageDataOnCanvas(
-        newUndoImageList[newUndoImageList.length - 1],
+        undoImageList[undoImageList.length - 1],
         smallCanvasRef.current!
       );
 
@@ -216,12 +287,10 @@ export default function BorderProvider({
         smallCanvasBorderOptions
       );
 
-      setUndoImageList([...newUndoImageList, newImageData]);
-
-      const tempProcessList = [...processList];
-      tempProcessList.pop();
+      setUndoImageList([...undoImageList, newImageData]);
+      processList.pop();
       setProcessList([
-        ...tempProcessList,
+        ...processList,
         (imageData) => imgAddBorder(imageData, borderOptions),
       ]);
     }
@@ -231,7 +300,7 @@ export default function BorderProvider({
     options: CanvasOptions,
     smallCanvasRef: React.RefObject<HTMLCanvasElement>
   ) {
-    if (!originalFile) {
+    if (!originalImg) {
       return;
     }
 
@@ -253,10 +322,9 @@ export default function BorderProvider({
     // Si ya se vienen haciendo modificaciones al canvas (aún no aplicadas) se descarta la última modificación y se agrega la nueva.
     //todo: ver, esto no se va a aplicar creo, no va a haber modificaciones sin aplicar como en borde
     if (currentProcess === ImageProcess.Canvas && undoImageList.length > 1) {
-      const newUndoImageList = [...undoImageList];
-      newUndoImageList.pop();
+      undoImageList.pop();
       putImageDataOnCanvas(
-        newUndoImageList[newUndoImageList.length - 1],
+        undoImageList[undoImageList.length - 1],
         smallCanvasRef.current!
       );
 
@@ -267,12 +335,11 @@ export default function BorderProvider({
         options
       );
 
-      setUndoImageList([...newUndoImageList, newImageData]);
+      setUndoImageList([...undoImageList, newImageData]);
 
-      const tempProcessList = [...processList];
-      tempProcessList.pop();
+      processList.pop();
       setProcessList([
-        ...tempProcessList,
+        ...processList,
         (imageData) => imgAddCanvas(imageData, options),
       ]);
     }
@@ -305,7 +372,7 @@ export default function BorderProvider({
     ) {
       handleCanvasChange(
         {
-          CanvasColor: inputBorderColor,
+          CanvasColor: inputCanvasColor,
           ratioX: inputAspectRatioX,
           ratioY: inputAspectRatioY,
         },
@@ -318,7 +385,7 @@ export default function BorderProvider({
       if (arX > 0 && arY > 0) {
         handleCanvasChange(
           {
-            CanvasColor: inputBorderColor,
+            CanvasColor: inputCanvasColor,
             ratioX: arX,
             ratioY: arY,
           },
@@ -331,7 +398,20 @@ export default function BorderProvider({
   }
 
   function handleDiscardCanvas() {
-    setInputBorderColor("#ffffff");
+    if (currentProcess === ImageProcess.Canvas && undoImageList.length > 1) {
+      undoImageList.pop();
+      setUndoImageList([...undoImageList]);
+
+      putImageDataOnCanvas(
+        undoImageList[undoImageList.length - 1],
+        smallCanvasRef.current!
+      );
+
+      processList.pop();
+
+      setProcessList([...processList]);
+    }
+    setInputCanvasColor("#ffffff");
     setSelectAspectRatio("1:1");
     setInputAspectRatioX(0);
     setInputAspectRatioY(0);
@@ -341,20 +421,18 @@ export default function BorderProvider({
    * Handler del botón descartar borde. Descarta las últimas modificaciones recuperando el snapshot anterior.
    */
   function handleDiscardBorder() {
-    const newUndoImageList = [...undoImageList];
     if (currentProcess === ImageProcess.Border && undoImageList.length > 1) {
-      newUndoImageList.pop();
-      setUndoImageList(newUndoImageList);
+      undoImageList.pop();
+      setUndoImageList([...undoImageList]);
 
       putImageDataOnCanvas(
-        newUndoImageList[newUndoImageList.length - 1],
+        undoImageList[undoImageList.length - 1],
         smallCanvasRef.current!
       );
 
-      const newProcessList = [...processList];
-      newProcessList.pop();
+      processList.pop();
 
-      setProcessList(newProcessList);
+      setProcessList([...processList]);
     }
 
     setInputBorderColor("#ffffff");
@@ -369,6 +447,7 @@ export default function BorderProvider({
         BorderPixels,
         BorderPercent,
         inputBorderColor,
+        inputCanvasColor,
         inputAspectRatioX,
         inputAspectRatioY,
         selectAspectRatio,
@@ -381,11 +460,11 @@ export default function BorderProvider({
         setBorderPixels,
         setBorderPercent,
         setInputBorderColor,
+        setInputCanvasColor,
         handleInputBorderColor,
-
+        handleInputCanvasColor,
         handleBorderChange,
         handleBorderPixelsRange,
-
         handleBorderPercentRange,
         handleApplyBorder,
         handleDiscardBorder,

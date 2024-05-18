@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
 const APP_NAME = "fotoyop v0.1 demo";
-const APP_DESCRIPTION = "Image editor. fotoyop v0.1 demo. Work in progress";
+const APP_DESCRIPTION = "Image editor & collage creator. fotoyop v0.1 demo.";
 
 export const metadata: Metadata = {
   applicationName: APP_NAME,

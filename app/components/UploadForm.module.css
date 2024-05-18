@@ -29,6 +29,15 @@
    color: black;
  }
 
+
+ .dropInfo {
+   color: black;
+   font-size: 0.8rem;
+   font-weight: 400;
+   text-align: center;
+   padding: 1.2rem 0.5rem;
+ }
+
  .dropTitle {
    color: black;
    padding: 0.2rem 0.5rem;
@@ -38,6 +47,7 @@
    /* transition: color .2s ease-in-out; */
 
  }
+
 
  .dropContainer:hover .dropTitle,
  .dropTitleDragover {

@@ -1,5 +1,5 @@
 import { Square } from "lucide-react";
-import toolbar from "../toolbar.module.css";
+import toolbar from "../BottomToolbar.module.css";
 
 export default function ButtonGrayscale({ onClick }: { onClick: () => void }) {
   return (
@@ -8,7 +8,8 @@ export default function ButtonGrayscale({ onClick }: { onClick: () => void }) {
       className={toolbar.buttonWithIcon}
       onClick={onClick}
     >
-      <svg className={toolbar.svgBW}
+      <svg
+        className={toolbar.svgBW}
         xmlns="http://www.w3.org/2000/svg"
         fill="#eeeeee"
         height="16px"

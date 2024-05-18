@@ -1,5 +1,5 @@
 import { Pencil } from "lucide-react";
-import toolbar from "../toolbar.module.css";
+import toolbar from "../BottomToolbar.module.css";
 
 export default function ButtonEdit({ onClick }: { onClick: () => void }) {
   return (

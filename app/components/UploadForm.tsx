@@ -8,9 +8,11 @@ import {
 } from "../imageProcessing";
 import { ProcessContext } from "../providers/ProcessProvider";
 import useWindowsSize from "./hooks/useWindowsSize";
-import { mainCanvasConfig } from "../App";
-import { calcResizeToWindow } from "../imageProcessing";
+import { appConfig } from "../App";
+import { calcResizeToWindow, getCollageGapPx } from "../imageProcessing";
 import upForm from "./UploadForm.module.css";
+import { CollageContext } from "../providers/CollageProvider";
+import { Orientation } from "../types";
 
 export default function UploadForm({}) {
   /**
@@ -21,11 +23,58 @@ export default function UploadForm({}) {
     event: React.FormEvent<HTMLFormElement>
   ) {
     event.preventDefault();
-    const file = (event.target as HTMLFormElement).files[0];
-    await loadFileProcedure(file as File);
-    setDisplays((prev) => {
-      return { canvas: true, form: false, resizeTrigger: !prev.resizeTrigger };
-    });
+    const files = (event.target as HTMLFormElement).files;
+
+    //Un solo archivo --> edición simple
+    if (files.length == 1) {
+      await loadFileProcedure(files[0] as File);
+
+      setDisplays((prev) => {
+        return {
+          canvas: true,
+          form: false,
+          resizeTrigger: !prev.resizeTrigger,
+          collage: false,
+        };
+      });
+      setBottomToolbarDisplay({
+        mainMenu: true,
+        edit: false,
+        border: false,
+        borderPx: false,
+        borderPc: false,
+        canvas: false,
+        collage: false,
+      });
+
+      setCollageFiles(null);
+      setCollageImages(null);
+    }
+
+    //Máss de un archivo --> collage
+    if (files.length > 1) {
+      await loadMultipleFilesProcedure(files as File[]);
+
+      setDisplays((prev) => {
+        return {
+          canvas: false,
+          form: false,
+          resizeTrigger: !prev.resizeTrigger,
+          collage: true,
+        };
+      });
+      setBottomToolbarDisplay({
+        mainMenu: true,
+        edit: false,
+        border: false,
+        borderPx: false,
+        borderPc: false,
+        canvas: false,
+        collage: false,
+      });
+
+      setOriginalImg(null);
+    }
 
     //todo: probar si con este agregado de setDisplays acá se puede quitar el resizeTrigger
   }
@@ -38,7 +87,12 @@ export default function UploadForm({}) {
   async function loadFileProcedure(file: File) {
     let originalImageB64: string;
     setDisplays((prev) => {
-      return { canvas: true, form: false, resizeTrigger: !prev.resizeTrigger };
+      return {
+        canvas: true,
+        form: false,
+        resizeTrigger: !prev.resizeTrigger,
+        collage: false,
+      };
     });
     try {
       originalImageB64 = (await getImageFromFile(file as File)) as string;
@@ -57,7 +111,7 @@ export default function UploadForm({}) {
           newImageElement.width,
           newImageElement.height,
           windowDimensions,
-          mainCanvasConfig
+          appConfig
         );
 
         drawImageB64OnCanvas(
@@ -71,10 +125,60 @@ export default function UploadForm({}) {
       setUndoImageList([
         (await imageB64ToImageData(
           originalImageB64,
-          mainCanvasConfig.maxWidth,
-          mainCanvasConfig.maxHeight
+          appConfig.canvasMaxWidth,
+          appConfig.canvasMaxHeight
         )) as ImageData,
       ]);
+    }
+  }
+
+  async function loadMultipleFilesProcedure(files: File[]) {
+    setDisplays((prev) => {
+      return {
+        canvas: true,
+        form: false,
+        resizeTrigger: !prev.resizeTrigger,
+        collage: true,
+      };
+    });
+    let collageImagesB64: string[] = [];
+    try {
+      for (let i = 0; i < files.length; i++) {
+        collageImagesB64.push(
+          (await getImageFromFile(files[i] as File)) as string
+        );
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      return;
+    }
+
+    if (files && collageImagesB64) {
+      setCollageFiles(files);
+      let imageElements: HTMLImageElement[] = [];
+
+      collageImagesB64.forEach(async (callageImageB64) => {
+        const newImageElement = new window.Image();
+        newImageElement.src = callageImageB64;
+        newImageElement.onload = () => {
+          //? creo que por ahora no es necesario
+          /* const { newWidth, newHeight } = calcResizeToWindow(
+            newImageElement.width,
+            newImageElement.height,
+            windowDimensions,
+            mainCanvasConfig
+          ); */
+          /* drawImageB64OnCanvas(
+            originalImageB64,
+            smallCanvasRef.current as HTMLCanvasElement,
+            newWidth,
+            newHeight
+          ); */
+        };
+        imageElements.push(newImageElement);
+      });
+
+      setCollageImages(imageElements);
     }
   }
 
@@ -104,7 +208,11 @@ export default function UploadForm({}) {
       }
     }
 
-    loadFileProcedure(files[0]);
+    if (files.length === 1) {
+      loadFileProcedure(files[0]);
+    } else if (files.length > 1) {
+      loadMultipleFilesProcedure(files);
+    }
   }
 
   /**
@@ -142,6 +250,9 @@ export default function UploadForm({}) {
     displays,
     setDisplays,
     mobileToolbarRef,
+    setCollageFiles,
+    setCollageImages,
+    setBottomToolbarDisplay,
   } = useContext(ImageContext);
 
   const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
@@ -186,8 +297,14 @@ export default function UploadForm({}) {
           accept="image/*"
           style={{ display: "none" }}
           ref={inputUploadRef}
+          multiple={true}
         ></input>
       </div>
+      <span className={`${upForm.dropInfo} ${upForm.unselectable}`}>
+        <div>Upload 1 file for single edit</div>
+        <div>or more for collage creation</div>
+      </span>
+      <span className={`${upForm.dropInfo} ${upForm.unselectable}`}></span>
     </form>
   );
 }

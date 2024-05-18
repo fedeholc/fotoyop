@@ -187,3 +187,27 @@ input.aspectRatioInput {
   transform: translateX(-50%);
   border-radius: 10px;
 }
+
+.collageOptions__container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  padding: 0.5rem;
+  color: var(--lightFont)
+}
+
+.collageOptions__row {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  justify-content: center;
+  color: var(--lightFont);
+  align-items: center;
+  accent-color: var(--accentColor);
+}
+
+.collageOptions__row input[type="Number"] {
+  max-width: 70px;
+}

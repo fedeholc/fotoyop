@@ -1,4 +1,4 @@
-import toolbar from "../toolbar.module.css";
+import toolbar from "../BottomToolbar.module.css";
 
 export default function ButtonBorderPc({ onClick }: { onClick: () => void }) {
   return (

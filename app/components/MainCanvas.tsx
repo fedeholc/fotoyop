@@ -1,16 +1,17 @@
 "use client";
 import { ImageContext } from "../providers/ImageProvider";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import useWindowsSize from "./hooks/useWindowsSize";
-import { mainCanvasConfig } from "../App";
+import { appConfig } from "../App";
 import { ProcessContext } from "../providers/ProcessProvider";
 import { calcResizeToWindow } from "../imageProcessing";
 
-export default function SmallCanvas() {
+export default function MainCanvas() {
   const { originalImg, smallCanvasRef, displays, mobileToolbarRef } =
     useContext(ImageContext);
   const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
   const { undoImageList } = useContext(ProcessContext);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!smallCanvasRef.current) {
@@ -27,17 +28,18 @@ export default function SmallCanvas() {
         undoImageList[undoImageList.length - 1].width,
         undoImageList[undoImageList.length - 1].height,
         windowDimensions,
-        mainCanvasConfig
+        appConfig
       );
 
-      document
-        .querySelector(".canvas__container")
-        ?.setAttribute("style", `width: ${newWidth}px; height: ${newHeight}px`); //todo: usar una ref?
+      if (containerRef.current) {
+        containerRef.current.style.width = `${newWidth}px`;
+        containerRef.current.style.height = `${newHeight}px`;
+      }
     }
   }, [windowDimensions, undoImageList]);
 
   return (
-    <div className="canvas__container">
+    <div className="canvas__container" ref={containerRef}>
       <canvas id="canvas-small" ref={smallCanvasRef}></canvas>
     </div>
   );

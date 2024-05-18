@@ -1,10 +1,15 @@
+export enum Orientation {
+  vertical,
+  horizontal,
+}
 export enum toolbarRow {
   mainMenu = "mainMenu",
-  transform = "transform",
+  edit = "edit",
   border = "border",
   borderPx = "borderPx",
   borderPc = "borderPc",
   canvas = "canvas",
+  collage = "collage"
 }
 
 export enum ImageProcess {
@@ -23,10 +28,11 @@ export type WindowsDimensions = {
 /**
  * Define la configuración del canvas principal.
  */
-export type CanvasConfig = {
-  maxWidth: number;
-  maxHeight: number;
-  margin: number;
+export type AppConfig = {
+  canvasMaxWidth: number;
+  canvasMaxHeight: number;
+  canvasMargin: number;
+  collagePreviewSize: number;
 };
 
 //? Sería mejor usar enums?
@@ -63,10 +69,16 @@ export type DisplaySections = {
   form: boolean;
   canvas: boolean;
   resizeTrigger: boolean;
+  collage: boolean;
 };
 
-export type DisplayToolbars = {
+export type BottomToolbarDisplay = {
+  mainMenu: boolean;
+  edit: boolean;
   border: boolean;
-  borderPixels: boolean
-  gray: boolean;
-}
+  borderPx: boolean;
+  borderPc: boolean;
+  canvas: boolean;
+  collage: boolean;
+};
+

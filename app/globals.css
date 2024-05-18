@@ -89,7 +89,8 @@
 
  }
 
- #canvas-small {
+ #canvas-small,
+ #collage__canvas {
    max-width: 100%;
  }
 

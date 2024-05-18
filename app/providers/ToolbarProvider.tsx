@@ -2,6 +2,7 @@ import { createContext, useContext } from "react";
 import { ImageContext } from "./ImageProvider";
 import { ProcessContext } from "./ProcessProvider";
 import { BorderContext } from "./BorderProvider";
+import { CollageContext } from "./CollageProvider";
 
 import { ImageProcess } from "../types";
 import {
@@ -11,6 +12,7 @@ import {
   processToNewImageData,
   processImgToCanvas,
 } from "../imageProcessing";
+import CollageCanvas from "../components/CollageCanvas";
 
 export const ToolbarContext = createContext({
   handleDownload: () => {},
@@ -25,13 +27,19 @@ export default function ToolbarProvider({
   children: React.ReactNode;
 }) {
   const {
-    originalFile,
     originalImg,
     setOriginalFile,
     setOriginalImg,
     smallCanvasRef,
-     setDisplays,
+    setDisplays,
+    setCollageFiles,
+    setCollageImages,
   } = useContext(ImageContext);
+
+  const {
+    setGapPixels,
+    setInputGapColor,
+  } = useContext(CollageContext);
 
   const {
     processList,
@@ -53,7 +61,7 @@ export default function ToolbarProvider({
    * Handler del click en convertir a blanco y negro.
    */
   function handleToGrayscale() {
-    if (!originalFile) {
+    if (!originalImg) {
       return;
     }
 
@@ -76,12 +84,16 @@ export default function ToolbarProvider({
    */
   function handleNewImage() {
     setDisplays((prev) => {
-      return { canvas: false, form: true, resizeTrigger: false };
+      return {
+        canvas: false,
+        form: true,
+        resizeTrigger: false,
+        collage: false,
+      };
     });
 
     setOriginalFile(null);
     setOriginalImg(null);
-    /*  setOriginalImg(new window.Image() as HTMLImageElement); */
 
     setProcessList([]);
     setUndoImageList([]);
@@ -89,13 +101,18 @@ export default function ToolbarProvider({
     setBorderPixels("0");
     setBorderPercent("0");
     setInputBorderColor("#ffffff");
-   }
+
+    setGapPixels(0);
+    setInputGapColor("#ffffff");
+    setCollageFiles([]);
+    setCollageImages([]);
+  }
 
   /**
    * Procedimiento para generar la imagen procesada y enviarla como descarga.
    */
   function handleDownload() {
-    if (!originalFile) {
+    if (!originalImg) {
       return;
     }
     let downloadDataURL = processImgToCanvas(
@@ -115,7 +132,7 @@ export default function ToolbarProvider({
    * Handler del botón Undo. Deshace la última modificación.
    */
   function handleUndo() {
-    if (!originalFile) {
+    if (!originalImg) {
       return;
     }
     if (undoImageList.length > 1) {
