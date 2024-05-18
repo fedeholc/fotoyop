@@ -89,9 +89,8 @@ export default function CollageProvider({
   const [inputGapColor, setInputGapColor] = useState<string>("#ffffff");
   const {
     collageImages,
-    setCollageFiles,
     setCollageImages,
-
+    getDownloadFileName,
     setDisplays,
     setOriginalImg,
     displays,
@@ -122,7 +121,7 @@ export default function CollageProvider({
       ) as string;
       const enlaceDescarga = document.createElement("a");
       enlaceDescarga.href = downloadDataURL || "";
-      enlaceDescarga.download = "image.jpg";
+      enlaceDescarga.download = getDownloadFileName();
 
       document.body.appendChild(enlaceDescarga);
       enlaceDescarga.click();
