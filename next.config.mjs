@@ -1,7 +1,7 @@
 // @ts-check
 import withSerwistInit from "@serwist/next";
 
-const USE_PWA = false;
+const USE_PWA = true;
 
 const withSerwist = withSerwistInit({
   cacheOnNavigation: true,
