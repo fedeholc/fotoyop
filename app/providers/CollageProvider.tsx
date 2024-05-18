@@ -89,6 +89,9 @@ export default function CollageProvider({
   const [inputGapColor, setInputGapColor] = useState<string>("#ffffff");
   const {
     collageImages,
+    setCollageFiles,
+    setCollageImages,
+
     setDisplays,
     setOriginalImg,
     displays,
@@ -140,8 +143,11 @@ export default function CollageProvider({
         gapPixels,
         inputGapColor
       );
+
+      setCollageImages(null);
+
       //pasa la imagen al smallCanvas para trabajar en modo edición
-      loadB64Procedure(
+      await loadB64Procedure(
         collageCanvasRef.current.toDataURL("image/jpeg", 1) as string
       );
     }

@@ -46,6 +46,9 @@ export default function UploadForm({}) {
         canvas: false,
         collage: false,
       });
+
+      setCollageFiles(null);
+      setCollageImages(null);
     }
 
     //Máss de un archivo --> collage
@@ -69,6 +72,8 @@ export default function UploadForm({}) {
         canvas: false,
         collage: false,
       });
+
+      setOriginalImg(null);
     }
 
     //todo: probar si con este agregado de setDisplays acá se puede quitar el resizeTrigger
