@@ -25,24 +25,41 @@ export {
   imageB64ToImageDataWithOrientation,
   imageDataToBase64,
   calcResizeToWindow,
-  getResizedGap
+  getResizedGap,
 };
 
-   function getResizedGap(
-   gapPx: number,
-   orientation: Orientation,
-   collageImages: HTMLImageElement[],
-   maxSize: number
- ) {
-   let resizedGap = 0;
-   let data = getCollageData(collageImages, maxSize);
-   if (orientation === Orientation.vertical) {
-     resizedGap = (gapPx * data.ivHeightSum) / data.imagesHeightsSum;
-   } else {
-     resizedGap = (gapPx * data.ihWidthSum) / data.imagesWidthsSum;
-   }
-   return resizedGap;
- }
+function getResizedGap(
+  gapPx: number,
+  orientation: Orientation,
+  collageImages: HTMLImageElement[],
+  maxSize: number
+) {
+  let resizedGap = 0;
+  let data = getCollageData(collageImages, maxSize);
+  if (orientation === Orientation.vertical) {
+    resizedGap = (gapPx * data.ivHeightSum) / data.imagesHeightsSum;
+  } else {
+    resizedGap = (gapPx * data.ihWidthSum) / data.imagesWidthsSum;
+  }
+  return resizedGap;
+}
+
+function getMinSize(images: HTMLImageElement[]): {
+  width: number;
+  height: number;
+} {
+  let minWidth = images[0].width;
+  let minHeight = images[0].height;
+  images.forEach((image) => {
+    if (image.width < minWidth) {
+      minWidth = image.width;
+    }
+    if (image.height < minHeight) {
+      minHeight = image.height;
+    }
+  });
+  return { width: minWidth, height: minHeight };
+}
 
 /**
  *
@@ -62,25 +79,8 @@ export async function createCollage(
   gap: number,
   gapColor: string
 ) {
-  function getMinSize(images: HTMLImageElement[]): {
-    width: number;
-    height: number;
-  } {
-    let minWidth = images[0].width;
-    let minHeight = images[0].height;
-    images.forEach((image) => {
-      if (image.width < minWidth) {
-        minWidth = image.width;
-      }
-      if (image.height < minHeight) {
-        minHeight = image.height;
-      }
-    });
-    return { width: minWidth, height: minHeight };
-  }
-
   const ctx = canvas?.getContext("2d");
-  if (!collageImages || !canvas || !ctx) {
+  if (!collageImages || collageImages.length < 2 || !canvas || !ctx) {
     return;
   }
 
