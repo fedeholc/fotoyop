@@ -203,13 +203,13 @@ export function BottomToolbar() {
       )}
       {/*   TODO: ojo, hay que cambiar los botones porque acá hacen otra cosa
        */}
-      {toolbarDisplay.mainMenu && collageImages && (
+      {toolbarDisplay.mainMenu && collageImages && collageImages.length > 0 && (
         <ToolbarRow className={toolbar.border__row}>
           <BtCollageOptions></BtCollageOptions>
         </ToolbarRow>
       )}
 
-      {toolbarDisplay.mainMenu && collageImages && (
+      {toolbarDisplay.mainMenu && collageImages && collageImages.length > 0 && (
         <ToolbarRow className={toolbar.mainMenu}>
           {/* <ButtonDownload></ButtonDownload> */}
           <ButtonNew></ButtonNew>
