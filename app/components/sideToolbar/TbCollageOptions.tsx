@@ -1,13 +1,12 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { ImageContext } from "../../providers/ImageProvider";
 import { CollageContext } from "../../providers/CollageProvider";
-import { ProcessContext } from "../../providers/ProcessProvider";
 import { Orientation } from "../../types";
-import { createCollage, getCollageData } from "../../imageProcessing";
+import { getCollageData } from "../../imageProcessing";
 import sideToolbar from "./sideToolbar.module.css";
 import ToolbarGroup from "./ToolbarGroup";
-import { appConfig } from "../../App";
 import CollageOrientationInputs from "./CollageOrientationInputs";
+import { appConfig } from "@/app/App";
 
 export default function TbCollageOptions() {
   const {
@@ -16,19 +15,19 @@ export default function TbCollageOptions() {
     setInputGapColor,
     gapPixels,
     setGapPixels,
-    setPreviewOrientation,
     collageData,
     setCollageData,
     handleGapColor,
     handleGapPixels,
-    handleOrientation,
   } = useContext(CollageContext);
 
   const { collageImages } = useContext(ImageContext);
 
   useEffect(() => {
     if (collageImages) {
-      setCollageData(getCollageData(collageImages, 200));
+      setCollageData(
+        getCollageData(collageImages, appConfig.collagePreviewSize)
+      );
     }
   }, [collageImages, previewOrientation]);
 
