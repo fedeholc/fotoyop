@@ -58,6 +58,11 @@
    word-break: break-all;
  }
 
+ .imageInfoGroup img {
+   max-width: 200px;
+   max-height: 200px;
+ }
+
  .rowButtons {
    display: flex;
    flex-direction: row;

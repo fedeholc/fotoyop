@@ -21,14 +21,7 @@ export default function TbImageInfo() {
           {originalFile && (
             <div>{Math.floor(originalFile.size / 1000).toString()} Kbytes</div>
           )}
-          <img
-            id="imagenPreview"
-            style={{
-              maxWidth: "200px",
-              maxHeight: "200px",
-            }} /* TODO: ver si fijar acá o entro lado el max */
-            src={originalImg?.src}
-          ></img>
+          <img id="imagenPreview" src={originalImg?.src}></img>
         </div>
       </div>
     </ToolbarGroup>
