@@ -24,7 +24,7 @@ export default function BtCollageOptions() {
     <div className={toolbar.collageOptions__container}>
       <div className={`${toolbar.collageOptions__row} ${toolbar.canvasInputs}`}>
         <label>
-          <strong>Collage: </strong>
+          <strong>Orientation </strong>
         </label>
         <input
           type="radio"
