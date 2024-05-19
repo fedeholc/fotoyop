@@ -9,7 +9,8 @@ export enum toolbarRow {
   borderPx = "borderPx",
   borderPc = "borderPc",
   canvas = "canvas",
-  collage = "collage"
+  collage = "collage",
+  flow = "flow",
 }
 
 export enum ImageProcess {
@@ -80,5 +81,6 @@ export type BottomToolbarDisplay = {
   borderPc: boolean;
   canvas: boolean;
   collage: boolean;
+  flow: boolean;
 };
 

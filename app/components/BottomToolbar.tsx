@@ -18,7 +18,9 @@ import ButtonBorderPc from "./buttons/buttonBorderPc";
 import ButtonGrayscale from "./buttons/buttonGrayscale";
 import ButtonCanvas from "./buttons/buttonCanvas";
 import ButtonCollage from "./buttons/buttonCollage";
+import ButtonMenu from "./buttons/buttonMenu";
 import ButtonSaveToEdit from "./buttons/buttonSaveToEdit";
+import ButtonUndoIcon from "./buttons/buttonUndoIcon";
 import ButtonDownloadFromCollage from "./buttons/buttonDownloadFromCollage";
 import BtBorderPixelInputs from "./bottomToolbar/BtBorderPixelInput";
 import BtBorderPercentInput from "./bottomToolbar/BtBorderPercentInput";
@@ -47,16 +49,16 @@ export function BottomToolbar() {
     setBottomToolbarDisplay,
   } = useContext(ImageContext);
 
-  
   function showToolbarRow(row: toolbarRow) {
     let toolbar = {
-      mainMenu: true,
+      mainMenu: false,
       edit: false,
       border: false,
       borderPx: false,
       borderPc: false,
       canvas: false,
       collage: false,
+      flow: false,
     };
     // funciona como toggle, si se vuelve a hacer click en el mismo boton, se oculta (por ahora solo para Edit)
     toolbar[row] = bottomToolbarDisplay[row] === true ? false : true;
@@ -86,118 +88,110 @@ export function BottomToolbar() {
 
   return (
     <div ref={mobileToolbarRef}>
-      {bottomToolbarDisplay.borderPx && originalImg?.src && (
-        <ToolbarRow className={toolbar.border__row}>
+      {bottomToolbarDisplay.flow && originalImg?.src && (
+        <div className={toolbar.borderGroupFlow}>
           <ButtonBack
-            onClick={() => showToolbarRow(toolbarRow.border)}
-          ></ButtonBack>
-          <BtBorderPixelInputs maxRange={(originalImg.width / 2).toString()} />
-          <ButtonApply onClick={handleApplyBorder}></ButtonApply>
-          <ButtonDiscard onClick={handleDiscardBorder}></ButtonDiscard>
-        </ToolbarRow>
-      )}
-      {bottomToolbarDisplay.borderPc && originalImg?.src && (
-        <ToolbarRow className={toolbar.border__row}>
-          <ButtonBack onClick={() => showToolbarRow(toolbarRow.border)} />
-          <BtBorderPercentInput maxRange="100" />
-          <ButtonApply
             onClick={() => {
-              handleApplyBorder();
+              bottomToolbarDisplay.canvas ? handleApplyCanvas() : null;
+              bottomToolbarDisplay.border ? handleApplyBorder() : null;
+              setBottomToolbarDisplay((prev) => {
+                return {
+                  ...prev,
+                  mainMenu: false,
+                  border: false,
+                  canvas: false,
+                  edit: true,
+                  flow: true,
+                };
+              });
             }}
-          />
-          <ButtonDiscard onClick={handleDiscardBorder} />
-        </ToolbarRow>
+          ></ButtonBack>
+          <ButtonMenu
+            onClick={() => showToolbarRow(toolbarRow.mainMenu)}
+          ></ButtonMenu>
+          <div className={toolbar.flowButtonsSeparator}>|</div>
+          <ButtonUndoIcon></ButtonUndoIcon>
+          {!bottomToolbarDisplay.mainMenu && !bottomToolbarDisplay.edit && (
+            <ButtonApply
+              onClick={() => {
+                bottomToolbarDisplay.canvas ? handleApplyCanvas() : null;
+                bottomToolbarDisplay.border ? handleApplyBorder() : null;
+              }}
+            ></ButtonApply>
+          )}
+        </div>
       )}
+
       {bottomToolbarDisplay.border && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
-          <ButtonBack
-            onClick={() => showToolbarRow(toolbarRow.edit)}
-          ></ButtonBack>
-          <BtBorderColorInputs />
-          <ButtonBorderPc
-            onClick={() => showToolbarRow(toolbarRow.borderPc)}
-          ></ButtonBorderPc>
-          <ButtonBorderPx
-            onClick={() => showToolbarRow(toolbarRow.borderPx)}
-          ></ButtonBorderPx>
+          <div className={toolbar.borderGroupEdit}>
+            <BtBorderColorInputs />
+            <BtBorderPercentInput maxRange="100" />
+            <BtBorderPixelInputs
+              maxRange={(originalImg.width / 2).toString()}
+            />
+          </div>
         </ToolbarRow>
       )}
+
       {bottomToolbarDisplay.canvas && originalImg?.src && (
         <ToolbarRow className={toolbar.border__row}>
-          <ButtonBack
-            onClick={() => showToolbarRow(toolbarRow.edit)}
-          ></ButtonBack>
-          <span></span>
-
-          <BtCanvasColorInputs />
-          <BtAspectRatioPresets />
-          <BtAspectRatioInputs />
-          <ButtonApply
-            onClick={() => {
-              handleApplyCanvas();
-            }}
-          ></ButtonApply>
-          <ButtonDiscard onClick={handleDiscardCanvas}></ButtonDiscard>
+          <div className={toolbar.borderGroupEdit}>
+            <BtAspectRatioPresets />
+            <BtCanvasColorInputs />
+          </div>
         </ToolbarRow>
       )}
-      {bottomToolbarDisplay.collage && originalImg?.src && (
-        <ToolbarRow className={toolbar.border__row}>
-          <ButtonBack
-            onClick={() => showToolbarRow(toolbarRow.edit)}
-          ></ButtonBack>
-          <span></span>
-          {/* el span es un separador para generar gap */}
 
-          <ButtonApply
-            onClick={() => {
-              //handleApplyCanvas();
-            }}
-          ></ButtonApply>
-          <ButtonDiscard
-            onClick={
-              () => {}
-              //handleDiscardCanvas
-            }
-          ></ButtonDiscard>
-        </ToolbarRow>
-      )}
       {bottomToolbarDisplay.edit && originalImg?.src && (
         <ToolbarRow>
           <ButtonBorder
-            onClick={() => showToolbarRow(toolbarRow.border)}
+            onClick={() =>
+              setBottomToolbarDisplay((prev) => {
+                return {
+                  ...prev,
+                  border: true,
+                  flow: true,
+                  edit: false,
+                };
+              })
+            }
           ></ButtonBorder>
 
           <ButtonGrayscale onClick={handleToGrayscale}></ButtonGrayscale>
           <ButtonCanvas
-            onClick={() => showToolbarRow(toolbarRow.canvas)}
-          ></ButtonCanvas>
-          {/*  <ButtonCollage
-            onClick={() => {
-              showToolbarRow(toolbarRow.collage);
-              setDisplays((prev) => {
+            onClick={() =>
+              setBottomToolbarDisplay((prev) => {
                 return {
-                  canvas: false,
-                  form: false,
-                  resizeTrigger: !prev.resizeTrigger,
-                  collage: true,
+                  ...prev,
+                  canvas: true,
+                  edit: false,
+                  flow: true,
                 };
-              });
-            }}
-          ></ButtonCollage> */}
+              })
+            }
+          ></ButtonCanvas>
         </ToolbarRow>
       )}
       {bottomToolbarDisplay.mainMenu && originalImg?.src && (
         <ToolbarRow className={toolbar.mainMenu}>
           <ButtonDownload></ButtonDownload>
           <ButtonNew></ButtonNew>
-          <ButtonUndo></ButtonUndo>
           <ButtonEdit
-            onClick={() => showToolbarRow(toolbarRow.edit)}
+            onClick={() =>
+              setBottomToolbarDisplay((prev) => {
+                return {
+                  ...prev,
+                  mainMenu: false,
+                  edit: true,
+                  flow: true,
+                };
+              })
+            }
           ></ButtonEdit>
         </ToolbarRow>
       )}
-      {/*   TODO: ojo, hay que cambiar los botones porque acá hacen otra cosa
-       */}
+
       {bottomToolbarDisplay.mainMenu &&
         collageImages &&
         collageImages.length > 0 && (
@@ -210,15 +204,9 @@ export function BottomToolbar() {
         collageImages &&
         collageImages.length > 0 && (
           <ToolbarRow className={toolbar.mainMenu}>
-            {/* <ButtonDownload></ButtonDownload> */}
             <ButtonNew></ButtonNew>
             <ButtonDownloadFromCollage></ButtonDownloadFromCollage>
             <ButtonSaveToEdit></ButtonSaveToEdit>
-            {/*           <ButtonUndo></ButtonUndo>
-             */}{" "}
-            {/*  <ButtonEdit
-            onClick={() => showToolbarRow(toolbarRow.edit)}
-          ></ButtonEdit> */}
           </ToolbarRow>
         )}
     </div>

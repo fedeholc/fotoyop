@@ -4,12 +4,14 @@
   flex-wrap: wrap;
   gap: 0.4rem;
   justify-content: center;
-  padding: 0.5rem
+  padding: 0.5rem;
+  border-top: 1px solid var(--toolbarBorderColor);
+  background-color: var(--toolbarBg);
 }
 
 .mainMenu {
   border-top: 1px solid var(--toolbarBorderColor);
-  padding: 0.5rem 0.5rem 0.7rem 0.5rem
+  /* padding: 0.5rem 0.5rem 0.7rem 0.5rem */
 }
 
 .imageInfo {
@@ -37,7 +39,7 @@
 .border__row input[type="Color"] {
   min-width: 60px;
   max-width: 60px;
-  height: 32px;
+  height: 30px;
   border-radius: 5px;
   padding: 0.2rem;
   border: 1px solid rgb(128 128 128 / 50%);
@@ -89,7 +91,9 @@ select.aspectRatioInput {
   margin-left: 0.5rem;
 }
 
-.canvasInputs>label {
+.canvasInputs label,
+.borderColorInputs label,
+.borderRanges label {
   font-size: 0.85rem;
   font-weight: 400;
 }
@@ -102,7 +106,8 @@ select.aspectRatioInput {
   padding: 0rem 0.0rem 0rem 0rem;
 }
 
-.buttonOnlyIcon {
+.buttonOnlyIcon,
+.buttonFlow {
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
@@ -111,7 +116,19 @@ select.aspectRatioInput {
   padding: 0rem;
   height: 2rem;
   width: 2rem;
-  color: var(--lightFont)
+  color: var(--lightFont);
+  background-color: var(--toolbarBg);
+}
+
+.buttonOnlyIcon:hover,
+.buttonWithIcon:hover {
+  outline: 2px solid var(--bgMiddleGray);
+  color: var(--buttonIconColorHover)
+}
+
+.buttonFlow:hover {
+
+  color: var(--buttonFlowHover)
 }
 
 .buttonWithIcon {
@@ -123,6 +140,7 @@ select.aspectRatioInput {
   padding: 0rem 0.6rem 0rem 0.4rem;
   height: 2rem;
   color: var(--buttonIconColor);
+  background-color: var(--toolbarBg);
 }
 
 .svgBW {
@@ -130,7 +148,8 @@ select.aspectRatioInput {
 }
 
 .buttonWithIcon svg,
-.buttonOnlyIcon svg {
+.buttonOnlyIcon svg,
+.buttonFlow svg {
   height: var(--buttonIconSize);
 }
 
@@ -138,14 +157,20 @@ select.aspectRatioInput {
   color: var(--lightFont)
 }
 
-
+.flowButtonsSeparator {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
 .borderRanges {
 
   display: grid;
   align-items: center;
-  grid-template-columns: 1fr 70px auto;
+  grid-template-columns: 60px 1fr 65px 20px;
   gap: 0.4rem;
+  max-width: 500px;
+  width: 100%;
 }
 
 .canvasInputs {
@@ -210,4 +235,38 @@ input.aspectRatioInput {
 
 .collageOptions__row input[type="Number"] {
   max-width: 70px;
+}
+
+.borderGroupContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  background-color: var(--bgMiddleGray);
+}
+
+.borderGroupFlow {
+  padding-left: 0.5rem;
+  padding-bottom: 0.5rem;
+  display: flex;
+  background-color: var(--bgMiddleGray);
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.borderGroupEdit {
+  width: 100%;
+  /* padding: 1rem; */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.borderColorInputs {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
 }
