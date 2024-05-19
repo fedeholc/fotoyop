@@ -34,12 +34,10 @@ export default function ToolbarProvider({
     setDisplays,
     setCollageFiles,
     setCollageImages,
+    getDownloadFileName,
   } = useContext(ImageContext);
 
-  const {
-    setGapPixels,
-    setInputGapColor,
-  } = useContext(CollageContext);
+  const { setGapPixels, setInputGapColor } = useContext(CollageContext);
 
   const {
     processList,
@@ -121,7 +119,7 @@ export default function ToolbarProvider({
     ).toDataURL("image/jpeg", 1);
     const enlaceDescarga = document.createElement("a");
     enlaceDescarga.href = downloadDataURL || "";
-    enlaceDescarga.download = "image.jpg";
+    enlaceDescarga.download = getDownloadFileName();
 
     document.body.appendChild(enlaceDescarga);
     enlaceDescarga.click();

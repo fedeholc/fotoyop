@@ -17,6 +17,7 @@ export const ImageContext = createContext({
   setOriginalFile: (() => {}) as Dispatch<SetStateAction<File | null>>,
   smallCanvasRef: createRef<HTMLCanvasElement>(),
   collageCanvasRef: createRef<HTMLCanvasElement>(),
+  containerRef: createRef<HTMLDivElement>(),
 
   displays: {} as DisplaySections,
   setDisplays: (() => {}) as Dispatch<SetStateAction<DisplaySections>>,
@@ -32,6 +33,7 @@ export const ImageContext = createContext({
     SetStateAction<HTMLImageElement[] | null>
   >,
   setCollageFiles: (() => {}) as Dispatch<SetStateAction<File[] | null>>,
+  getDownloadFileName: (() => {}) as () => string,
 });
 
 export default function ImageProvider({
@@ -47,6 +49,7 @@ export default function ImageProvider({
   );
   const smallCanvasRef = useRef<HTMLCanvasElement>(null);
   const collageCanvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const [displays, setDisplays] = useState<DisplaySections>({
     canvas: false,
@@ -69,6 +72,24 @@ export default function ImageProvider({
 
   const mobileToolbarRef = useRef<HTMLDivElement>(null);
 
+  function getDownloadFileName(): string {
+    const now = new Date();
+    const formattedDate = `${now.getFullYear()}-${String(
+      now.getMonth() + 1
+    ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(
+      now.getHours()
+    ).padStart(2, "0")}.${String(now.getMinutes()).padStart(2, "0")}`;
+
+    if (originalFile) {
+      return `${originalFile.name.split(".")[0]} ${formattedDate}.jpg`;
+    }
+
+    if (collageFiles && collageFiles.length > 1) {
+      return `Collage ${formattedDate}.jpg`;
+    }
+    return `Image ${formattedDate}.jpg`;
+  }
+
   return (
     <ImageContext.Provider
       value={{
@@ -78,6 +99,7 @@ export default function ImageProvider({
         setOriginalFile,
         smallCanvasRef,
         collageCanvasRef,
+        containerRef,
         displays,
         setDisplays,
         mobileToolbarRef,
@@ -87,6 +109,7 @@ export default function ImageProvider({
         setCollageFiles,
         bottomToolbarDisplay,
         setBottomToolbarDisplay,
+        getDownloadFileName,
       }}
     >
       {children}

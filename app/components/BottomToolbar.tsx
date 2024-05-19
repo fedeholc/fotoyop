@@ -160,6 +160,7 @@ export function BottomToolbar() {
 
           <ButtonGrayscale onClick={handleToGrayscale}></ButtonGrayscale>
           <ButtonCanvas
+ 
             onClick={() =>
               setBottomToolbarDisplay((prev) => {
                 return {
@@ -170,6 +171,7 @@ export function BottomToolbar() {
                 };
               })
             }
+           
           ></ButtonCanvas>
         </ToolbarRow>
       )}
