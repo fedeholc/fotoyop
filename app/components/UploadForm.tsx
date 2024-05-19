@@ -45,6 +45,7 @@ export default function UploadForm({}) {
         borderPc: false,
         canvas: false,
         collage: false,
+        flow: false,
       });
 
       setCollageFiles(null);
@@ -71,6 +72,7 @@ export default function UploadForm({}) {
         borderPc: false,
         canvas: false,
         collage: false,
+        flow: false,
       });
 
       setOriginalImg(null);
