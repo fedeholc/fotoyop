@@ -8,18 +8,22 @@ export default function BorderPercentInputs({
   maxRange: string;
 }) {
   const id = useId();
-  const { BorderPercent, handleBorderPercentRange } = useContext(BorderContext);
+  const { BorderPercent, handleBorderPercentRange, setBorderPercent } =
+    useContext(BorderContext);
   const [inputBorderPercent, setInputBorderPercent] = useState(BorderPercent);
   return (
     <div className={toolbar.borderRanges}>
+      <label htmlFor={`${id}inputBorderPercent}`}>
+        <strong>Size (%)</strong>
+      </label>
       <input
         type="range"
         id={`${id}inputBorderPercent}`}
         max={maxRange}
         min="0"
-        value={inputBorderPercent}
+        value={BorderPercent}
         onChange={(e) => {
-          setInputBorderPercent(e.target.value);
+          setBorderPercent(e.target.value);
         }}
         onMouseUp={(e) =>
           handleBorderPercentRange((e.target as HTMLInputElement).value)
@@ -32,13 +36,14 @@ export default function BorderPercentInputs({
         type="number"
         id={`${id}inputBorderPercentN}`}
         min="0"
-        value={inputBorderPercent}
+        value={BorderPercent}
         onKeyUp={(e) => {
-          setInputBorderPercent((e.target as HTMLInputElement).value);
+          setBorderPercent((e.target as HTMLInputElement).value);
           handleBorderPercentRange((e.target as HTMLInputElement).value);
         }}
         onChange={(e) => {
-          setInputBorderPercent(e.target.value);
+          setBorderPercent(e.target.value);
+
           handleBorderPercentRange((e.target as HTMLInputElement).value);
         }}
       ></input>

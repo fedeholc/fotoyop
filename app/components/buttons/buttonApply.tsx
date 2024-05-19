@@ -1,14 +1,14 @@
-import { Check } from "lucide-react";
+import { Save } from "lucide-react";
 import toolbar from "../BottomToolbar.module.css";
 
 export default function ButtonApply({ onClick }: { onClick: () => void }) {
   return (
     <button
       title="Apply changes"
-      className={toolbar.buttonOnlyIcon}
+      className={toolbar.buttonFlow}
       onClick={onClick}
     >
-      <Check></Check>
+      <Save></Save>
     </button>
   );
 }

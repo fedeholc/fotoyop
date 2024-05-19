@@ -39,7 +39,6 @@ export const CollageContext = createContext({
   handleGapColor: (() => {}) as Dispatch<string>,
   handleGapPixels: (() => {}) as Dispatch<number>,
   handleOrientation: (() => {}) as Dispatch<Orientation>,
-  resizeCollageContainer: () => {},
 
   inputGapColor: "#ffffff",
   setInputGapColor: (() => {}) as Dispatch<string>,
@@ -90,13 +89,13 @@ export default function CollageProvider({
   const [inputGapColor, setInputGapColor] = useState<string>("#ffffff");
   const {
     collageImages,
+    setCollageFiles,
     setCollageImages,
-    getDownloadFileName,
+
     setDisplays,
     setOriginalImg,
     displays,
     mobileToolbarRef,
-    containerRef,
   } = useContext(ImageContext);
   const { setUndoImageList } = useContext(ProcessContext);
   const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
@@ -123,7 +122,7 @@ export default function CollageProvider({
       ) as string;
       const enlaceDescarga = document.createElement("a");
       enlaceDescarga.href = downloadDataURL || "";
-      enlaceDescarga.download = getDownloadFileName();
+      enlaceDescarga.download = "image.jpg";
 
       document.body.appendChild(enlaceDescarga);
       enlaceDescarga.click();
@@ -191,12 +190,12 @@ export default function CollageProvider({
     }
   }
 
-  async function handleGapPixels(gapPx: number) {
+  function handleGapPixels(gapPx: number) {
     if (!collageImages || !collageCanvasRef.current) {
       return;
     }
     setGapPixels(gapPx);
-    await createCollage(
+    createCollage(
       collageCanvasRef.current,
       previewOrientation,
       collageImages,
@@ -209,21 +208,6 @@ export default function CollageProvider({
       ),
       inputGapColor
     );
-    await resizeCollageContainer();
-  }
-
-  async function resizeCollageContainer() {
-    if (!collageImages || !collageCanvasRef.current || !containerRef.current) {
-      return;
-    }
-    const { newWidth, newHeight } = calcResizeToWindow(
-      collageCanvasRef.current.width,
-      collageCanvasRef.current.height,
-      windowDimensions,
-      appConfig
-    );
-    containerRef.current.style.width = `${newWidth}px`;
-    containerRef.current.style.height = `${newHeight}px`;
   }
   async function handleOrientation(orientation: Orientation) {
     if (!collageImages || !collageCanvasRef.current) {
@@ -242,7 +226,6 @@ export default function CollageProvider({
       ),
       inputGapColor
     );
-    await resizeCollageContainer();
   }
 
   function handleGapColor(gapColor: string) {
@@ -280,7 +263,6 @@ export default function CollageProvider({
         collageData,
         setCollageData,
         handleDownloadFromCollage,
-        resizeCollageContainer,
       }}
     >
       {children}

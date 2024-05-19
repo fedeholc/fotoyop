@@ -111,6 +111,15 @@ export default function BorderProvider({
         },
         smallCanvasRef
       );
+    } else {
+      handleCanvasChange(
+        {
+          CanvasColor: inputCanvasColor,
+          ratioX: 0,
+          ratioY: 0,
+        },
+        smallCanvasRef
+      );
     }
   }
 
@@ -393,7 +402,10 @@ export default function BorderProvider({
         );
       }
     }
-
+    setInputCanvasColor("#ffffff");
+    setSelectAspectRatio("");
+    setInputAspectRatioX(0);
+    setInputAspectRatioY(0);
     setCurrentProcess(null);
   }
 

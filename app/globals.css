@@ -8,13 +8,13 @@
    --toolbarBorder: 1px solid rgb(64, 64, 64);
    --toolbarBorderColor: rgb(64, 64, 64);
 
-   --buttonBorder: 1px solid black;
-   --buttonBg: rgba(255, 255, 255, 0.06);
+   --buttonBorder: 1px solid black; 
    --buttonBoxShadow: 1px 1px 2px 1px rgb(12, 12, 12);
    --buttonHoverColor: rgb(128, 128, 128);
    --buttonIconColor: rgb(216, 155, 0);
    --buttonIconColorHover: rgb(255, 183, 0);
    --buttonIconSize: 16px;
+   --buttonFlowHover: hsl(328, 100%, 74%);
  }
 
  *,
@@ -141,7 +141,7 @@
  */
    border-radius: 5px;
    border: var(--buttonBorder);
-   background-color: var(--buttonBg);
+   
 
    cursor: pointer;
    font-size: 0.9rem;
@@ -177,12 +177,7 @@
      border: 1px solid var(--buttonHoverColor);
    }
 
-   #section__mobile button:hover {
-
-     outline: 1px solid var(--bgMiddleGray);
-     border: 1px solid var(--bgMiddleGray);
-     color: var(--buttonIconColorHover)
-   }
+  
  }
 
  #section__mobile {

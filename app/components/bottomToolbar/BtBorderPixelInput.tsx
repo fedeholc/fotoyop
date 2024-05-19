@@ -7,18 +7,21 @@ export default function BtBorderPixelInputs({
 }: {
   maxRange: string;
 }) {
-  const { BorderPixels, handleBorderPixelsRange } = useContext(BorderContext);
+  const { BorderPixels, handleBorderPixelsRange, setBorderPixels } =
+    useContext(BorderContext);
   const id = useId();
-  const [inputBorderPixels, setInputBorderPixels] = useState(BorderPixels);
   return (
     <div className={toolbar.borderRanges}>
+      <label htmlFor={`${id}inputBorderPixels}`}>
+        <strong>Size (px)</strong>
+      </label>
       <input
         type="range"
         id={`${id}inputBorderPixels}`}
         min="0"
         max={maxRange}
-        value={inputBorderPixels}
-        onChange={(e) => setInputBorderPixels(e.target.value)}
+        value={BorderPixels}
+        onChange={(e) => setBorderPixels(e.target.value)}
         onMouseUp={(e) =>
           handleBorderPixelsRange((e.target as HTMLInputElement).value)
         }
@@ -30,13 +33,13 @@ export default function BtBorderPixelInputs({
         type="number"
         id={`${id}inputBorderPixelsN}`}
         min="0"
-        value={inputBorderPixels}
+        value={BorderPixels}
         onKeyUp={(e) => {
-          setInputBorderPixels((e.target as HTMLInputElement).value);
+          setBorderPixels((e.target as HTMLInputElement).value);
           handleBorderPixelsRange((e.target as HTMLInputElement).value);
         }}
         onChange={(e) => {
-          setInputBorderPixels(e.target.value);
+          setBorderPixels(e.target.value);
           handleBorderPixelsRange((e.target as HTMLInputElement).value);
         }}
       ></input>{" "}

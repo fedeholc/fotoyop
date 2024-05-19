@@ -9,11 +9,11 @@ import useWindowsSize from "./hooks/useWindowsSize";
 import { CollageContext } from "../providers/CollageProvider";
 
 export default function CollageCanvas() {
-  const { collageImages, displays, mobileToolbarRef, collageCanvasRef, containerRef } =
+  const { collageImages, displays, mobileToolbarRef, collageCanvasRef } =
     useContext(ImageContext);
   const { gapPixels, inputGapColor, previewOrientation } =
     useContext(CollageContext);
-  //const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
 
   useEffect(() => {
@@ -44,8 +44,7 @@ export default function CollageCanvas() {
     }
   }, [collageImages]);
 
- /*  useEffect(() => {
-    console.log("entro al effect de collage");
+  useEffect(() => {
     if (collageCanvasRef.current && collageImages) {
       const { newWidth, newHeight } = calcResizeToWindow(
         collageCanvasRef.current.width,
@@ -55,17 +54,11 @@ export default function CollageCanvas() {
       );
 
       if (containerRef.current) {
-        console.log(
-          "Canvas ref: ",
-          collageCanvasRef.current.width,
-          collageCanvasRef.current.height
-        );
-        console.log("Redimension: ", newWidth, newHeight);
         containerRef.current.style.width = `${newWidth}px`;
         containerRef.current.style.height = `${newHeight}px`;
       }
     }
-  }, [windowDimensions, previewOrientation, gapPixels, collageImages]); */
+  }, [windowDimensions, previewOrientation, gapPixels, collageImages]);
 
   return (
     <div>
