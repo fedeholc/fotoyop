@@ -168,7 +168,16 @@ export function BottomToolbar() {
 
           <ButtonGrayscale onClick={handleToGrayscale}></ButtonGrayscale>
           <ButtonCanvas
-            onClick={() => showToolbarRow(toolbarRow.canvas)}
+            onClick={() =>
+              setBottomToolbarDisplay((prev) => {
+                return {
+                  ...prev,
+                  canvas: true,
+                  edit: false,
+                  flow: true,
+                };
+              })
+            }
           ></ButtonCanvas>
         </ToolbarRow>
       )}
