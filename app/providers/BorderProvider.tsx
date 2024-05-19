@@ -81,7 +81,7 @@ export default function BorderProvider({
   const [inputCanvasColor, setInputCanvasColor] = useState<string>("#ffffff");
   const [inputAspectRatioX, setInputAspectRatioX] = useState<number>(0);
   const [inputAspectRatioY, setInputAspectRatioY] = useState<number>(0);
-  const [selectAspectRatio, setSelectAspectRatio] = useState<string>("1:1");
+  const [selectAspectRatio, setSelectAspectRatio] = useState<string>("");
 
   const { originalImg, smallCanvasRef } = useContext(ImageContext);
 
@@ -424,7 +424,7 @@ export default function BorderProvider({
       setProcessList([...processList]);
     }
     setInputCanvasColor("#ffffff");
-    setSelectAspectRatio("1:1");
+    setSelectAspectRatio("");
     setInputAspectRatioX(0);
     setInputAspectRatioY(0);
     setCurrentProcess(null);

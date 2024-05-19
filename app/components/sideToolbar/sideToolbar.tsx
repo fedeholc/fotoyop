@@ -38,7 +38,6 @@ export function SideToolbar() {
           <ButtonNew></ButtonNew>
           <ButtonDownFromCollage></ButtonDownFromCollage>
           <ButtonSaveToEdit></ButtonSaveToEdit>
-          {/* TODO: hay que vaciar collageimages cuando se pasa de collage a edit */}
         </div>
       )}
       {originalImg && (
