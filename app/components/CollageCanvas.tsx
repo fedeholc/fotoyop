@@ -9,11 +9,15 @@ import useWindowsSize from "./hooks/useWindowsSize";
 import { CollageContext } from "../providers/CollageProvider";
 
 export default function CollageCanvas() {
-  const { collageImages, displays, mobileToolbarRef, collageCanvasRef } =
-    useContext(ImageContext);
+  const {
+    collageImages,
+    displays,
+    mobileToolbarRef,
+    collageCanvasRef,
+    containerRef,
+  } = useContext(ImageContext);
   const { gapPixels, inputGapColor, previewOrientation } =
     useContext(CollageContext);
-  const containerRef = useRef<HTMLDivElement>(null);
   const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
 
   useEffect(() => {

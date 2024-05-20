@@ -1,33 +1,16 @@
-import {
-  createContext,
-  useState,
-  Dispatch,
-  SetStateAction,
-  useContext,
-} from "react";
+import { createContext, useState, Dispatch, useContext } from "react";
 import { ImageContext } from "./ImageProvider";
 import { ProcessContext } from "./ProcessProvider";
-import { BorderOptionsType, CanvasOptions, Orientation } from "../types";
+import { Orientation } from "../types";
 import {
   drawImageB64OnCanvas,
   imageB64ToImageData,
   calcResizeToWindow,
-  imageB64ToImageDataWithOrientation,
 } from "../imageProcessing";
 import { appConfig } from "../App";
 import useWindowsSize from "../components/hooks/useWindowsSize";
 
-import { ImageProcess } from "../types";
-import {
-  applyProcessFunction,
-  putImageDataOnCanvas,
-  imgAddBorder,
-  getResizedGap,
-  imgAddCanvas,
-  getCollageData,
-  createCollage,
-} from "../imageProcessing";
-import { createRef, useRef } from "react";
+import { getResizedGap, createCollage } from "../imageProcessing";
 
 export const CollageContext = createContext({
   previewOrientation: Orientation.vertical,
@@ -89,7 +72,7 @@ export default function CollageProvider({
   const [inputGapColor, setInputGapColor] = useState<string>("#ffffff");
   const {
     collageImages,
-    setCollageFiles,
+    containerRef,
     setCollageImages,
 
     setDisplays,
@@ -208,6 +191,24 @@ export default function CollageProvider({
       ),
       inputGapColor
     );
+
+    resizeToWindow();
+  }
+
+  function resizeToWindow() {
+    if (collageCanvasRef.current) {
+      const { newWidth, newHeight } = calcResizeToWindow(
+        collageCanvasRef.current.width,
+        collageCanvasRef.current.height,
+        windowDimensions,
+        appConfig
+      );
+
+      if (containerRef.current) {
+        containerRef.current.style.width = `${newWidth}px`;
+        containerRef.current.style.height = `${newHeight}px`;
+      }
+    }
   }
   async function handleOrientation(orientation: Orientation) {
     if (!collageImages || !collageCanvasRef.current) {
@@ -226,6 +227,7 @@ export default function CollageProvider({
       ),
       inputGapColor
     );
+    resizeToWindow();
   }
 
   async function handleGapColor(gapColor: string) {
