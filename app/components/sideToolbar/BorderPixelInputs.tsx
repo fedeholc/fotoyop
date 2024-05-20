@@ -13,6 +13,7 @@ export default function BorderPixelInputs({ maxRange }: { maxRange: string }) {
         type="number"
         id={`${id}inputBorderPixelsN}`}
         min="0"
+        max={(parseInt(maxRange)*2).toString()}
         value={BorderPixels}
         onKeyUp={(e) => {
           setBorderPixels((e.target as HTMLInputElement).value);

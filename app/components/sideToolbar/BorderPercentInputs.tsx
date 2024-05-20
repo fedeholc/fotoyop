@@ -17,6 +17,7 @@ export default function BorderPercentInputs({
         type="number"
         id={`${id}inputBorderPercentN}`}
         min="0"
+        max="200"
         value={BorderPercent}
         onKeyUp={(e) => {
           setBorderPercent((e.target as HTMLInputElement).value);
@@ -33,7 +34,7 @@ export default function BorderPercentInputs({
         type="range"
         id={`${id}inputBorderPercent}`}
         min="0"
-        max={maxRange}
+        max="100"
         value={BorderPercent}
         onChange={(e) => {
           setBorderPercent(e.target.value);

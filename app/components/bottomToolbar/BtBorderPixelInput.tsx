@@ -22,9 +22,9 @@ export default function BtBorderPixelInputs({
         max={maxRange}
         value={BorderPixels}
         onChange={(e) => setBorderPixels(e.target.value)}
-        onMouseUp={(e) =>
-          handleBorderPixelsRange((e.target as HTMLInputElement).value)
-        }
+        onMouseUp={(e) => {
+          handleBorderPixelsRange((e.target as HTMLInputElement).value);
+        }}
         onTouchEnd={(e) =>
           handleBorderPixelsRange((e.target as HTMLInputElement).value)
         }
@@ -33,6 +33,7 @@ export default function BtBorderPixelInputs({
         type="number"
         id={`${id}inputBorderPixelsN}`}
         min="0"
+        max={(parseInt(maxRange) * 2).toString()}
         value={BorderPixels}
         onKeyUp={(e) => {
           setBorderPixels((e.target as HTMLInputElement).value);
