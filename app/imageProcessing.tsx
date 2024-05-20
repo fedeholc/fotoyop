@@ -409,14 +409,7 @@ function calcResizeToWindow(
   if (newHeight <= 0) {
     newHeight = 1;
   }
-  console.log(
-    "calc:",
-    imageWidth,
-    imageHeight,
-    newWidth,
-    newHeight,
-    windowDimensions
-  );
+
   return { newWidth, newHeight };
 }
 
