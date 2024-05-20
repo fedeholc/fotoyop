@@ -218,6 +218,7 @@ export function BottomToolbar() {
                 setBottomToolbarDisplay((prev) => {
                   return {
                     ...prev,
+                    mainMenu: true,
                     arrange: !prev.arrange,
                   };
                 });

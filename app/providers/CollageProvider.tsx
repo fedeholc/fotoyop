@@ -16,6 +16,7 @@ export const CollageContext = createContext({
   previewOrientation: Orientation.vertical,
   handleDownloadFromCollage: () => {},
   handleSaveToEdit: () => {},
+  resizeToWindow: () => {},
   setPreviewOrientation: (() => {}) as Dispatch<Orientation>,
   gapPixels: 0,
   setGapPixels: (() => {}) as Dispatch<number>,
@@ -265,6 +266,7 @@ export default function CollageProvider({
         collageData,
         setCollageData,
         handleDownloadFromCollage,
+        resizeToWindow,
       }}
     >
       {children}

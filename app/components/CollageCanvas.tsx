@@ -16,7 +16,7 @@ export default function CollageCanvas() {
     collageCanvasRef,
     containerRef,
   } = useContext(ImageContext);
-  const { gapPixels, inputGapColor, previewOrientation } =
+  const { gapPixels, resizeToWindow, inputGapColor, previewOrientation } =
     useContext(CollageContext);
   const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
 
@@ -49,19 +49,7 @@ export default function CollageCanvas() {
   }, [collageImages]);
 
   useEffect(() => {
-    if (collageCanvasRef.current && collageImages) {
-      const { newWidth, newHeight } = calcResizeToWindow(
-        collageCanvasRef.current.width,
-        collageCanvasRef.current.height,
-        windowDimensions,
-        appConfig
-      );
-
-      if (containerRef.current) {
-        containerRef.current.style.width = `${newWidth}px`;
-        containerRef.current.style.height = `${newHeight}px`;
-      }
-    }
+    resizeToWindow();
   }, [windowDimensions, previewOrientation, gapPixels, collageImages]);
 
   return (

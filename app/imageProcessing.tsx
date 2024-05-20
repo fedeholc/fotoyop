@@ -398,7 +398,7 @@ function calcResizeToWindow(
     }
     newWidth = newHeight * ratio;
 
-    if (newWidth > windowDimensions.width) {
+    if (newWidth + mainCanvasConfig.canvasMargin > windowDimensions.width) {
       newWidth = windowDimensions.width - mainCanvasConfig.canvasMargin;
       newHeight = newWidth / ratio;
     }
@@ -409,6 +409,14 @@ function calcResizeToWindow(
   if (newHeight <= 0) {
     newHeight = 1;
   }
+  console.log(
+    "calc:",
+    imageWidth,
+    imageHeight,
+    newWidth,
+    newHeight,
+    windowDimensions
+  );
   return { newWidth, newHeight };
 }
 
