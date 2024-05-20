@@ -190,12 +190,12 @@ export default function CollageProvider({
     }
   }
 
-  function handleGapPixels(gapPx: number) {
+  async function handleGapPixels(gapPx: number) {
     if (!collageImages || !collageCanvasRef.current) {
       return;
     }
     setGapPixels(gapPx);
-    createCollage(
+    await createCollage(
       collageCanvasRef.current,
       previewOrientation,
       collageImages,
@@ -228,11 +228,11 @@ export default function CollageProvider({
     );
   }
 
-  function handleGapColor(gapColor: string) {
+  async function handleGapColor(gapColor: string) {
     if (!collageImages || !collageCanvasRef.current) {
       return;
     }
-    createCollage(
+    await createCollage(
       collageCanvasRef.current,
       previewOrientation,
       collageImages,

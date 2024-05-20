@@ -143,12 +143,34 @@ select.aspectRatioInput {
   background-color: var(--toolbarBg);
 }
 
+.buttonArrange {
+  display: flex;
+  flex-direction: row;
+  gap: 0.3rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0rem 0.6rem 0rem 0.8rem;
+  height: 2rem;
+  color: var(--lightFont);
+  background-color: var(--toolbarBg);
+}
+
+.buttonArrange svg {
+  color: var(--accentColor);
+}
+
+.buttonArrange:hover {
+  color: var(--buttonIconColorHover)
+}
+
+
 .svgBW {
   fill: var(--buttonIconColor);
 }
 
 .buttonWithIcon svg,
 .buttonOnlyIcon svg,
+.buttonArrange svg,
 .buttonFlow svg {
   height: var(--buttonIconSize);
 }

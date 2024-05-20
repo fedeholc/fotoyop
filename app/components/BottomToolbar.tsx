@@ -29,6 +29,8 @@ import BtBorderColorInputs from "./bottomToolbar/BtBorderColorInputs";
 import BtAspectRatioPresets from "./bottomToolbar/BtAspectRatioPresets";
 import BtAspectRatioInputs from "./bottomToolbar/BtAspectRatioInputs";
 import BtCollageOptions from "./bottomToolbar/BtCollageOptions";
+import TbCollageImages from "./sideToolbar/TbCollageImages";
+import BtCollageImages from "./bottomToolbar/BbCollageImages";
 
 function ToolbarRow({
   className = "",
@@ -59,6 +61,7 @@ export function BottomToolbar() {
       canvas: false,
       collage: false,
       flow: false,
+      arrange: false,
     };
     // funciona como toggle, si se vuelve a hacer click en el mismo boton, se oculta (por ahora solo para Edit)
     toolbar[row] = bottomToolbarDisplay[row] === true ? false : true;
@@ -192,6 +195,13 @@ export function BottomToolbar() {
         </ToolbarRow>
       )}
 
+      {bottomToolbarDisplay.arrange &&
+        collageImages &&
+        collageImages.length > 0 && (
+          <ToolbarRow className={toolbar.border__row}>
+            <BtCollageImages></BtCollageImages>
+          </ToolbarRow>
+        )}
       {bottomToolbarDisplay.mainMenu &&
         collageImages &&
         collageImages.length > 0 && (

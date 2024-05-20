@@ -4,7 +4,11 @@ import { BorderContext } from "@/app/providers/BorderProvider";
 import { CollageContext } from "@/app/providers/CollageProvider";
 import { Orientation } from "@/app/types";
 import sideToolbar from "../sideToolbar/sideToolbar.module.css";
+
 import CollageOrientationInputs from "../sideToolbar/CollageOrientationInputs";
+import ButtonArrangeImages from "../buttons/buttonArrangeImages";
+import { ImageContext } from "@/app/providers/ImageProvider";
+import { BottomToolbar } from "../BottomToolbar";
 
 export default function BtCollageOptions() {
   const {
@@ -20,9 +24,21 @@ export default function BtCollageOptions() {
     collageData,
   } = useContext(CollageContext);
 
+  const { setBottomToolbarDisplay } = useContext(ImageContext);
+
   return (
     <div className={toolbar.collageOptions__container}>
       <div className={`${toolbar.collageOptions__row} ${toolbar.canvasInputs}`}>
+        <ButtonArrangeImages 
+          onClick={() => {
+            setBottomToolbarDisplay((prev) => {
+              return {
+                ...prev,
+                arrange: !prev.arrange,
+              };
+            });
+          }}
+        />
         <label>
           <strong>Orientation </strong>
         </label>
