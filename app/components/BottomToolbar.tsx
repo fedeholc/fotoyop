@@ -5,19 +5,14 @@ import { BorderContext } from "../providers/BorderProvider";
 import { ImageContext } from "../providers/ImageProvider";
 import { ToolbarContext } from "../providers/ToolbarProvider";
 import { toolbarRow } from "../types";
-import ButtonUndo from "./buttons/buttonUndo";
 import ButtonEdit from "./buttons/buttonEdit";
 import ButtonNew from "./buttons/buttonNew";
 import ButtonDownload from "./buttons/buttonDownload";
 import ButtonBack from "./buttons/buttonBack";
 import ButtonApply from "./buttons/buttonApply";
-import ButtonDiscard from "./buttons/buttonDiscard";
 import ButtonBorder from "./buttons/buttonBorder";
-import ButtonBorderPx from "./buttons/buttonBorderPx";
-import ButtonBorderPc from "./buttons/buttonBorderPc";
 import ButtonGrayscale from "./buttons/buttonGrayscale";
 import ButtonCanvas from "./buttons/buttonCanvas";
-import ButtonCollage from "./buttons/buttonCollage";
 import ButtonMenu from "./buttons/buttonMenu";
 import ButtonSaveToEdit from "./buttons/buttonSaveToEdit";
 import ButtonUndoIcon from "./buttons/buttonUndoIcon";
@@ -31,6 +26,7 @@ import BtAspectRatioInputs from "./bottomToolbar/BtAspectRatioInputs";
 import BtCollageOptions from "./bottomToolbar/BtCollageOptions";
 import TbCollageImages from "./sideToolbar/TbCollageImages";
 import BtCollageImages from "./bottomToolbar/BbCollageImages";
+import ButtonArrangeImages from "./buttons/buttonArrangeImages";
 
 function ToolbarRow({
   className = "",
@@ -217,6 +213,16 @@ export function BottomToolbar() {
             <ButtonNew></ButtonNew>
             <ButtonDownloadFromCollage></ButtonDownloadFromCollage>
             <ButtonSaveToEdit></ButtonSaveToEdit>
+            <ButtonArrangeImages
+              onClick={() => {
+                setBottomToolbarDisplay((prev) => {
+                  return {
+                    ...prev,
+                    arrange: !prev.arrange,
+                  };
+                });
+              }}
+            />
           </ToolbarRow>
         )}
     </div>

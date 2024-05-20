@@ -29,16 +29,6 @@ export default function BtCollageOptions() {
   return (
     <div className={toolbar.collageOptions__container}>
       <div className={`${toolbar.collageOptions__row} ${toolbar.canvasInputs}`}>
-        <ButtonArrangeImages 
-          onClick={() => {
-            setBottomToolbarDisplay((prev) => {
-              return {
-                ...prev,
-                arrange: !prev.arrange,
-              };
-            });
-          }}
-        />
         <label>
           <strong>Orientation </strong>
         </label>
@@ -66,32 +56,6 @@ export default function BtCollageOptions() {
           checked={previewOrientation === Orientation.horizontal}
         />
         <label htmlFor="horizontal">Horizontal</label>
-      </div>
-      <div className={`${toolbar.collageOptions__row} ${toolbar.canvasInputs}`}>
-        <label htmlFor="inputGapColor">
-          <strong>Gap Color</strong>
-        </label>
-        <input
-          id="inputGapColor"
-          type="color"
-          list="true"
-          value={inputGapColor}
-          onChange={(e) => {
-            setInputGapColor((e.target as HTMLInputElement).value);
-            handleGapColor((e.target as HTMLInputElement).value);
-          }}
-        />
-
-        <input
-          id="inputGapColorT"
-          type="Text"
-          min="0"
-          onChange={(e) => {
-            setInputGapColor((e.target as HTMLInputElement).value);
-            handleGapColor((e.target as HTMLInputElement).value);
-          }}
-          value={inputGapColor}
-        ></input>
       </div>
 
       <div className={`${toolbar.collageOptions__row} ${toolbar.canvasInputs}`}>
@@ -134,6 +98,33 @@ export default function BtCollageOptions() {
           }}
         ></input>
         <div>px</div>
+      </div>
+      <div className={`${toolbar.collageOptions__row} ${toolbar.canvasInputs}`}>
+        <label htmlFor="inputGapColor">
+          <strong>Gap Color</strong>
+        </label>
+        <input
+          id="inputGapColor"
+          type="color"
+          list="true"
+          value={inputGapColor}
+          onChange={(e) => {
+            setInputGapColor((e.target as HTMLInputElement).value);
+            handleGapColor((e.target as HTMLInputElement).value);
+          }}
+        />
+
+        <input
+          id="inputGapColorT"
+          type="Text"
+          min="0"
+          onChange={(e) => {
+            setInputGapColor((e.target as HTMLInputElement).value);
+            handleGapColor((e.target as HTMLInputElement).value);
+          }}
+          value={inputGapColor}
+        ></input>
+       
       </div>
     </div>
   );

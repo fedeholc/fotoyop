@@ -120,11 +120,13 @@ select.aspectRatioInput {
   background-color: var(--toolbarBg);
 }
 
+
 .buttonOnlyIcon:hover,
 .buttonWithIcon:hover {
   outline: 2px solid var(--bgMiddleGray);
   color: var(--buttonIconColorHover)
 }
+
 
 .buttonFlow:hover {
 
@@ -146,21 +148,22 @@ select.aspectRatioInput {
 .buttonArrange {
   display: flex;
   flex-direction: row;
-  gap: 0.3rem;
   align-items: center;
   justify-content: center;
-  padding: 0rem 0.6rem 0rem 0.8rem;
+  padding: 0rem 0rem 0rem 0rem;
   height: 2rem;
   color: var(--lightFont);
   background-color: var(--toolbarBg);
+  width: 2rem;
 }
 
 .buttonArrange svg {
-  color: var(--accentColor);
+  color: var(--buttonArrange);
 }
 
 .buttonArrange:hover {
-  color: var(--buttonIconColorHover)
+
+  outline: 2px solid var(--bgMiddleGray);
 }
 
 

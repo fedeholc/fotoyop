@@ -1,4 +1,9 @@
-import { ArrowLeftRight } from "lucide-react";
+import {
+  ArrowLeftRight,
+  PanelBottomClose,
+  PanelBottomOpen,
+  EyeOff,
+} from "lucide-react";
 import toolbar from "../BottomToolbar.module.css";
 import { useContext } from "react";
 import { ImageContext } from "@/app/providers/ImageProvider";
@@ -12,14 +17,14 @@ export default function ButtonArrangeImages({
 
   return (
     <button
-      title="Discard changes"
+      title="Arange Images"
       className={toolbar.buttonArrange}
       onClick={onClick}
     >
-      {bottomToolbarDisplay.arrange && <span>Hide</span>}
-      {!bottomToolbarDisplay.arrange && <span>Show</span>}
+      {bottomToolbarDisplay.arrange && <EyeOff>Hide</EyeOff>}
+      {!bottomToolbarDisplay.arrange && <ArrowLeftRight>Show</ArrowLeftRight>}
 
-      <ArrowLeftRight></ArrowLeftRight>
+      {/*   <ArrowLeftRight></ArrowLeftRight> */}
     </button>
   );
 }

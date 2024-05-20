@@ -13,7 +13,7 @@ export default function ButtonDownload() {
       onClick={() => handleSaveToEdit()}
     >
       <ImageUp></ImageUp>
-      <span>Save & Edit</span>
+      <span>Edit</span>
     </button>
   );
 }
