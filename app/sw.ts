@@ -1,16 +1,25 @@
 import { defaultCache } from "@serwist/next/worker";
-import type { PrecacheEntry } from "@serwist/precaching";
-import { installSerwist } from "@serwist/sw";
 
-declare const self: ServiceWorkerGlobalScope & {
-  // Change this attribute's name to your `injectionPoint`.
-  __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
-};
+import { installSerwist } from "@serwist/sw";
+import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
+import { Serwist } from "serwist";
+
+// This declares the value of `injectionPoint` to TypeScript.
+// `injectionPoint` is the string that will be replaced by the
+// actual precache manifest. By default, this string is set to
+// `"self.__SW_MANIFEST"`.
+declare global {
+  interface WorkerGlobalScope extends SerwistGlobalConfig {
+    __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
+  }
+}
+
+declare const self: ServiceWorkerGlobalScope;
 
 // Anything random.
 const revision = crypto.randomUUID();
 
-installSerwist({
+const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,
@@ -20,7 +29,7 @@ installSerwist({
     entries: [
       {
         url: "/~offline",
-        revision,
+        // revision,
         matcher({ request }) {
           return request.destination === "document";
         },
@@ -28,3 +37,6 @@ installSerwist({
     ],
   },
 });
+
+serwist.addEventListeners();
+
