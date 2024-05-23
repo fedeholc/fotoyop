@@ -115,7 +115,8 @@ export default function UploadForm({}) {
           newImageElement.width,
           newImageElement.height,
           windowDimensions,
-          appConfig
+          appConfig,
+          mobileToolbarRef
         );
 
         drawImageB64OnCanvas(
