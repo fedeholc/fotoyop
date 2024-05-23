@@ -185,8 +185,6 @@
    grid-area: section-mobile;
    display: none;
 
-   background-color: var(--toolbarBg);
-
  }
 
  @media screen and (max-width: 1050px) {
