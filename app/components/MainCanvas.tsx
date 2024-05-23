@@ -7,8 +7,13 @@ import { ProcessContext } from "../providers/ProcessProvider";
 import { calcResizeToWindow } from "../imageProcessing";
 
 export default function MainCanvas() {
-  const { originalImg, smallCanvasRef, displays, mobileToolbarRef } =
-    useContext(ImageContext);
+  const {
+    originalImg,
+    smallCanvasRef,
+    displays,
+    mobileToolbarRef,
+    bottomToolbarDisplay,
+  } = useContext(ImageContext);
   const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
   const { undoImageList } = useContext(ProcessContext);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -28,7 +33,8 @@ export default function MainCanvas() {
         undoImageList[undoImageList.length - 1].width,
         undoImageList[undoImageList.length - 1].height,
         windowDimensions,
-        appConfig
+        appConfig,
+        mobileToolbarRef
       );
 
       if (containerRef.current) {

@@ -348,12 +348,20 @@ function calcResizeToWindow(
   imageWidth: number,
   imageHeight: number,
   windowDimensions: WindowsDimensions,
-  mainCanvasConfig: AppConfig
+  mainCanvasConfig: AppConfig,
+  mobileToolbarRef: React.RefObject<HTMLDivElement>
 ): { newWidth: number; newHeight: number } {
   let ratio = imageWidth / imageHeight;
   let newWidth = 0;
   let newHeight = 0;
 
+  let mobileToolbarHeight = 0;
+  let mobileToolbarWidth = 0;
+
+  if (mobileToolbarRef && mobileToolbarRef.current) {
+    mobileToolbarHeight = mobileToolbarRef.current.clientHeight || 0;
+    mobileToolbarWidth = mobileToolbarRef.current.clientWidth || 0;
+  }
   // horizontal
   if (ratio > 1) {
     if (
@@ -370,12 +378,12 @@ function calcResizeToWindow(
     if (
       newHeight >
       windowDimensions.height -
-        windowDimensions.mobileToolbarHeight -
+        mobileToolbarHeight -
         mainCanvasConfig.canvasMargin
     ) {
       newHeight =
         windowDimensions.height -
-        windowDimensions.mobileToolbarHeight -
+        mobileToolbarHeight -
         mainCanvasConfig.canvasMargin;
       newWidth = newHeight * ratio;
     }
@@ -384,13 +392,13 @@ function calcResizeToWindow(
   else {
     if (
       windowDimensions.height -
-        windowDimensions.mobileToolbarHeight -
+        mobileToolbarHeight -
         mainCanvasConfig.canvasMargin <
       mainCanvasConfig.canvasMaxHeight
     ) {
       newHeight =
         windowDimensions.height -
-        windowDimensions.mobileToolbarHeight -
+        mobileToolbarHeight -
         mainCanvasConfig.canvasMargin;
     } else {
       newHeight =
@@ -739,6 +747,16 @@ function drawImageB64OnCanvas(
   canvasMaxWidth: number,
   canvasMaxHeight: number
 ) {
+  if (!canvas || !imageB64 || !canvasMaxWidth || !canvasMaxHeight) {
+    console.error(
+      "Error al cargar la imagen en el canvas",
+      imageB64,
+      canvas,
+      canvasMaxWidth,
+      canvasMaxHeight
+    );
+    return;
+  }
   const imgElement = new window.Image();
   imgElement.src = imageB64;
   imgElement.onload = function () {

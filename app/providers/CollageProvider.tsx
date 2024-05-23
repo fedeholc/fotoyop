@@ -153,7 +153,8 @@ export default function CollageProvider({
           newImageElement.width,
           newImageElement.height,
           windowDimensions,
-          appConfig
+          appConfig,
+          mobileToolbarRef
         );
 
         drawImageB64OnCanvas(
@@ -202,7 +203,8 @@ export default function CollageProvider({
         collageCanvasRef.current.width,
         collageCanvasRef.current.height,
         windowDimensions,
-        appConfig
+        appConfig,
+        mobileToolbarRef
       );
 
       if (containerRef.current) {

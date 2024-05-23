@@ -27,6 +27,11 @@ import BtCollageOptions from "./bottomToolbar/BtCollageOptions";
 import TbCollageImages from "./sideToolbar/TbCollageImages";
 import BtCollageImages from "./bottomToolbar/BbCollageImages";
 import ButtonArrangeImages from "./buttons/buttonArrangeImages";
+import { useEffect } from "react";
+import { ProcessContext } from "../providers/ProcessProvider";
+import { appConfig } from "../App";
+import { calcResizeToWindow } from "../imageProcessing";
+import useWindowsSize from "./hooks/useWindowsSize";
 
 function ToolbarRow({
   className = "",
@@ -79,11 +84,32 @@ export function BottomToolbar() {
     handleDiscardCanvas,
   } = useContext(BorderContext);
 
-  const { originalImg } = useContext(ImageContext);
+  const { smallCanvasRef, displays } = useContext(ImageContext);
+  const { undoImageList } = useContext(ProcessContext);
+
+  const { originalImg, containerRef } = useContext(ImageContext);
 
   const { handleToGrayscale } = useContext(ToolbarContext);
 
   const { mobileToolbarRef } = useContext(ImageContext);
+  const windowDimensions = useWindowsSize(displays, mobileToolbarRef);
+
+  useEffect(() => {
+    if (smallCanvasRef.current && originalImg && undoImageList.length > 0) {
+      const { newWidth, newHeight } = calcResizeToWindow(
+        undoImageList[undoImageList.length - 1].width,
+        undoImageList[undoImageList.length - 1].height,
+        windowDimensions,
+        appConfig,
+        mobileToolbarRef
+      );
+
+      if (containerRef.current) {
+        containerRef.current.style.width = `${newWidth}px`;
+        containerRef.current.style.height = `${newHeight}px`;
+      }
+    }
+  }, [bottomToolbarDisplay, collageImages]);
 
   return (
     <div ref={mobileToolbarRef}>
