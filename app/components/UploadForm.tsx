@@ -212,7 +212,8 @@ export default function UploadForm({}) {
         }
       }
     }
-
+    
+    //TODO: revisar por qué acá no esta lo mismo que cuando se sube haciendo click (el SetDisplays y demás)
     if (files.length === 1) {
       loadFileProcedure(files[0]);
     } else if (files.length > 1) {
