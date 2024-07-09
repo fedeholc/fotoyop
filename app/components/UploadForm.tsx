@@ -198,7 +198,7 @@ export default function UploadForm({}) {
    * Cuando se suelta un archivo en el area de drop, se llama al procedimiento de carga de archivo.
    * @param event
    */
-  function handleDrop(event: React.DragEvent<HTMLDivElement>) {
+  async function handleDrop(event: React.DragEvent<HTMLDivElement>) {
     event.preventDefault();
     const files: File[] = [];
 
@@ -212,12 +212,57 @@ export default function UploadForm({}) {
         }
       }
     }
-    
+
     //TODO: revisar por qué acá no esta lo mismo que cuando se sube haciendo click (el SetDisplays y demás)
     if (files.length === 1) {
-      loadFileProcedure(files[0]);
-    } else if (files.length > 1) {
-      loadMultipleFilesProcedure(files);
+      await loadFileProcedure(files[0]);
+      setDisplays((prev) => {
+        return {
+          canvas: true,
+          form: false,
+          resizeTrigger: !prev.resizeTrigger,
+          collage: false,
+        };
+      });
+      setBottomToolbarDisplay({
+        mainMenu: true,
+        edit: false,
+        border: false,
+        borderPx: false,
+        borderPc: false,
+        canvas: false,
+        collage: false,
+        flow: false,
+        arrange: false,
+      });
+
+      setCollageFiles(null);
+      setCollageImages(null);
+    }
+    if (files.length > 1) {
+      await loadMultipleFilesProcedure(files);
+
+      setDisplays((prev) => {
+        return {
+          canvas: false,
+          form: false,
+          resizeTrigger: !prev.resizeTrigger,
+          collage: true,
+        };
+      });
+      setBottomToolbarDisplay({
+        mainMenu: true,
+        edit: false,
+        border: false,
+        borderPx: false,
+        borderPc: false,
+        canvas: false,
+        collage: false,
+        flow: false,
+        arrange: false,
+      });
+
+      setOriginalImg(null);
     }
   }
 
