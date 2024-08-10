@@ -24,6 +24,7 @@ describe("calcResizeToWindow", () => {
       margin: 32,
     };
 
+    //TODO: pendiente corregir esto producto de los cambios en la función. Puede parecer que en lugar de pasar la ref a la funcion haya que pasar el valor de la mobileToolbar para el calculo, pero creo que eso generaba un problema en la función y no recibía el valor correcto. Habría que probar si es así o ver de que modo se puede hacer para testear.
     const { newWidth, newHeight } = calcResizeToWindow(
       imageWidth,
       imageHeight,
