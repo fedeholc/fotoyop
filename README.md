@@ -4,7 +4,7 @@
 
 Application that allows you to transform images in a simple and fast way, without the need to register or upload files to a server. It is also a PWA that can be installed on the phone and used offline.
 
-Online: [https://fotoyopdemo.fedeholc.ar/](https://fotoyopdemo.fedeholc.ar/)
+Online: [https://fotoyop.fedeholc.ar/](https://fotoyop.fedeholc.ar/)
 
 ## Libraries and resources
 
@@ -15,7 +15,7 @@ This project uses the following libraries and resources:
 
 ## License
 
-- [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/) Este proyecto está bajo la Licencia GPL v3 - vea el archivo [LICENSE.md](LICENSE.md) para más detalles.
+- [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/) This project is under the GPL v3 License - see the file [LICENSE.md](LICENSE.md) for more details.
 
 ## Author
 
