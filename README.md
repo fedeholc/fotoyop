@@ -1,4 +1,4 @@
-# fotoYOP 🎨 - v0.1
+# fotoYOP 🧿 - v0.1
 
 [![es](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/fedeholc/fotoyop/blob/main/README.es.md)
 
