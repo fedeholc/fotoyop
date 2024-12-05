@@ -4,7 +4,7 @@
 
 Aplicación que permite transformar imágenes de manera sencilla y rápida, sin necesidad de registrarse ni de subir archivos a un servidor. Es también una PWA que se puede instalar en el teléfono y usar offline.
 
-Online: [https://fotoyopdemo.fedeholc.ar/](https://fotoyopdemo.fedeholc.ar/)
+Online: [https://fotoyop.fedeholc.ar/](https://fotoyop.fedeholc.ar/)
 
 ## Librerías y recursos utilizados
 
